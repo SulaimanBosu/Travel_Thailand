@@ -127,7 +127,7 @@ class MyDrawer {
         'ออกจากระบบ',
         style: TextStyle(
           color: Colors.red,
-          fontSize: 30.0,
+          fontSize: 20.0,
           fontFamily: 'FC-Minimal-Regular',
         ),
       ),

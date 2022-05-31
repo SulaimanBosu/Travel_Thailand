@@ -2,13 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:project/model/user_model.dart';
 import 'package:project/screen/favorites.dart';
-import 'package:project/screen/login.dart';
+import 'package:project/screen/landmark.dart';
 import 'package:project/screen/popular.dart';
 import 'package:project/screen/profile.dart';
 import 'package:project/screen/recommend.dart';
-import 'package:project/screen/smartRefresher.dart';
-import 'package:project/utility/my_style.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -33,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
     listwidgets.add(const Recommend());
     listwidgets.add(const Popular());
     listwidgets.add(const Favorites());
-    listwidgets.add(const Popular());
+    listwidgets.add(const Landmark());
     listwidgets.add(const Profile());
 
     //getPreferences();

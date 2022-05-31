@@ -49,13 +49,13 @@ class MyStyle {
   }
 
   TextStyle mainTitle = const TextStyle(
-    fontSize: 16.0,
+    fontSize: 14.0,
     fontWeight: FontWeight.bold,
     color: Colors.black54,
   );
 
   TextStyle mainH2Title = const TextStyle(
-    fontSize: 14.0,
+    fontSize: 12.0,
     // fontWeight: FontWeight.bold,
     color: Colors.black45,
     // fontStyle: FontStyle.italic,
@@ -333,6 +333,13 @@ class MyStyle {
       image: DecorationImage(
           image: AssetImage('images/$namePic'), fit: BoxFit.cover),
     );
+  }
+
+    void routeToWidget(BuildContext context, Widget myWidget , bool onback) {
+    MaterialPageRoute route = MaterialPageRoute(
+      builder: (context) => myWidget,
+    );
+    Navigator.pushAndRemoveUntil(context, route, (route) => onback);
   }
 
   Widget progress(BuildContext context) {

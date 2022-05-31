@@ -1,25 +1,27 @@
-class FavoritesModel {
+// ignore_for_file: camel_case_types
+
+class GridViewModel {
   String? landmarkId;
   String? landmarkName;
   String? provinceName;
-  String? landmarkView;
   int? landmarkScore;
+  String? landmarkView;
   String? imagePath;
 
-  FavoritesModel(
+  GridViewModel(
       {this.landmarkId,
       this.landmarkName,
       this.provinceName,
-      this.landmarkView,
       this.landmarkScore,
+      this.landmarkView,
       this.imagePath});
 
-  FavoritesModel.fromJson(Map<String, dynamic> json) {
+  GridViewModel.fromJson(Map<String, dynamic> json) {
     landmarkId = json['Landmark_id'];
     landmarkName = json['Landmark_name'];
     provinceName = json['Province_name'];
-    landmarkView = json['Landmark_view'];
     landmarkScore = json['Landmark_score'];
+    landmarkView = json['Landmark_view'];
     imagePath = json['ImagePath'];
   }
 
@@ -28,8 +30,8 @@ class FavoritesModel {
     data['Landmark_id'] = landmarkId;
     data['Landmark_name'] = landmarkName;
     data['Province_name'] = provinceName;
-    data['Landmark_view'] = landmarkView;
     data['Landmark_score'] = landmarkScore;
+    data['Landmark_view'] = landmarkView;
     data['ImagePath'] = imagePath;
     return data;
   }

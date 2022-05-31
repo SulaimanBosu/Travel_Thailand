@@ -1,4 +1,4 @@
-class PopularModel {
+class LandmarkModel {
   String? landmarkView;
   String? landmarkId;
   String? landmarkName;
@@ -11,7 +11,7 @@ class PopularModel {
   String? imagePath;
   int? landmarkScore;
 
-  PopularModel(
+  LandmarkModel(
       {this.landmarkView,
       this.landmarkId,
       this.landmarkName,
@@ -24,7 +24,7 @@ class PopularModel {
       this.imagePath,
       this.landmarkScore});
 
-  PopularModel.fromJson(Map<String, dynamic> json) {
+  LandmarkModel.fromJson(Map<String, dynamic> json) {
     landmarkView = json['Landmark_view'];
     landmarkId = json['Landmark_id'];
     landmarkName = json['Landmark_name'];

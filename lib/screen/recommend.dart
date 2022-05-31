@@ -6,7 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:project/model/model_landmarkRecommended.dart';
+import 'package:project/model/gridview_model.dart';
 import 'package:project/screen/login.dart';
 import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
@@ -23,8 +23,7 @@ class Recommend extends StatefulWidget {
 }
 
 class _RecommendState extends State<Recommend> {
-  List<LandmarkRecommended> landmarkRecommendeds = [];
-  late LandmarkRecommended landmark;
+  late GridViewModel landmark;
   List<Widget> landmarkCards = [];
   int index = 0;
   bool isLoading = true;
@@ -65,11 +64,13 @@ class _RecommendState extends State<Recommend> {
         var result = json.decode(value.data);
         print('Value == $result');
         for (var map in result) {
-          landmark = LandmarkRecommended.fromJson(map);
+          landmark = GridViewModel.fromJson(map);
 
           setState(() {
-            landmarkRecommendeds.add(landmark);
-            landmarkCards.add(createCard(context, landmark, index));
+            landmarkCards.add(CardView(
+              landmarkModel: landmark,
+              index: index,
+            ));
             index++;
             isLoading = false;
           });
@@ -82,7 +83,7 @@ class _RecommendState extends State<Recommend> {
 
       setState(() {
         isLoading = false;
-        delaydialog();
+        // delaydialog();
       });
     }
   }
@@ -143,7 +144,7 @@ class _RecommendState extends State<Recommend> {
                       iconSize: 30,
                       onPressed: () {
                         if (userid.isEmpty) {
-                          routeToWidget(context, const Login());
+                          MyStyle().routeToWidget(context, const Login(), true);
                         } else {
                           scaffoldKey.currentState!.openEndDrawer();
                         }
@@ -156,16 +157,16 @@ class _RecommendState extends State<Recommend> {
                       child: Container(
                           width: MediaQuery.of(context).size.width,
                           height: MediaQuery.of(context).size.height * 0.78,
-                          child: progress(context)),
+                          child: MyStyle().progress(context)),
                     )
-                  : landmarkCards.isEmpty
+                  : landmark.landmarkId == null
                       ? SliverToBoxAdapter(
                           child: Container(
                             width: MediaQuery.of(context).size.width,
                             height: MediaQuery.of(context).size.height * 0.78,
                             child: const Center(
                               child: Text(
-                                'ไม่มีรายการแนะนำ',
+                                'ไม่พบรายการแนะนำ',
                                 style: TextStyle(
                                   color: Colors.black54,
                                   fontSize: 24.0,
@@ -203,185 +204,6 @@ class _RecommendState extends State<Recommend> {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  void routeToWidget(BuildContext context, Widget myWidget) {
-    MaterialPageRoute route = MaterialPageRoute(
-      builder: (context) => myWidget,
-    );
-    Navigator.pushAndRemoveUntil(context, route, (route) => true);
-  }
-
-  Widget progress(BuildContext context) {
-    return Container(
-        child: Stack(
-      children: <Widget>[
-        GridView.extent(
-          maxCrossAxisExtent: 265,
-          mainAxisSpacing: 20,
-          crossAxisSpacing: 10,
-          children: landmarkCards,
-        ),
-        Container(
-          alignment: AlignmentDirectional.center,
-          decoration: const BoxDecoration(
-            color: Colors.white70,
-          ),
-          child: Container(
-            decoration: BoxDecoration(
-                color: Colors.grey.shade300,
-                borderRadius: BorderRadius.circular(10.0)),
-            width: MediaQuery.of(context).size.width * 0.4,
-            height: MediaQuery.of(context).size.width * 0.3,
-            alignment: AlignmentDirectional.center,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Center(
-                  child: SizedBox(
-                    height: MediaQuery.of(context).size.width * 0.1,
-                    width: MediaQuery.of(context).size.width * 0.1,
-                    child: const CircularProgressIndicator(
-                      value: null,
-                      backgroundColor: Colors.white,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
-                      strokeWidth: 7.0,
-                    ),
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(top: 25.0),
-                  child: const Center(
-                    child: Text(
-                      'ดาวน์โหลด...',
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        color: Colors.black45,
-                        fontFamily: 'FC-Minimal-Regular',
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    ));
-  }
-
-  Widget createCard(
-    BuildContext context,
-    LandmarkRecommended landmarkRecommended,
-    int index,
-  ) {
-    String imageURL = landmarkRecommended.imagePath!;
-    return GestureDetector(
-      onTap: () {
-        debugPrint('you click index $index');
-        // MaterialPageRoute route = MaterialPageRoute(
-        //   builder: (context) => ShopInfo(
-        //     shopModel: infomationShopModels[index],
-        //  ),
-        // );
-        //   Navigator.push(context, route);
-      },
-      // ignore: avoid_unnecessary_containers
-      child: Card(
-        color: Colors.grey[300],
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            showImage(context, imageURL),
-            Container(
-              margin: const EdgeInsets.only(left: 5),
-              child: Padding(
-                padding: const EdgeInsets.only(right: 5, left: 5),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    MyStyle().mySizebox(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          landmarkRecommended.landmarkName!,
-                          style: const TextStyle(
-                            color: Colors.black54,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18.0,
-                            fontFamily: 'FC-Minimal-Regular',
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          'จังหวัด ${landmarkRecommended.provinceName}',
-                          style: const TextStyle(
-                            color: Colors.black45,
-                            fontSize: 16.0,
-                            fontFamily: 'FC-Minimal-Regular',
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'คะแนน ${landmarkRecommended.landmarkScore}/5',
-                          style: const TextStyle(
-                            color: Colors.red,
-                            fontSize: 16.0,
-                            fontFamily: 'FC-Minimal-Regular',
-                          ),
-                        ),
-                        Text(
-                          'View ${landmarkRecommended.landmarkView}',
-                          style: const TextStyle(
-                            color: Colors.black45,
-                            fontSize: 16.0,
-                            fontFamily: 'FC-Minimal-Regular',
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Container showImage(BuildContext context, String imageURL) {
-    return Container(
-      margin: const EdgeInsetsDirectional.only(start: 0.0, end: 0.0),
-      width: MediaQuery.of(context).size.width * 1,
-      height: MediaQuery.of(context).size.width * 0.30,
-      child: Card(
-        semanticContainer: true,
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        child: CachedNetworkImage(
-          imageUrl: imageURL,
-          progressIndicatorBuilder: (context, url, downloadProgress) =>
-              MyStyle().showProgress(),
-          errorWidget: (context, url, error) => const Icon(Icons.error),
-          fit: BoxFit.cover,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5.0),
-        ),
-        elevation: 5,
-        margin: const EdgeInsets.all(0),
       ),
     );
   }
