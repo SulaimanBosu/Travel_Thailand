@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:project/model/gridview_model.dart';
+import 'package:project/model/landmark_model.dart';
 import 'package:project/screen/login.dart';
 import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
@@ -19,7 +19,7 @@ class Favorites extends StatefulWidget {
 }
 
 class _FavoritesState extends State<Favorites> {
-  late GridViewModel landmark;
+  late LandmarkModel landmark;
   List<Widget> landmarkCards = [];
   int index = 0;
   bool isLoading = true;
@@ -67,7 +67,7 @@ class _FavoritesState extends State<Favorites> {
         debugPrint('data == $result');
 
         for (var map in result) {
-          landmark = GridViewModel.fromJson(map);
+          landmark = LandmarkModel.fromJson(map);
           setState(
             () {
               landmarkCards.add(CardView(

@@ -1,10 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:project/model/gridview_model.dart';
+import 'package:project/model/landmark_model.dart';
 import 'package:project/utility/my_style.dart';
 
 class CardView extends StatefulWidget {
-  final GridViewModel landmarkModel;
+  final LandmarkModel landmarkModel;
   final int index;
   const CardView({
     Key? key,

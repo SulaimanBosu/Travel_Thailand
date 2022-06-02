@@ -1,12 +1,10 @@
 // ignore_for_file: sized_box_for_whitespace, avoid_unnecessary_containers
 
 import 'dart:convert';
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:project/model/gridview_model.dart';
+import 'package:project/model/landmark_model.dart';
 import 'package:project/screen/login.dart';
 import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
@@ -23,7 +21,7 @@ class Recommend extends StatefulWidget {
 }
 
 class _RecommendState extends State<Recommend> {
-  late GridViewModel landmark;
+  late LandmarkModel landmark;
   List<Widget> landmarkCards = [];
   int index = 0;
   bool isLoading = true;
@@ -64,7 +62,7 @@ class _RecommendState extends State<Recommend> {
         var result = json.decode(value.data);
         print('Value == $result');
         for (var map in result) {
-          landmark = GridViewModel.fromJson(map);
+          landmark = LandmarkModel.fromJson(map);
 
           setState(() {
             landmarkCards.add(CardView(

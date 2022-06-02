@@ -4,7 +4,7 @@ import 'package:project/model/user_model.dart';
 import 'package:project/screen/favorites.dart';
 import 'package:project/screen/landmark.dart';
 import 'package:project/screen/popular.dart';
-import 'package:project/screen/profile.dart';
+import 'package:project/ProfilePage/profile.dart';
 import 'package:project/screen/recommend.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
