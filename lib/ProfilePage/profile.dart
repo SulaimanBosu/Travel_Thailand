@@ -6,6 +6,7 @@ import 'package:project/ProfilePage/edit_email.dart';
 import 'package:project/ProfilePage/edit_name.dart';
 import 'package:project/ProfilePage/edit_phone.dart';
 import 'package:project/model/user_model.dart';
+import 'package:project/screen/login.dart';
 import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -32,6 +33,12 @@ class _ProfileState extends State<Profile> {
     getPreferences();
   }
 
+  void delaydialog() {
+    Future.delayed(const Duration(milliseconds: 10000), () {
+      setState(() {});
+    });
+  }
+
   Future<void> getPreferences() async {
     preferences = await SharedPreferences.getInstance();
     userId = preferences.getString('User_id')!;
@@ -55,136 +62,136 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: !onData
-          ? MyStyle().progress(context)
-          : Column(
-              children: [
-                AppBar(
-                  backgroundColor: Colors.transparent,
-                  elevation: 0,
-                  toolbarHeight: 10,
-                ),
-                const Center(
-                    child: Padding(
-                        padding: EdgeInsets.only(bottom: 20),
-                        child: Text(
-                          'Edit Profile',
-                          style: TextStyle(
-                            fontSize: 30,
-                            fontWeight: FontWeight.w700,
-                            color: Color.fromRGBO(64, 105, 225, 1),
-                          ),
-                        ))),
-                InkWell(
-                  onTap: () {
-                    // showBottomsheet();
-                    // navigateSecondPage(const EditImagePage());
-                  },
-                  child: CircleAvatar(
-                    radius: 90,
-                    backgroundColor: Colors.black,
-                    child: Padding(
-                      padding: const EdgeInsets.all(2), // Border radius
-                      child: ClipOval(
-                        child: SizedBox.fromSize(
-                          size: const Size.fromRadius(88), // Image radius
-                          child: CachedNetworkImage(
-                            imageUrl: MyConstant().domain + file,
-                            progressIndicatorBuilder:
-                                (context, url, downloadProgress) =>
-                                    MyStyle().showProgress(),
-                            errorWidget: (context, url, error) =>
-                                const Icon(Icons.error),
-                            fit: BoxFit.cover,
+        body: !onData
+            ?  const Login()     //MyStyle().progress(context)
+            : Column(
+                children: [
+                  AppBar(
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                    toolbarHeight: 10,
+                  ),
+                  const Center(
+                      child: Padding(
+                          padding: EdgeInsets.only(bottom: 20),
+                          child: Text(
+                            'Edit Profile',
+                            style: TextStyle(
+                              fontSize: 30,
+                              fontWeight: FontWeight.w700,
+                              color: Color.fromRGBO(64, 105, 225, 1),
+                            ),
+                          ))),
+                  InkWell(
+                    onTap: () {
+                      // showBottomsheet();
+                      // navigateSecondPage(const EditImagePage());
+                    },
+                    child: CircleAvatar(
+                      radius: 90,
+                      backgroundColor: Colors.black,
+                      child: Padding(
+                        padding: const EdgeInsets.all(2), // Border radius
+                        child: ClipOval(
+                          child: SizedBox.fromSize(
+                            size: const Size.fromRadius(88), // Image radius
+                            child: CachedNetworkImage(
+                              imageUrl: MyConstant().domain + file,
+                              progressIndicatorBuilder:
+                                  (context, url, downloadProgress) =>
+                                      MyStyle().showProgress(),
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.error),
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                buildUserInfoDisplay(name, 'Name', const EditNameFormPage()),
-                buildUserInfoDisplay(phone, 'Phone', const EditPhoneFormPage()),
-                buildUserInfoDisplay(email, 'Email', const EditEmailFormPage()),
+                  buildUserInfoDisplay(name, 'Name', const EditNameFormPage()),
+                  buildUserInfoDisplay(phone,'Phone', const EditPhoneFormPage()),
+                  buildUserInfoDisplay(email,'Email', const EditEmailFormPage()),
 
-                // Expanded(
-                //   child: buildAbout(user),
-                //   flex: 4,
-                // )
-              ],
-            ),
+                  // Expanded(
+                  //   child: buildAbout(user),
+                  //   flex: 4,
+                  // )
+                ],
+              )
 
-      //  Column(
-      //   mainAxisSize: MainAxisSize.min,
-      //   children: [
-      //     SafeArea(
-      //       child: Stack(
-      //         children: [
-      //           Row(
-      //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //             children: [
-      //               IconButton(
-      //                   onPressed: () => Navigator.of(context).pop(),
-      //                   icon: const Icon(Icons.arrow_back_ios_new)),
-      //               CircleButton(
-      //                 icon: MdiIcons.facebookMessenger,
-      //                 iconSize: 30,
-      //                 onPressed: () => debugPrint('facebookMessenger'),
-      //               ),
-      //             ],
-      //           ),
-      //           Center(
-      //             child: Column(
-      //               crossAxisAlignment: CrossAxisAlignment.center,
-      //               children: [
-      //                 Container(
-      //                   padding: const EdgeInsets.only(top: 40),
-      //                   child: CircleAvatar(
-      //                     radius: 90,
-      //                     backgroundColor: Colors.black,
-      //                     child: Padding(
-      //                       padding: const EdgeInsets.all(2), // Border radius
-      //                       child: ClipOval(
-      //                         child: SizedBox.fromSize(
-      //                           size: const Size.fromRadius(88), // Image radius
-      //                           child: CachedNetworkImage(
-      //                             imageUrl: MyConstant().domain,
-      //                             progressIndicatorBuilder:
-      //                                 (context, url, downloadProgress) =>
-      //                                     MyStyle().showProgress(),
-      //                             errorWidget: (context, url, error) =>
-      //                                 const Icon(Icons.error),
-      //                             fit: BoxFit.cover,
-      //                           ),
-      //                         ),
-      //                       ),
-      //                     ),
-      //                   ),
-      //                 ),
-      //                 ListTile(
-      //                   leading: const Icon(
-      //                     Icons.account_circle,
-      //                     color: Colors.black54,
-      //                   ),
-      //                   title: const Text(
-      //                     'ชื่อ',
-      //                     style:
-      //                         TextStyle(color: Colors.black54, fontSize: 18.0),
-      //                   ),
-      //                   subtitle: const Text(
-      //                     'sulaiman',
-      //                     style: TextStyle(color: Colors.black54),
-      //                   ),
-      //                   onTap: () {},
-      //                 ),
-      //               ],
-      //             ),
-      //           ),
-      //         ],
-      //       ),
-      //     ),
-      //   ],
-      // ),
-    );
+        //  Column(
+        //   mainAxisSize: MainAxisSize.min,
+        //   children: [
+        //     SafeArea(
+        //       child: Stack(
+        //         children: [
+        //           Row(
+        //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //             children: [
+        //               IconButton(
+        //                   onPressed: () => Navigator.of(context).pop(),
+        //                   icon: const Icon(Icons.arrow_back_ios_new)),
+        //               CircleButton(
+        //                 icon: MdiIcons.facebookMessenger,
+        //                 iconSize: 30,
+        //                 onPressed: () => debugPrint('facebookMessenger'),
+        //               ),
+        //             ],
+        //           ),
+        //           Center(
+        //             child: Column(
+        //               crossAxisAlignment: CrossAxisAlignment.center,
+        //               children: [
+        //                 Container(
+        //                   padding: const EdgeInsets.only(top: 40),
+        //                   child: CircleAvatar(
+        //                     radius: 90,
+        //                     backgroundColor: Colors.black,
+        //                     child: Padding(
+        //                       padding: const EdgeInsets.all(2), // Border radius
+        //                       child: ClipOval(
+        //                         child: SizedBox.fromSize(
+        //                           size: const Size.fromRadius(88), // Image radius
+        //                           child: CachedNetworkImage(
+        //                             imageUrl: MyConstant().domain,
+        //                             progressIndicatorBuilder:
+        //                                 (context, url, downloadProgress) =>
+        //                                     MyStyle().showProgress(),
+        //                             errorWidget: (context, url, error) =>
+        //                                 const Icon(Icons.error),
+        //                             fit: BoxFit.cover,
+        //                           ),
+        //                         ),
+        //                       ),
+        //                     ),
+        //                   ),
+        //                 ),
+        //                 ListTile(
+        //                   leading: const Icon(
+        //                     Icons.account_circle,
+        //                     color: Colors.black54,
+        //                   ),
+        //                   title: const Text(
+        //                     'ชื่อ',
+        //                     style:
+        //                         TextStyle(color: Colors.black54, fontSize: 18.0),
+        //                   ),
+        //                   subtitle: const Text(
+        //                     'sulaiman',
+        //                     style: TextStyle(color: Colors.black54),
+        //                   ),
+        //                   onTap: () {},
+        //                 ),
+        //               ],
+        //             ),
+        //           ),
+        //         ],
+        //       ),
+        //     ),
+        //   ],
+        // ),
+        );
   }
 
   Future showBottomsheet(String getValue, String title) {
@@ -232,9 +239,11 @@ class _ProfileState extends State<Profile> {
                     ),
                     labelText: 'ชื่อ : ',
                     enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black54),),
+                      borderSide: BorderSide(color: Colors.black54),
+                    ),
                     focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.red),),
+                      borderSide: BorderSide(color: Colors.red),
+                    ),
                   ),
                 ),
               ),
@@ -264,9 +273,11 @@ class _ProfileState extends State<Profile> {
                     ),
                     labelText: 'นามสกุล : ',
                     enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black54),),
+                      borderSide: BorderSide(color: Colors.black54),
+                    ),
                     focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.red),),
+                      borderSide: BorderSide(color: Colors.red),
+                    ),
                   ),
                 ),
               ),
@@ -296,9 +307,11 @@ class _ProfileState extends State<Profile> {
                     ),
                     labelText: 'เบอร์โทร : ',
                     enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black54),),
+                      borderSide: BorderSide(color: Colors.black54),
+                    ),
                     focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.red),),
+                      borderSide: BorderSide(color: Colors.red),
+                    ),
                   ),
                 ),
               ),
@@ -328,9 +341,11 @@ class _ProfileState extends State<Profile> {
                     ),
                     labelText: 'อีเมลล์ : ',
                     enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black54),),
+                      borderSide: BorderSide(color: Colors.black54),
+                    ),
                     focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.red),),
+                      borderSide: BorderSide(color: Colors.red),
+                    ),
                   ),
                 ),
               ),
@@ -360,9 +375,11 @@ class _ProfileState extends State<Profile> {
                     ),
                     labelText: 'รหัสผ่าน : ',
                     enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black54),),
+                      borderSide: BorderSide(color: Colors.black54),
+                    ),
                     focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.red),),
+                      borderSide: BorderSide(color: Colors.red),
+                    ),
                   ),
                 ),
               ),
@@ -392,9 +409,11 @@ class _ProfileState extends State<Profile> {
                     ),
                     labelText: 'รหัสผ่านใหม่ : ',
                     enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black54),),
+                      borderSide: BorderSide(color: Colors.black54),
+                    ),
                     focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.red),),
+                      borderSide: BorderSide(color: Colors.red),
+                    ),
                   ),
                 ),
               ),
@@ -424,9 +443,11 @@ class _ProfileState extends State<Profile> {
                     ),
                     labelText: 'ยืนยันรหัสผ่านใหม่ : ',
                     enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black54),),
+                      borderSide: BorderSide(color: Colors.black54),
+                    ),
                     focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.red),),
+                      borderSide: BorderSide(color: Colors.red),
+                    ),
                   ),
                 ),
               ),

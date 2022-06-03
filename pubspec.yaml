@@ -43,7 +43,6 @@ dependencies:
   bottom_navy_bar: ^6.0.0
   toast: ^0.3.0
   shared_preferences: ^2.0.15
-  google_maps_flutter: ^2.1.6
   location: ^4.4.0
   path_provider: ^2.0.10
   multi_image_picker: ^4.8.01

@@ -32,8 +32,6 @@
 	<string>Travel Thailand ต้องการเข้าถึงตำแหน่งที่ตั้งปัจจุบันของคุณ</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Travel Thailand ต้องการเข้าถึงตำแหน่งที่ตั้งปัจจุบันของคุณ</string>
-	<key>UIBackgroundModes</key>
-	<string>location</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Travel Thailand ต้องการเข้าถึงไมโครโฟนของคุณ</string>
 	<key>NSPhotoLibraryUsageDescription</key>

@@ -73,7 +73,7 @@ class _PopularState extends State<Popular> {
     try {
       await Dio().get(url).then((value) {
         var result = json.decode(value.data);
-        // print('Value == $result');
+        debugPrint('Value == $result');
         for (var map in result) {
           landmark = LandmarkModel.fromJson(map);
           setState(() {

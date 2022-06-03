@@ -259,6 +259,7 @@ class _LoginState extends State<Login> {
           String phone = result['Phone'];
           imageProfile = result['Image_profile'];
           SharedPreferences preferences = await SharedPreferences.getInstance();
+          preferences.setBool('Login_status', true);
           preferences.setString('User_id', userID);
           preferences.setString('Email', emailformsql);
           preferences.setString('first_name', firstname);
@@ -379,7 +380,7 @@ class _LoginState extends State<Login> {
 
   void routeToHome(UserModel userModel) {
     MaterialPageRoute route = MaterialPageRoute(
-      builder: (context) =>  const HomeScreen(),
+      builder: (context) => const HomeScreen(),
     );
     Navigator.pushAndRemoveUntil(context, route, (route) => false);
   }
@@ -405,7 +406,7 @@ class _LoginState extends State<Login> {
             InkWell(
               onTap: () {
                 MaterialPageRoute route = MaterialPageRoute(
-                  builder: (context) =>  const HomeScreen(),
+                  builder: (context) => const HomeScreen(),
                 );
                 Navigator.pushAndRemoveUntil(context, route, (route) => true);
               },
