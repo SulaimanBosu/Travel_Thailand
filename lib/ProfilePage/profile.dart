@@ -2,13 +2,12 @@ import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:project/ProfilePage/edit_email.dart';
-import 'package:project/ProfilePage/edit_name.dart';
-import 'package:project/ProfilePage/edit_phone.dart';
+import 'package:project/ProfilePage/edit_profile.dart';
 import 'package:project/model/user_model.dart';
 import 'package:project/screen/login.dart';
 import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
+import 'package:project/utility/signout_process.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Profile extends StatefulWidget {
@@ -22,7 +21,7 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   late UserModel user;
-  late String userId, name, lastname, file, phone, gender, email;
+  late String userId, name, lastname, file, phone, gender, email, password;
   late SharedPreferences preferences;
   bool onData = false;
   final _controller = TextEditingController();
@@ -48,6 +47,7 @@ class _ProfileState extends State<Profile> {
     phone = preferences.getString('Phone')!;
     gender = preferences.getString('Gender')!;
     email = preferences.getString('Email')!;
+    password = preferences.getString('Password')!;
     if (userId.isNotEmpty) {
       setState(() {
         onData = true;
@@ -62,136 +62,94 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: !onData
-            ?  const Login()     //MyStyle().progress(context)
-            : Column(
-                children: [
-                  AppBar(
-                    backgroundColor: Colors.transparent,
-                    elevation: 0,
-                    toolbarHeight: 10,
-                  ),
-                  const Center(
-                      child: Padding(
-                          padding: EdgeInsets.only(bottom: 20),
-                          child: Text(
-                            'Edit Profile',
-                            style: TextStyle(
-                              fontSize: 30,
-                              fontWeight: FontWeight.w700,
-                              color: Color.fromRGBO(64, 105, 225, 1),
-                            ),
-                          ))),
-                  InkWell(
-                    onTap: () {
-                      // showBottomsheet();
-                      // navigateSecondPage(const EditImagePage());
-                    },
-                    child: CircleAvatar(
-                      radius: 90,
-                      backgroundColor: Colors.black,
-                      child: Padding(
-                        padding: const EdgeInsets.all(2), // Border radius
-                        child: ClipOval(
-                          child: SizedBox.fromSize(
-                            size: const Size.fromRadius(88), // Image radius
-                            child: CachedNetworkImage(
-                              imageUrl: MyConstant().domain + file,
-                              progressIndicatorBuilder:
-                                  (context, url, downloadProgress) =>
-                                      MyStyle().showProgress(),
-                              errorWidget: (context, url, error) =>
-                                  const Icon(Icons.error),
-                              fit: BoxFit.cover,
+      body: !onData
+          ? const Login() //MyStyle().progress(context)
+          : Stack(
+              children: [
+                Column(
+                  children: [
+                    AppBar(
+                      backgroundColor: Colors.transparent,
+                      elevation: 0,
+                      toolbarHeight: 10,
+                    ),
+                    const Center(
+                        child: Padding(
+                            padding: EdgeInsets.only(bottom: 20),
+                            child: Text(
+                              '',
+                              style: TextStyle(
+                                fontSize: 28.0,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black45,
+                                fontFamily: 'FC-Minimal-Regular',
+                              ),
+                            ))),
+                    InkWell(
+                      onTap: () {
+                        // showBottomsheet();
+                        // navigateSecondPage(const EditImagePage());
+                      },
+                      child: CircleAvatar(
+                        radius: 90,
+                        backgroundColor: Colors.red,
+                        child: Padding(
+                          padding: const EdgeInsets.all(2), // Border radius
+                          child: ClipOval(
+                            child: SizedBox.fromSize(
+                              size: const Size.fromRadius(88), // Image radius
+                              child: file.isEmpty
+                                  ? Image.asset('images/iconprofile.png')
+                                  : CachedNetworkImage(
+                                      imageUrl: MyConstant().domain + file,
+                                      progressIndicatorBuilder:
+                                          (context, url, downloadProgress) =>
+                                              MyStyle().showProgress(),
+                                      errorWidget: (context, url, error) =>
+                                          const Icon(Icons.error),
+                                      fit: BoxFit.cover,
+                                    ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  buildUserInfoDisplay(name, 'Name', const EditNameFormPage()),
-                  buildUserInfoDisplay(phone,'Phone', const EditPhoneFormPage()),
-                  buildUserInfoDisplay(email,'Email', const EditEmailFormPage()),
-
-                  // Expanded(
-                  //   child: buildAbout(user),
-                  //   flex: 4,
-                  // )
-                ],
-              )
-
-        //  Column(
-        //   mainAxisSize: MainAxisSize.min,
-        //   children: [
-        //     SafeArea(
-        //       child: Stack(
-        //         children: [
-        //           Row(
-        //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //             children: [
-        //               IconButton(
-        //                   onPressed: () => Navigator.of(context).pop(),
-        //                   icon: const Icon(Icons.arrow_back_ios_new)),
-        //               CircleButton(
-        //                 icon: MdiIcons.facebookMessenger,
-        //                 iconSize: 30,
-        //                 onPressed: () => debugPrint('facebookMessenger'),
-        //               ),
-        //             ],
-        //           ),
-        //           Center(
-        //             child: Column(
-        //               crossAxisAlignment: CrossAxisAlignment.center,
-        //               children: [
-        //                 Container(
-        //                   padding: const EdgeInsets.only(top: 40),
-        //                   child: CircleAvatar(
-        //                     radius: 90,
-        //                     backgroundColor: Colors.black,
-        //                     child: Padding(
-        //                       padding: const EdgeInsets.all(2), // Border radius
-        //                       child: ClipOval(
-        //                         child: SizedBox.fromSize(
-        //                           size: const Size.fromRadius(88), // Image radius
-        //                           child: CachedNetworkImage(
-        //                             imageUrl: MyConstant().domain,
-        //                             progressIndicatorBuilder:
-        //                                 (context, url, downloadProgress) =>
-        //                                     MyStyle().showProgress(),
-        //                             errorWidget: (context, url, error) =>
-        //                                 const Icon(Icons.error),
-        //                             fit: BoxFit.cover,
-        //                           ),
-        //                         ),
-        //                       ),
-        //                     ),
-        //                   ),
-        //                 ),
-        //                 ListTile(
-        //                   leading: const Icon(
-        //                     Icons.account_circle,
-        //                     color: Colors.black54,
-        //                   ),
-        //                   title: const Text(
-        //                     'ชื่อ',
-        //                     style:
-        //                         TextStyle(color: Colors.black54, fontSize: 18.0),
-        //                   ),
-        //                   subtitle: const Text(
-        //                     'sulaiman',
-        //                     style: TextStyle(color: Colors.black54),
-        //                   ),
-        //                   onTap: () {},
-        //                 ),
-        //               ],
-        //             ),
-        //           ),
-        //         ],
-        //       ),
-        //     ),
-        //   ],
-        // ),
-        );
+                    buildUserInfoDisplay(
+                      name + ' ' + lastname,
+                      'ชื่อ - สกุล',
+                      const EditProfile(),
+                    ),
+                    buildUserInfoDisplay(
+                      phone,
+                      'เบอร์โทร',
+                      const EditProfile(),
+                    ),
+                    buildUserInfoDisplay(
+                      gender,
+                      'เพศ',
+                      const EditProfile(),
+                    ),
+                    buildUserInfoDisplay(
+                      email,
+                      'อีเมลล์',
+                      const EditProfile(),
+                    ),
+                    buildUserInfoDisplay(
+                      '**********',
+                      'รหัสผ่าน',
+                      const EditProfile(),
+                    ),
+                  ],
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    signOutMenu(context),
+                  ],
+                ),
+              ],
+            ),
+    );
   }
 
   Future showBottomsheet(String getValue, String title) {
@@ -476,92 +434,75 @@ class _ProfileState extends State<Profile> {
               height: 1,
             ),
             Container(
-                width: 350,
-                height: 40,
-                decoration: const BoxDecoration(
-                    border: Border(
-                        bottom: BorderSide(
-                  color: Colors.grey,
-                  width: 1,
-                ))),
-                child: Row(children: [
-                  Expanded(
-                      child: TextButton(
-                          onPressed: () {
-                            showBottomsheet(getValue, title);
-                            //navigateSecondPage(editPage);
-                          },
-                          child: Text(
-                            getValue,
-                            style: const TextStyle(fontSize: 16, height: 1.4),
-                          ))),
-                  const Icon(
-                    Icons.keyboard_arrow_right,
+              width: 350,
+              height: 40,
+              decoration: const BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
                     color: Colors.grey,
-                    size: 40.0,
+                    width: 1,
+                  ),
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      // showBottomsheet(getValue, title);
+                      navigateSecondPage(editPage);
+                    },
+                    child: Text(
+                      getValue,
+                      style: const TextStyle(fontSize: 16, height: 1.4),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      navigateSecondPage(editPage);
+                    },
+                    child: const Icon(
+                      Icons.keyboard_arrow_right,
+                      color: Colors.grey,
+                      size: 40.0,
+                    ),
                   )
-                ]))
+                ],
+              ),
+            ),
           ],
         ),
       );
 
-  Widget buildAbout(UserModel user) => Padding(
-      padding: const EdgeInsets.only(bottom: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Tell Us About Yourself',
-            style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w500,
-              color: Colors.grey,
-            ),
+  Widget signOutMenu(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(40.0),
+      child: OutlinedButton.icon(
+        style: OutlinedButton.styleFrom(
+          fixedSize: const Size(double.maxFinite, 60),
+        ),
+        onPressed: () {
+          signOutProcess(context);
+        },
+        icon: const Icon(
+          Icons.logout_sharp, color: Colors.red,
+          //size: 30,
+        ),
+        label: const Text(
+          'ออกจากระบบ',
+          style: TextStyle(
+            color: Colors.red,
+            fontSize: 20.0,
+            fontFamily: 'FC-Minimal-Regular',
           ),
-          const SizedBox(height: 1),
-          Container(
-              width: 350,
-              height: 200,
-              decoration: const BoxDecoration(
-                  border: Border(
-                      bottom: BorderSide(
-                color: Colors.grey,
-                width: 1,
-              ))),
-              child: Row(children: [
-                Expanded(
-                    child: TextButton(
-                        onPressed: () {
-                          //  navigateSecondPage(EditDescriptionFormPage());
-                        },
-                        child: Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 10, 10, 10),
-                            child: Align(
-                                alignment: Alignment.topLeft,
-                                child: Text(
-                                  user.email!,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    height: 1.4,
-                                  ),
-                                ))))),
-                const Icon(
-                  Icons.keyboard_arrow_right,
-                  color: Colors.grey,
-                  size: 40.0,
-                )
-              ]))
-        ],
-      ));
-
-  // Refrshes the Page after updating user info.
-  FutureOr onGoBack(dynamic value) {
-    setState(() {});
+        ),
+      ),
+    );
   }
 
   // Handles navigation and prompts refresh.
   void navigateSecondPage(Widget editForm) {
     Route route = MaterialPageRoute(builder: (context) => editForm);
-    Navigator.push(context, route).then(onGoBack);
+    Navigator.pushAndRemoveUntil(context, route, (route) => true);
   }
 }

@@ -156,7 +156,7 @@ class _LandmarkState extends State<Landmark> {
                 title: const Text(
                   'Travel Thailand',
                   style: TextStyle(
-                      color: Colors.blueAccent,
+                      color: Colors.redAccent,
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                       letterSpacing: -1.2),

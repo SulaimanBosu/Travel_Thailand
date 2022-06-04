@@ -44,7 +44,7 @@ class MyDrawer {
                               padding: const EdgeInsets.only(top: 40),
                               child: CircleAvatar(
                                 radius: 90,
-                                backgroundColor: Colors.black,
+                                backgroundColor: Colors.red,
                                 child: Padding(
                                   padding:
                                       const EdgeInsets.all(2), // Border radius

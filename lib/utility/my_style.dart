@@ -335,7 +335,7 @@ class MyStyle {
     );
   }
 
-    void routeToWidget(BuildContext context, Widget myWidget , bool onback) {
+  void routeToWidget(BuildContext context, Widget myWidget, bool onback) {
     MaterialPageRoute route = MaterialPageRoute(
       builder: (context) => myWidget,
     );
@@ -346,6 +346,11 @@ class MyStyle {
     return Container(
         child: Stack(
       children: <Widget>[
+        Container(
+          color: Colors.white,
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+        ),
         Container(
           alignment: AlignmentDirectional.center,
           decoration: const BoxDecoration(

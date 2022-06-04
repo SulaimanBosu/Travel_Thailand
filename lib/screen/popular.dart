@@ -136,7 +136,7 @@ class _PopularState extends State<Popular> {
                 title: const Text(
                   'Travel Thailand',
                   style: TextStyle(
-                      color: Colors.blueAccent,
+                      color: Colors.redAccent,
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                       letterSpacing: -1.2),
