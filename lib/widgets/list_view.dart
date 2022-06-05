@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:project/model/landmark_model.dart';
 import 'package:project/utility/my_style.dart';
@@ -22,8 +23,21 @@ class Listview extends StatefulWidget {
 }
 
 class _ListviewState extends State<Listview> {
+  late double screenwidth;
+  late double screenhight;
+
+  @override
+  void initState() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    screenwidth = MediaQuery.of(context).size.width;
+    screenhight = MediaQuery.of(context).size.height;
     return Container(
       child: SliverList(
         delegate: SliverChildBuilderDelegate(
@@ -52,16 +66,17 @@ class _ListviewState extends State<Listview> {
                 //   ],
                 // ),
                 endActionPane: const ActionPane(
+                  dragDismissible: true,
                   motion: ScrollMotion(),
                   children: [
-                    SlidableAction(
-                      flex: 1,
-                      onPressed: null,
-                      backgroundColor: Color(0xFF7BC043),
-                      foregroundColor: Colors.white,
-                      icon: Icons.archive,
-                      label: 'Archive',
-                    ),
+                    // SlidableAction(
+                    //   flex: 4,
+                    //   onPressed: null,
+                    //   backgroundColor: Color(0xFF7BC043),
+                    //   foregroundColor: Colors.white,
+                    //   icon: Icons.archive,
+                    //   label: 'Archive',
+                    // ),
                     SlidableAction(
                       flex: 1,
                       onPressed: null,
@@ -81,6 +96,8 @@ class _ListviewState extends State<Listview> {
                   ],
                 ),
                 child: Container(
+                  width: screenwidth,
+                  height: screenhight * 0.13,
                   decoration: index % 2 == 0
                       ? BoxDecoration(color: Colors.grey[100])
                       : BoxDecoration(color: Colors.grey[200]),
@@ -97,7 +114,7 @@ class _ListviewState extends State<Listview> {
                             padding: const EdgeInsetsDirectional.only(
                                 start: 0.0, end: 0.0),
                             width: MediaQuery.of(context).size.width * 0.4,
-                            height: MediaQuery.of(context).size.width * 0.3,
+                            height: MediaQuery.of(context).size.height * 0.14,
                             child: Container(
                               child: Card(
                                 semanticContainer: true,
@@ -176,7 +193,7 @@ class _ListviewState extends State<Listview> {
                                   // ignore: prefer_const_literals_to_create_immutables
                                   children: [
                                     Expanded(
-                                      flex: 4,
+                                      flex: 3,
                                       child: Text(
                                         '${widget.distances[index]} Km. | (${widget.times[index].toStringAsFixed(2)}hr.)',
                                         //overflow: TextOverflow.ellipsis,
@@ -188,7 +205,7 @@ class _ListviewState extends State<Listview> {
                                       ),
                                     ),
                                     Expanded(
-                                      flex: 4,
+                                      flex: 3,
                                       child: Text(
                                         'View ${widget.landmarkModel[index].landmarkView}',
                                         //overflow: TextOverflow.ellipsis,
@@ -213,16 +230,19 @@ class _ListviewState extends State<Listview> {
                                 Expanded(
                                   flex: 2,
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       OutlinedButton.icon(
                                         style: OutlinedButton.styleFrom(
-                                            // fixedSize: const Size(0.1, 0),
-                                            ),
+                                          fixedSize: const Size(100, 10),
+                                          // maximumSize: Size(screenwidth / 3.7,
+                                          //     screenhight / 10),
+                                        ),
                                         onPressed: () {},
                                         icon: const Icon(
-                                          Icons.location_on, color: Colors.red,
-                                          //size: 30,
+                                          Icons.location_on,
+                                          color: Colors.red,
+                                          size: 15,
                                         ),
                                         label: const Text(
                                           'รายระเอียด',
@@ -238,12 +258,14 @@ class _ListviewState extends State<Listview> {
                                       ),
                                       OutlinedButton.icon(
                                         style: OutlinedButton.styleFrom(
-                                            // fixedSize: const Size(0.1, 0),
-                                            ),
+                                          fixedSize:  const Size(80, 10),
+                                          // maximumSize: Size(screenwidth / 4.5,
+                                          //     screenhight / 15),
+                                        ),
                                         onPressed: () {},
                                         icon: const Icon(
                                           Icons.navigation_outlined,
-                                          // size: 5,
+                                          size: 15,
                                         ),
                                         label: const Text(
                                           'นำทาง',
@@ -265,7 +287,7 @@ class _ListviewState extends State<Listview> {
                               icon: const Icon(
                                 Icons.favorite_border_rounded,
                                 color: Colors.black45,
-                                size: 30,
+                                //size: 15,
                               ),
                               // ignore: unnecessary_statements
                               onPressed: () {},

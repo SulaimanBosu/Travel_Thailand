@@ -26,11 +26,11 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>Travel Thailand ต้องการเข้าถึงกล้องของคุณ</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Travel Thailand ต้องการเข้าถึงตำแหน่งที่ตั้งปัจจุบันของคุณ</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Travel Thailand ต้องการเข้าถึงตำแหน่งที่ตั้งปัจจุบันของคุณ</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Travel Thailand ต้องการเข้าถึงตำแหน่งที่ตั้งปัจจุบันของคุณ</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Travel Thailand ต้องการเข้าถึงตำแหน่งที่ตั้งปัจจุบันของคุณ</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Travel Thailand ต้องการเข้าถึงไมโครโฟนของคุณ</string>

@@ -125,7 +125,7 @@ class _EditProfileState extends State<EditProfile> {
       body: !onUpdate
           ? progress(context)
           : !onData
-              ? progress(context)
+              ? MyStyle().progress(context)
               : buildContent(context),
     );
   }
@@ -222,7 +222,7 @@ class _EditProfileState extends State<EditProfile> {
                         MyStyle().mySizebox(),
                         conpasswordForm(),
                         MyStyle().mySizebox(),
-                        registerButton(context),
+                        editButton(context),
                         MyStyle().mySizebox(),
                         MyStyle().mySizebox(),
                       ],
@@ -318,7 +318,7 @@ class _EditProfileState extends State<EditProfile> {
     }
   }
 
-  Widget registerButton(BuildContext context) => Container(
+  Widget editButton(BuildContext context) => Container(
         margin: const EdgeInsets.only(left: 20.0, right: 20.0),
         width: screenWidth * 0.6,
         child: ElevatedButton.icon(
@@ -432,8 +432,8 @@ class _EditProfileState extends State<EditProfile> {
           setState(() {
             onUpdate = true;
           });
-          setPreferences(imageProfile,_password);
-          registerlDialog(context);
+          setPreferences(imageProfile, _password);
+          editlDialog(context);
         } else {
           MyStyle().showdialog(context, 'ล้มเหลว', 'การเชื่อมต่อขัดข้อง');
         }
@@ -864,7 +864,7 @@ class _EditProfileState extends State<EditProfile> {
                   margin: const EdgeInsets.only(top: 25.0),
                   child: const Center(
                     child: Text(
-                      'กำลังสมัครสมาชิก...',
+                      'กำลังอัพเดต...',
                       style: TextStyle(
                         fontSize: 18.0,
                         color: Colors.black45,
@@ -881,7 +881,7 @@ class _EditProfileState extends State<EditProfile> {
     ));
   }
 
-  Future<void> registerlDialog(BuildContext context) async {
+  Future<void> editlDialog(BuildContext context) async {
     showDialog(
       context: context,
       builder: (BuildContext context) {

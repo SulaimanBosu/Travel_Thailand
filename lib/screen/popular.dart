@@ -32,13 +32,15 @@ class _PopularState extends State<Popular> {
   bool isLoading = true;
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
-  late String userid = '', name = '', lastname = '', profile = '';
+  String? userid, name, lastname, profile;
   late SharedPreferences preferences;
   var scaffoldKey = GlobalKey<ScaffoldState>();
   late double lat1, lng1, lat2, lng2, distance;
   late String distanceString;
   int index = 0;
   double time = 0;
+  late double screenwidth;
+  late double screenhight;
 
   @override
   void initState() {
@@ -64,11 +66,13 @@ class _PopularState extends State<Popular> {
   }
 
   Future<void> readlandmark() async {
-    Location location = Location();
-    LocationData locationData = await location.getLocation();
-    location.enableBackgroundMode(enable: true);
-    lat1 = locationData.latitude!;
-    lng1 = locationData.longitude!;
+    // Location location = Location();
+    // LocationData locationData = await location.getLocation();
+    //location.enableBackgroundMode(enable: true);
+    // lat1 = locationData.latitude!;
+    // lng1 = locationData.longitude!;
+    // debugPrint('latitude ============ ${lat1.toString()}');
+    // debugPrint('longitude ============ ${lng1.toString()}');
     String url = '${MyConstant().domain}/application/getJSON_popular.php';
     try {
       await Dio().get(url).then((value) {
@@ -78,19 +82,20 @@ class _PopularState extends State<Popular> {
           landmark = LandmarkModel.fromJson(map);
           setState(() {
             popularlandmarks.add(landmark);
-            // debugPrint('latitude ============ ${lat1.toString()}');
-            // debugPrint('longitude ============ ${lng1.toString()}');
-            lat2 = double.parse(landmark.latitude!);
-            lng2 = double.parse(landmark.longitude!);
+            times.add(10);
+            distances.add('10');
 
-            distance = MyApi().calculateDistance(lat1, lng1, lat2, lng2);
-            var myFormat = NumberFormat('#0.00', 'en_US');
-            distanceString = myFormat.format(distance);
-            distances.add(distanceString);
+            // lat2 = double.parse(landmark.latitude!);
+            // lng2 = double.parse(landmark.longitude!);
 
-            time = MyApi().calculateTime(distance);
-            // debugPrint('time min ============ ${time.toString()}');
-            times.add(time);
+            // distance = MyApi().calculateDistance(lat1, lng1, lat2, lng2);
+            // var myFormat = NumberFormat('#0.00', 'en_US');
+            // distanceString = myFormat.format(distance);
+            // distances.add(distanceString);
+
+            // time = MyApi().calculateTime(distance);
+            // // debugPrint('time min ============ ${time.toString()}');
+            // times.add(time);
             isLoading = false;
             index++;
           });
@@ -117,10 +122,12 @@ class _PopularState extends State<Popular> {
 
   @override
   Widget build(BuildContext context) {
+    screenwidth = MediaQuery.of(context).size.width;
+    screenhight = MediaQuery.of(context).size.height;
     return Scaffold(
       key: scaffoldKey,
       endDrawer:
-          isLoading ? null : MyDrawer().showDrawer(context, profile, name),
+          isLoading ? null : MyDrawer().showDrawer(context, profile!, name!),
       body: SafeArea(
         child: RefreshIndicator(
           key: _refreshIndicatorKey,
@@ -133,11 +140,11 @@ class _PopularState extends State<Popular> {
               SliverAppBar(
                 brightness: Brightness.light,
                 backgroundColor: Colors.white,
-                title: const Text(
+                title: Text(
                   'Travel Thailand',
                   style: TextStyle(
                       color: Colors.redAccent,
-                      fontSize: 24,
+                      fontSize: screenwidth * 0.055,
                       fontWeight: FontWeight.bold,
                       letterSpacing: -1.2),
                 ),
@@ -158,7 +165,7 @@ class _PopularState extends State<Popular> {
                     icon: MdiIcons.accountDetails,
                     iconSize: 30,
                     onPressed: () {
-                      if (userid == '') {
+                      if (userid!.isEmpty) {
                         MyStyle().routeToWidget(context, const Login(), true);
                       } else {
                         scaffoldKey.currentState!.openEndDrawer();
@@ -203,7 +210,7 @@ class _PopularState extends State<Popular> {
               //     ? Container(
               //         width: MediaQuery.of(context).size.width,
               //         height: MediaQuery.of(context).size.height * 0.78,
-              //         child: progress(context))
+              //         child: MyStyle().progress(context))
               //     :
               //   Container(
               //     width: MediaQuery.of(context).size.width,

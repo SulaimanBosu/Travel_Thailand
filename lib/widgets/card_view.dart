@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:project/model/landmark_model.dart';
 import 'package:project/utility/my_style.dart';
 
@@ -17,14 +18,22 @@ class CardView extends StatefulWidget {
 }
 
 class _CardViewState extends State<CardView> {
+  late double screenwidth;
+  late double screenhight;
+
   @override
   void initState() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     String imageURL = widget.landmarkModel.imagePath!;
+    screenwidth = MediaQuery.of(context).size.width;
+    screenhight = MediaQuery.of(context).size.height;
     return Container(
       child: GestureDetector(
         onTap: () {
@@ -114,7 +123,7 @@ class _CardViewState extends State<CardView> {
     return Container(
       margin: const EdgeInsetsDirectional.only(start: 0.0, end: 0.0),
       width: MediaQuery.of(context).size.width * 1,
-      height: MediaQuery.of(context).size.width * 0.30,
+      height: MediaQuery.of(context).size.height * 0.14,
       child: Card(
         semanticContainer: true,
         clipBehavior: Clip.antiAliasWithSaveLayer,

@@ -25,6 +25,8 @@ class _ProfileState extends State<Profile> {
   late SharedPreferences preferences;
   bool onData = false;
   final _controller = TextEditingController();
+  late double screenwidth;
+  late double screenhight;
 
   @override
   // ignore: must_call_super
@@ -61,93 +63,84 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
+    screenwidth = MediaQuery.of(context).size.width;
+    screenhight = MediaQuery.of(context).size.height;
     return Scaffold(
       body: !onData
           ? const Login() //MyStyle().progress(context)
-          : Stack(
-              children: [
-                Column(
-                  children: [
-                    AppBar(
-                      backgroundColor: Colors.transparent,
-                      elevation: 0,
-                      toolbarHeight: 10,
-                    ),
-                    const Center(
-                        child: Padding(
-                            padding: EdgeInsets.only(bottom: 20),
-                            child: Text(
-                              '',
-                              style: TextStyle(
-                                fontSize: 28.0,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black45,
-                                fontFamily: 'FC-Minimal-Regular',
-                              ),
-                            ))),
-                    InkWell(
-                      onTap: () {
-                        // showBottomsheet();
-                        // navigateSecondPage(const EditImagePage());
-                      },
-                      child: CircleAvatar(
-                        radius: 90,
-                        backgroundColor: Colors.red,
-                        child: Padding(
-                          padding: const EdgeInsets.all(2), // Border radius
-                          child: ClipOval(
-                            child: SizedBox.fromSize(
-                              size: const Size.fromRadius(88), // Image radius
-                              child: file.isEmpty
-                                  ? Image.asset('images/iconprofile.png')
-                                  : CachedNetworkImage(
-                                      imageUrl: MyConstant().domain + file,
-                                      progressIndicatorBuilder:
-                                          (context, url, downloadProgress) =>
+          : SingleChildScrollView(
+              child: Stack(
+                children: [
+                  SafeArea(
+                    child: Column(
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            // showBottomsheet();
+                            // navigateSecondPage(const EditImagePage());
+                          },
+                          child: CircleAvatar(
+                            radius: 90,
+                            backgroundColor: Colors.red,
+                            child: Padding(
+                              padding: const EdgeInsets.all(2), // Border radius
+                              child: ClipOval(
+                                child: SizedBox.fromSize(
+                                  size:
+                                      const Size.fromRadius(88), // Image radius
+                                  child: file.isEmpty
+                                      ? Image.asset('images/iconprofile.png')
+                                      : CachedNetworkImage(
+                                          imageUrl: MyConstant().domain + file,
+                                          progressIndicatorBuilder: (context,
+                                                  url, downloadProgress) =>
                                               MyStyle().showProgress(),
-                                      errorWidget: (context, url, error) =>
-                                          const Icon(Icons.error),
-                                      fit: BoxFit.cover,
-                                    ),
+                                          errorWidget: (context, url, error) =>
+                                              const Icon(Icons.error),
+                                          fit: BoxFit.cover,
+                                        ),
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
+                        buildUserInfoDisplay(
+                          name + ' ' + lastname,
+                          'ชื่อ - สกุล',
+                          const EditProfile(),
+                        ),
+                        buildUserInfoDisplay(
+                          phone,
+                          'เบอร์โทร',
+                          const EditProfile(),
+                        ),
+                        buildUserInfoDisplay(
+                          gender,
+                          'เพศ',
+                          const EditProfile(),
+                        ),
+                        buildUserInfoDisplay(
+                          email,
+                          'อีเมลล์',
+                          const EditProfile(),
+                        ),
+                        buildUserInfoDisplay(
+                          '**********',
+                          'รหัสผ่าน',
+                          const EditProfile(),
+                        ),
+                        signOutMenu(context),
+                      ],
                     ),
-                    buildUserInfoDisplay(
-                      name + ' ' + lastname,
-                      'ชื่อ - สกุล',
-                      const EditProfile(),
-                    ),
-                    buildUserInfoDisplay(
-                      phone,
-                      'เบอร์โทร',
-                      const EditProfile(),
-                    ),
-                    buildUserInfoDisplay(
-                      gender,
-                      'เพศ',
-                      const EditProfile(),
-                    ),
-                    buildUserInfoDisplay(
-                      email,
-                      'อีเมลล์',
-                      const EditProfile(),
-                    ),
-                    buildUserInfoDisplay(
-                      '**********',
-                      'รหัสผ่าน',
-                      const EditProfile(),
-                    ),
-                  ],
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    signOutMenu(context),
-                  ],
-                ),
-              ],
+                  ),
+                  // Column(
+                  //   mainAxisAlignment: MainAxisAlignment.end,
+                  //   children: [
+                  //     signOutMenu(context),
+                  //   ],
+                  // ),
+                ],
+              ),
             ),
     );
   }
@@ -434,8 +427,8 @@ class _ProfileState extends State<Profile> {
               height: 1,
             ),
             Container(
-              width: 350,
-              height: 40,
+              width: screenwidth * 0.8,
+              height: screenhight * 0.047,
               decoration: const BoxDecoration(
                 border: Border(
                   bottom: BorderSide(

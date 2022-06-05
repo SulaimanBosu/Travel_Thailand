@@ -27,9 +27,11 @@ class _RecommendState extends State<Recommend> {
   bool isLoading = true;
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
-  late String userid = '', name = '', lastname = '', profile = '';
+   String? userid, name, lastname, profile;
   late SharedPreferences preferences;
   var scaffoldKey = GlobalKey<ScaffoldState>();
+  late double screenwidth;
+  late double screenhight;
 
   @override
   void initState() {
@@ -97,10 +99,12 @@ class _RecommendState extends State<Recommend> {
 
   @override
   Widget build(BuildContext context) {
+    screenwidth = MediaQuery.of(context).size.width;
+    screenhight = MediaQuery.of(context).size.height;
     return Scaffold(
       key: scaffoldKey,
       endDrawer:
-          isLoading ? null : MyDrawer().showDrawer(context, profile, name),
+          isLoading ? null : MyDrawer().showDrawer(context, profile!, name!),
       body: SafeArea(
         child: RefreshIndicator(
           key: _refreshIndicatorKey,
@@ -115,11 +119,11 @@ class _RecommendState extends State<Recommend> {
               SliverAppBar(
                 brightness: Brightness.light,
                 backgroundColor: Colors.white,
-                title: const Text(
+                title: Text(
                   'Travel Thailand',
                   style: TextStyle(
                       color: Colors.redAccent,
-                      fontSize: 24,
+                      fontSize: screenwidth * 0.055,
                       fontWeight: FontWeight.bold,
                       letterSpacing: -1.2),
                 ),
@@ -141,7 +145,7 @@ class _RecommendState extends State<Recommend> {
                       icon: MdiIcons.accountDetails,
                       iconSize: 30,
                       onPressed: () {
-                        if (userid.isEmpty) {
+                        if (userid!.isEmpty) {
                           MyStyle().routeToWidget(context, const Login(), true);
                         } else {
                           scaffoldKey.currentState!.openEndDrawer();
