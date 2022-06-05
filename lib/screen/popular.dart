@@ -66,13 +66,13 @@ class _PopularState extends State<Popular> {
   }
 
   Future<void> readlandmark() async {
-    // Location location = Location();
-    // LocationData locationData = await location.getLocation();
-    //location.enableBackgroundMode(enable: true);
-    // lat1 = locationData.latitude!;
-    // lng1 = locationData.longitude!;
-    // debugPrint('latitude ============ ${lat1.toString()}');
-    // debugPrint('longitude ============ ${lng1.toString()}');
+    Location location = Location();
+    LocationData locationData = await location.getLocation();
+    location.enableBackgroundMode(enable: true);
+    lat1 = locationData.latitude!;
+    lng1 = locationData.longitude!;
+    debugPrint('latitude ============ ${lat1.toString()}');
+    debugPrint('longitude ============ ${lng1.toString()}');
     String url = '${MyConstant().domain}/application/getJSON_popular.php';
     try {
       await Dio().get(url).then((value) {
@@ -82,20 +82,20 @@ class _PopularState extends State<Popular> {
           landmark = LandmarkModel.fromJson(map);
           setState(() {
             popularlandmarks.add(landmark);
-            times.add(10);
-            distances.add('10');
+            // times.add(10);
+            // distances.add('10');
 
-            // lat2 = double.parse(landmark.latitude!);
-            // lng2 = double.parse(landmark.longitude!);
+            lat2 = double.parse(landmark.latitude!);
+            lng2 = double.parse(landmark.longitude!);
 
-            // distance = MyApi().calculateDistance(lat1, lng1, lat2, lng2);
-            // var myFormat = NumberFormat('#0.00', 'en_US');
-            // distanceString = myFormat.format(distance);
-            // distances.add(distanceString);
+            distance = MyApi().calculateDistance(lat1, lng1, lat2, lng2);
+            var myFormat = NumberFormat('#0.00', 'en_US');
+            distanceString = myFormat.format(distance);
+            distances.add(distanceString);
 
-            // time = MyApi().calculateTime(distance);
-            // // debugPrint('time min ============ ${time.toString()}');
-            // times.add(time);
+            time = MyApi().calculateTime(distance);
+            // debugPrint('time min ============ ${time.toString()}');
+            times.add(time);
             isLoading = false;
             index++;
           });

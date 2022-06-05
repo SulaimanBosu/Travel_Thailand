@@ -78,7 +78,7 @@ class _ListviewState extends State<Listview> {
                     //   label: 'Archive',
                     // ),
                     SlidableAction(
-                      flex: 1,
+                      flex: 3,
                       onPressed: null,
                       backgroundColor: Color(0xFF0392CF),
                       foregroundColor: Colors.white,
@@ -86,7 +86,7 @@ class _ListviewState extends State<Listview> {
                       label: 'Save',
                     ),
                     SlidableAction(
-                      flex: 1,
+                      flex: 3,
                       onPressed: null,
                       backgroundColor: Color.fromARGB(255, 224, 2, 2),
                       foregroundColor: Colors.white,
