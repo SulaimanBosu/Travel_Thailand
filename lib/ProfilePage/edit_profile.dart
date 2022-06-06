@@ -302,16 +302,17 @@ class _EditProfileState extends State<EditProfile> {
   //ดึงรูปภาพจากมือถือมาใส่ในตัวแปร File
   Future<void> getImage(ImageSource imageSource) async {
     try {
-      final result = await FilePicker.platform.pickFiles(allowMultiple: false);
+      final ImagePicker _picker = ImagePicker();
+     // final result = await FilePicker.platform.pickFiles(allowMultiple: false);
+      final result = await _picker.pickImage(source: imageSource);
 
       if (result == null) return;
-      final path = result.files.single.path;
+      final path = result.path;
 
-      setState(() => file = File(path!));
+      setState(() => file = File(path));
       if (file != null) {
         final fileName = basename(file!.path);
-        final destination = 'files/$fileName';
-        print('ชื่อรูปภาพ $fileName');
+        debugPrint('ชื่อรูปภาพ $fileName');
       }
     } catch (e) {
       debugPrint(e.toString());

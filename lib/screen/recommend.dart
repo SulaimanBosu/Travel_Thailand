@@ -27,7 +27,7 @@ class _RecommendState extends State<Recommend> {
   bool isLoading = true;
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
-   String? userid, name, lastname, profile;
+   String userid = '', name='', lastname='', profile='';
   late SharedPreferences preferences;
   var scaffoldKey = GlobalKey<ScaffoldState>();
   late double screenwidth;
@@ -104,7 +104,7 @@ class _RecommendState extends State<Recommend> {
     return Scaffold(
       key: scaffoldKey,
       endDrawer:
-          isLoading ? null : MyDrawer().showDrawer(context, profile!, name!),
+          isLoading ? null : MyDrawer().showDrawer(context, profile, name),
       body: SafeArea(
         child: RefreshIndicator(
           key: _refreshIndicatorKey,
@@ -145,7 +145,7 @@ class _RecommendState extends State<Recommend> {
                       icon: MdiIcons.accountDetails,
                       iconSize: 30,
                       onPressed: () {
-                        if (userid!.isEmpty) {
+                        if (userid.isEmpty) {
                           MyStyle().routeToWidget(context, const Login(), true);
                         } else {
                           scaffoldKey.currentState!.openEndDrawer();
