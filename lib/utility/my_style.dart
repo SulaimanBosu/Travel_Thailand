@@ -120,8 +120,9 @@ class MyStyle {
   Text showTitle(String title) => Text(
         title,
         style: const TextStyle(
-            color: Colors.blueAccent,
-            fontSize: 24,
+            color: Colors.redAccent,
+            fontSize: 28,
+            fontFamily: 'FC-Minimal-Regular',
             fontWeight: FontWeight.bold,
             letterSpacing: 1.2),
       );

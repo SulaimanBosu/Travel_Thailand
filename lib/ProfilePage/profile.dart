@@ -2,12 +2,16 @@ import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:project/ProfilePage/edit_profile.dart';
 import 'package:project/model/user_model.dart';
 import 'package:project/screen/login.dart';
 import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
 import 'package:project/utility/signout_process.dart';
+import 'package:project/widgets/drawer.dart';
+import 'package:project/widgets/icon_button.dart';
+import 'package:project/widgets/sliverAppBar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Profile extends StatefulWidget {
@@ -21,12 +25,20 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   late UserModel user;
-  late String userId, name, lastname, file, phone, gender, email, password;
+  late String userId = '',
+      name = '',
+      lastname = '',
+      file = '',
+      phone = '',
+      gender = '',
+      email = '',
+      password = '';
   late SharedPreferences preferences;
   bool onData = false;
   final _controller = TextEditingController();
   late double screenwidth;
   late double screenhight;
+  var scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   // ignore: must_call_super
@@ -66,82 +78,96 @@ class _ProfileState extends State<Profile> {
     screenwidth = MediaQuery.of(context).size.width;
     screenhight = MediaQuery.of(context).size.height;
     return Scaffold(
-      body: !onData
-          ? const Login() //MyStyle().progress(context)
-          : SingleChildScrollView(
-              child: Stack(
-                children: [
-                  SafeArea(
-                    child: Column(
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            // showBottomsheet();
-                            // navigateSecondPage(const EditImagePage());
-                          },
-                          child: CircleAvatar(
-                            radius: 90,
-                            backgroundColor: Colors.red,
-                            child: Padding(
-                              padding: const EdgeInsets.all(2), // Border radius
-                              child: ClipOval(
-                                child: SizedBox.fromSize(
-                                  size:
-                                      const Size.fromRadius(88), // Image radius
-                                  child: file.isEmpty
-                                      ? Image.asset('images/iconprofile.png')
-                                      : CachedNetworkImage(
-                                          imageUrl: MyConstant().domain + file,
-                                          progressIndicatorBuilder: (context,
-                                                  url, downloadProgress) =>
-                                              MyStyle().showProgress(),
-                                          errorWidget: (context, url, error) =>
-                                              const Icon(Icons.error),
-                                          fit: BoxFit.cover,
+      key: scaffoldKey,
+      endDrawer: MyDrawer().showDrawer(context, file, name),
+      body: SafeArea(
+        child: CustomScrollView(
+          slivers: [
+            SliverappBar().appbar(context, screenwidth, userId,scaffoldKey),
+            !onData
+                ? const SliverToBoxAdapter(child: Login())
+                : SliverToBoxAdapter(
+                    child: SingleChildScrollView(
+                      child: Stack(
+                        children: [
+                          SafeArea(
+                            child: Column(
+                              children: [
+                                //  const SizedBox(height: 10,),
+                                InkWell(
+                                  onTap: () {
+                                    // showBottomsheet();
+                                    // navigateSecondPage(const EditImagePage());
+                                  },
+                                  child: CircleAvatar(
+                                    radius: 90,
+                                    backgroundColor: Colors.red,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(
+                                          2), // Border radius
+                                      child: ClipOval(
+                                        child: SizedBox.fromSize(
+                                          size: const Size.fromRadius(
+                                              88), // Image radius
+                                          child: file.isEmpty
+                                              ? Image.asset(
+                                                  'images/iconprofile.png')
+                                              : CachedNetworkImage(
+                                                  imageUrl:
+                                                      MyConstant().domain +
+                                                          file,
+                                                  progressIndicatorBuilder:
+                                                      (context, url,
+                                                              downloadProgress) =>
+                                                          MyStyle()
+                                                              .showProgress(),
+                                                  errorWidget: (context, url,
+                                                          error) =>
+                                                      const Icon(Icons.error),
+                                                  fit: BoxFit.cover,
+                                                ),
                                         ),
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ),
+                                buildUserInfoDisplay(
+                                  name + ' ' + lastname,
+                                  'ชื่อ - สกุล',
+                                  const EditProfile(),
+                                ),
+                                buildUserInfoDisplay(
+                                  phone,
+                                  'เบอร์โทร',
+                                  const EditProfile(),
+                                ),
+                                buildUserInfoDisplay(
+                                  gender,
+                                  'เพศ',
+                                  const EditProfile(),
+                                ),
+                                buildUserInfoDisplay(
+                                  email,
+                                  'อีเมลล์',
+                                  const EditProfile(),
+                                ),
+                                signOutMenu(context),
+                              ],
                             ),
                           ),
-                        ),
-                        buildUserInfoDisplay(
-                          name + ' ' + lastname,
-                          'ชื่อ - สกุล',
-                          const EditProfile(),
-                        ),
-                        buildUserInfoDisplay(
-                          phone,
-                          'เบอร์โทร',
-                          const EditProfile(),
-                        ),
-                        buildUserInfoDisplay(
-                          gender,
-                          'เพศ',
-                          const EditProfile(),
-                        ),
-                        buildUserInfoDisplay(
-                          email,
-                          'อีเมลล์',
-                          const EditProfile(),
-                        ),
-                        buildUserInfoDisplay(
-                          '**********',
-                          'รหัสผ่าน',
-                          const EditProfile(),
-                        ),
-                        signOutMenu(context),
-                      ],
+                          // Column(
+                          //   mainAxisAlignment: MainAxisAlignment.end,
+                          //   children: [
+                          //     signOutMenu(context),
+                          //   ],
+                          // ),
+                        ],
+                      ),
                     ),
-                  ),
-                  // Column(
-                  //   mainAxisAlignment: MainAxisAlignment.end,
-                  //   children: [
-                  //     signOutMenu(context),
-                  //   ],
-                  // ),
-                ],
-              ),
-            ),
+                  )
+          ],
+        ),
+      ),
     );
   }
 

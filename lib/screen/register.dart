@@ -82,7 +82,7 @@ class _RegisterState extends State<Register> {
           'Create Account',
           style: TextStyle(
             fontSize: 24,
-            color: Colors.blueAccent,
+            color: Colors.redAccent,
             fontFamily: 'FC-Minimal-Regular',
           ),
         ),
@@ -103,95 +103,75 @@ class _RegisterState extends State<Register> {
   SafeArea buildContent(BuildContext context) {
     final fileName = file != null ? basename(file!.path) : 'No File Selected';
     return SafeArea(
-      child: Center(
-        child: Stack(
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SingleChildScrollView(
-              child: Column(
+            const SizedBox(
+              height: 20,
+            ),
+            showImage(context),
+            OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                fixedSize: const Size(170, 35),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              onPressed: () {
+                _showPicker(context);
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        showImage(context),
-                        OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                            fixedSize: const Size(170, 35),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          onPressed: () {
-                            _showPicker(context);
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(
-                                Icons.add_a_photo,
-                                color: Colors.black54,
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                file == null
-                                    ? 'เพิ่มรูปภาพ'
-                                    : 'เปลี่ยนรูปโปรไฟล์',
-                                style: const TextStyle(
-                                  fontSize: 16.0,
-                                  color: Colors.black54,
-                                  fontFamily: 'FC-Minimal-Regular',
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        // SizedBox(height: 8),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              fileName,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                //fontWeight: FontWeight.bold,
-                                fontSize: 16.0,
-                                color: file == null
-                                    ? Colors.redAccent
-                                    : Colors.black54,
-                                fontFamily: 'FC-Minimal-Regular',
-                              ),
-                            ),
-                          ],
-                        ),
-                        MyStyle().mySizebox(),
-                        nameForm(),
-                        MyStyle().mySizebox(),
-                        lastnameForm(),
-                        MyStyle().mySizebox(),
-                        phoneForm(),
-                        MyStyle().mySizebox(),
-                        radio(),
-                        MyStyle().mySizebox(),
-                        emailForm(),
-                        MyStyle().mySizebox(),
-                        passwordForm(),
-                        MyStyle().mySizebox(),
-                        conpasswordForm(),
-                        MyStyle().mySizebox(),
-                        registerButton(context),
-                        MyStyle().mySizebox(),
-                        MyStyle().mySizebox(),
-                      ],
+                  const Icon(
+                    Icons.add_a_photo,
+                    color: Colors.black54,
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    file == null ? 'เพิ่มรูปภาพ' : 'เปลี่ยนรูปโปรไฟล์',
+                    style: const TextStyle(
+                      fontSize: 16.0,
+                      color: Colors.black54,
+                      fontFamily: 'FC-Minimal-Regular',
                     ),
                   ),
                 ],
               ),
             ),
+            // SizedBox(height: 8),
+            Text(
+              fileName,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                //fontWeight: FontWeight.bold,
+                fontSize: 16.0,
+                color: file == null ? Colors.redAccent : Colors.black54,
+                fontFamily: 'FC-Minimal-Regular',
+              ),
+              textAlign: TextAlign.center,
+            ),
+            MyStyle().mySizebox(),
+            nameForm(),
+            MyStyle().mySizebox(),
+            lastnameForm(),
+            MyStyle().mySizebox(),
+            phoneForm(),
+            MyStyle().mySizebox(),
+            radio(),
+            MyStyle().mySizebox(),
+            emailForm(),
+            MyStyle().mySizebox(),
+            passwordForm(),
+            MyStyle().mySizebox(),
+            conpasswordForm(),
+            MyStyle().mySizebox(),
+            registerButton(context),
+            MyStyle().mySizebox(),
+            MyStyle().mySizebox(),
           ],
         ),
       ),
@@ -249,7 +229,7 @@ class _RegisterState extends State<Register> {
   Future<void> getImage(ImageSource imageSource) async {
     try {
       final ImagePicker _picker = ImagePicker();
-     // final result = await FilePicker.platform.pickFiles(allowMultiple: false);
+      // final result = await FilePicker.platform.pickFiles(allowMultiple: false);
       final result = await _picker.pickImage(source: imageSource);
 
       if (result == null) return;

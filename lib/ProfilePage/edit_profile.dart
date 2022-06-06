@@ -117,6 +117,14 @@ class _EditProfileState extends State<EditProfile> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         foregroundColor: Colors.black54,
+        title: const Text(
+          'Edit Account',
+          style: TextStyle(
+            fontSize: 24,
+            color: Colors.redAccent,
+            fontFamily: 'FC-Minimal-Regular',
+          ),
+        ),
         elevation: 0,
         actions: [
           IconButton(onPressed: () {}, icon: const Icon(Icons.info_outline))
@@ -133,104 +141,78 @@ class _EditProfileState extends State<EditProfile> {
   SafeArea buildContent(BuildContext context) {
     final fileName = file != null ? basename(file!.path) : profile!;
     return SafeArea(
-      child: Center(
-        child: Stack(
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SingleChildScrollView(
-              child: Column(
+            const SizedBox(
+              height: 10,
+            ),
+            showImage(context),
+            OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                fixedSize: const Size(170, 35),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              onPressed: () {
+                _showPicker(context);
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                // ignore: prefer_const_literals_to_create_immutables
                 children: [
-                  Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        const Text(
-                          'Edit Profile',
-                          style: TextStyle(
-                            fontSize: 30,
-                            fontWeight: FontWeight.w700,
-                            color: Color.fromRGBO(64, 105, 225, 1),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        showImage(context),
-                        OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                            fixedSize: const Size(170, 35),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          onPressed: () {
-                            _showPicker(context);
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            // ignore: prefer_const_literals_to_create_immutables
-                            children: [
-                              const Icon(
-                                Icons.add_a_photo_outlined,
-                                color: Colors.black54,
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              const Text(
-                                'เปลี่ยนรูปโปรไฟล์',
-                                style: TextStyle(
-                                  fontSize: 16.0,
-                                  color: Colors.black54,
-                                  fontFamily: 'FC-Minimal-Regular',
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        // SizedBox(height: 8),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              fileName,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                //fontWeight: FontWeight.bold,
-                                fontSize: 16.0,
-                                color: file == null
-                                    ? Colors.redAccent
-                                    : Colors.black54,
-                                fontFamily: 'FC-Minimal-Regular',
-                              ),
-                            ),
-                          ],
-                        ),
-                        MyStyle().mySizebox(),
-                        nameForm(),
-                        MyStyle().mySizebox(),
-                        lastnameForm(),
-                        MyStyle().mySizebox(),
-                        phoneForm(),
-                        MyStyle().mySizebox(),
-                        radio(),
-                        MyStyle().mySizebox(),
-                        emailForm(),
-                        MyStyle().mySizebox(),
-                        passwordForm(),
-                        MyStyle().mySizebox(),
-                        newpasswordForm(),
-                        MyStyle().mySizebox(),
-                        conpasswordForm(),
-                        MyStyle().mySizebox(),
-                        editButton(context),
-                        MyStyle().mySizebox(),
-                        MyStyle().mySizebox(),
-                      ],
+                  const Icon(
+                    Icons.add_a_photo_outlined,
+                    color: Colors.black54,
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  const Text(
+                    'เปลี่ยนรูปโปรไฟล์',
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      color: Colors.black54,
+                      fontFamily: 'FC-Minimal-Regular',
                     ),
                   ),
                 ],
               ),
             ),
+            // SizedBox(height: 8),
+            Text(
+              fileName,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                //fontWeight: FontWeight.bold,
+                fontSize: 16.0,
+                color: Colors.black54,
+                fontFamily: 'FC-Minimal-Regular',
+              ),
+              textAlign: TextAlign.center,
+            ),
+            MyStyle().mySizebox(),
+            nameForm(),
+            MyStyle().mySizebox(),
+            lastnameForm(),
+            MyStyle().mySizebox(),
+            phoneForm(),
+            MyStyle().mySizebox(),
+            radio(),
+            MyStyle().mySizebox(),
+            emailForm(),
+            MyStyle().mySizebox(),
+            passwordForm(),
+            MyStyle().mySizebox(),
+            newpasswordForm(),
+            MyStyle().mySizebox(),
+            conpasswordForm(),
+            MyStyle().mySizebox(),
+            editButton(context),
+            MyStyle().mySizebox(),
+            MyStyle().mySizebox(),
           ],
         ),
       ),
@@ -303,7 +285,7 @@ class _EditProfileState extends State<EditProfile> {
   Future<void> getImage(ImageSource imageSource) async {
     try {
       final ImagePicker _picker = ImagePicker();
-     // final result = await FilePicker.platform.pickFiles(allowMultiple: false);
+      // final result = await FilePicker.platform.pickFiles(allowMultiple: false);
       final result = await _picker.pickImage(source: imageSource);
 
       if (result == null) return;
@@ -476,7 +458,7 @@ class _EditProfileState extends State<EditProfile> {
                   fontFamily: 'FC-Minimal-Regular',
                 ),
                 // hintText: name,
-                //labelText: 'Name : ',
+                labelText: 'ชื่อ : ',
                 enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide: const BorderSide(color: Colors.black54)),
@@ -510,7 +492,7 @@ class _EditProfileState extends State<EditProfile> {
                   // fontStyle: FontStyle.italic,
                   fontFamily: 'FC-Minimal-Regular',
                 ),
-                labelText: 'LastName : ',
+                labelText: 'นามสกุล : ',
                 enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide: const BorderSide(color: Colors.black54)),
@@ -544,7 +526,7 @@ class _EditProfileState extends State<EditProfile> {
                   // fontStyle: FontStyle.italic,
                   fontFamily: 'FC-Minimal-Regular',
                 ),
-                labelText: 'Phone : ',
+                labelText: 'เบอร์ : ',
                 enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide: const BorderSide(color: Colors.black54)),
@@ -666,7 +648,7 @@ class _EditProfileState extends State<EditProfile> {
                   // fontStyle: FontStyle.italic,
                   fontFamily: 'FC-Minimal-Regular',
                 ),
-                labelText: 'Email : ',
+                labelText: 'อีเมลล์ : ',
                 enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide: const BorderSide(color: Colors.black54)),
@@ -716,7 +698,7 @@ class _EditProfileState extends State<EditProfile> {
                   // fontStyle: FontStyle.italic,
                   fontFamily: 'FC-Minimal-Regular',
                 ),
-                labelText: 'Password : ',
+                labelText: 'รหัสผ่านเดิม : ',
                 enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide: const BorderSide(color: Colors.black54)),
@@ -756,7 +738,7 @@ class _EditProfileState extends State<EditProfile> {
                       });
                     }),
                 prefixIcon: const Icon(
-                  Icons.lock,
+                  Icons.lock_outline,
                   color: Colors.black54,
                 ),
                 labelStyle: const TextStyle(
@@ -766,7 +748,7 @@ class _EditProfileState extends State<EditProfile> {
                   // fontStyle: FontStyle.italic,
                   fontFamily: 'FC-Minimal-Regular',
                 ),
-                labelText: 'NewPassword : ',
+                labelText: 'รหัสผ่านใหม่ : ',
                 enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide: const BorderSide(color: Colors.black54)),
@@ -815,7 +797,7 @@ class _EditProfileState extends State<EditProfile> {
                   // fontStyle: FontStyle.italic,
                   fontFamily: 'FC-Minimal-Regular',
                 ),
-                labelText: 'Confirm NewPassword : ',
+                labelText: 'ยืนยันรหัสผ่านใหม่ : ',
                 enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide: const BorderSide(color: Colors.black54)),

@@ -49,14 +49,7 @@ class _LoginState extends State<Login> {
         foregroundColor: Colors.black54,
         backgroundColor: Colors.white,
         elevation: 0,
-        title: const Text(
-          'Sign in',
-          style: TextStyle(
-            fontSize: 24,
-            color: Colors.blueAccent,
-            fontFamily: 'FC-Minimal-Regular',
-          ),
-        ),
+        
         actions: [
           CircleButton(
             icon: MdiIcons.facebookMessenger,

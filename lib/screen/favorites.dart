@@ -9,6 +9,7 @@ import 'package:project/utility/my_style.dart';
 import 'package:project/widgets/card_view.dart';
 import 'package:project/widgets/drawer.dart';
 import 'package:project/widgets/icon_button.dart';
+import 'package:project/widgets/sliverAppBar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Favorites extends StatefulWidget {
@@ -25,7 +26,7 @@ class _FavoritesState extends State<Favorites> {
   bool isLoading = true;
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
-  String? userid, name, lastname, profile;
+  String? userid='', name='', lastname='', profile='';
   late SharedPreferences preferences;
   var scaffoldKey = GlobalKey<ScaffoldState>();
   late double screenwidth;
@@ -121,44 +122,45 @@ class _FavoritesState extends State<Favorites> {
           },
           child: CustomScrollView(
             slivers: [
-              SliverAppBar(
-                brightness: Brightness.light,
-                backgroundColor: Colors.white,
-                title: Text(
-                  'Travel Thailand',
-                  style: TextStyle(
-                      color: Colors.redAccent,
-                      fontSize: screenwidth * 0.055,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: -1.2),
-                ),
-                centerTitle: false,
-                floating: true,
-                actions: [
-                  CircleButton(
-                    icon: Icons.search,
-                    iconSize: 30,
-                    onPressed: () => debugPrint('search'),
-                  ),
-                  CircleButton(
-                    icon: MdiIcons.facebookMessenger,
-                    iconSize: 30,
-                    onPressed: () => debugPrint('facebookMessenger'),
-                  ),
-                  CircleButton(
-                    icon: MdiIcons.accountDetails,
-                    iconSize: 30,
-                    onPressed: () {
-                      if (userid!.isEmpty) {
-                        MyStyle().routeToWidget(context, const Login(), true);
-                      } else {
-                        scaffoldKey.currentState!.openEndDrawer();
-                      }
-                      debugPrint('Account');
-                    },
-                  ),
-                ],
-              ),
+              SliverappBar().appbar(context, screenwidth, userid!,scaffoldKey),
+              // SliverAppBar(
+              //   brightness: Brightness.light,
+              //   backgroundColor: Colors.white,
+              //   title: Text(
+              //     'Travel Thailand',
+              //     style: TextStyle(
+              //         color: Colors.redAccent,
+              //         fontSize: screenwidth * 0.055,
+              //         fontWeight: FontWeight.bold,
+              //         letterSpacing: -1.2),
+              //   ),
+              //   centerTitle: false,
+              //   floating: true,
+              //   actions: [
+              //     CircleButton(
+              //       icon: Icons.search,
+              //       iconSize: 30,
+              //       onPressed: () => debugPrint('search'),
+              //     ),
+              //     CircleButton(
+              //       icon: MdiIcons.facebookMessenger,
+              //       iconSize: 30,
+              //       onPressed: () => debugPrint('facebookMessenger'),
+              //     ),
+              //     CircleButton(
+              //       icon: MdiIcons.accountDetails,
+              //       iconSize: 30,
+              //       onPressed: () {
+              //         if (userid!.isEmpty) {
+              //           MyStyle().routeToWidget(context, const Login(), true);
+              //         } else {
+              //           scaffoldKey.currentState!.openEndDrawer();
+              //         }
+              //         debugPrint('Account');
+              //       },
+              //     ),
+              //   ],
+              // ),
               isLoading
                   ? SliverToBoxAdapter(
                       child: Container(
