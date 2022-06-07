@@ -26,7 +26,7 @@ class _FavoritesState extends State<Favorites> {
   bool isLoading = true;
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
-  String? userid='', name='', lastname='', profile='';
+  String? userid = '', name = '', lastname = '', profile = '';
   late SharedPreferences preferences;
   var scaffoldKey = GlobalKey<ScaffoldState>();
   late double screenwidth;
@@ -34,7 +34,6 @@ class _FavoritesState extends State<Favorites> {
 
   @override
   void initState() {
-    readlandmark();
     getPreferences();
     super.initState();
   }
@@ -54,6 +53,7 @@ class _FavoritesState extends State<Favorites> {
     name = preferences.getString('first_name')!;
     lastname = preferences.getString('last_name')!;
     profile = preferences.getString('Image_profile')!;
+    if (userid != '' || userid!.isNotEmpty) readlandmark();
   }
 
   Future<void> readlandmark() async {
@@ -112,7 +112,8 @@ class _FavoritesState extends State<Favorites> {
     screenhight = MediaQuery.of(context).size.height;
     return Scaffold(
       key: scaffoldKey,
-      endDrawer: isLoading ? null : MyDrawer().showDrawer(context, profile!, name!),
+      endDrawer:
+          isLoading ? null : MyDrawer().showDrawer(context, profile!, name!),
       body: SafeArea(
         child: RefreshIndicator(
           key: _refreshIndicatorKey,
@@ -122,7 +123,7 @@ class _FavoritesState extends State<Favorites> {
           },
           child: CustomScrollView(
             slivers: [
-              SliverappBar().appbar(context, screenwidth, userid!,scaffoldKey),
+              SliverappBar().appbar(context, screenwidth, userid!, scaffoldKey),
               // SliverAppBar(
               //   brightness: Brightness.light,
               //   backgroundColor: Colors.white,

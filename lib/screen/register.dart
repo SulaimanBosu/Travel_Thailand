@@ -15,6 +15,7 @@ import 'package:project/screen/login.dart';
 import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
 import 'package:project/widgets/icon_button.dart';
+import 'package:project/widgets/popover.dart';
 
 class Register extends StatefulWidget {
   const Register({Key? key}) : super(key: key);
@@ -119,7 +120,8 @@ class _RegisterState extends State<Register> {
                 ),
               ),
               onPressed: () {
-                _showPicker(context);
+                _bottomSheet(context);
+                //_showPicker(context);
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -192,6 +194,193 @@ class _RegisterState extends State<Register> {
                   backgroundImage: AssetImage('images/addimages1.png'),
                 )
               : CircleAvatar(radius: 24, backgroundImage: FileImage(file!))),
+    );
+  }
+
+  void _bottomSheet(BuildContext context) {
+    showModalBottomSheet<int>(
+      backgroundColor: Colors.transparent,
+      context: context,
+      builder: (context) {
+        final theme = Theme.of(context);
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Popover(
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24.0,
+                      vertical: 16.0,
+                    ),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(
+                          color: theme.dividerColor,
+                          width: 0.5,
+                        ),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      // ignore: prefer_const_literals_to_create_immutables
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16.0,
+                          ),
+                          child: DefaultTextStyle(
+                            child: Text('เลือกรูปภาพ'),
+                            style: TextStyle(
+                              color: Colors.redAccent,
+                              fontSize: 24.0,
+                              //fontFamily: 'FC-Minimal-Regular',
+                            ),
+                          ),
+                        ),
+                        //const Spacer(),
+                      ],
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      getImage(ImageSource.camera);
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24.0,
+                        vertical: 16.0,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: theme.dividerColor,
+                            width: 0.5,
+                          ),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        // ignore: prefer_const_literals_to_create_immutables
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                            ),
+                            child: DefaultTextStyle(
+                              child: Text('ถ่ายภาพ'),
+                              style: TextStyle(
+                                color: Colors.blueAccent,
+                                fontSize: 24.0,
+                                fontFamily: 'FC-Minimal-Regular',
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      getImage(ImageSource.gallery);
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24.0,
+                        vertical: 16.0,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: theme.dividerColor,
+                            width: 0.5,
+                          ),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
+                        // ignore: prefer_const_literals_to_create_immutables
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                            ),
+                            child: DefaultTextStyle(
+                              child: Text('เลือกที่มีอยู่'),
+                              style: TextStyle(
+                                color: Colors.blueAccent,
+                                fontSize: 24.0,
+                                fontFamily: 'FC-Minimal-Regular',
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+              clipBehavior: Clip.antiAlias,
+              decoration: BoxDecoration(
+                color: theme.cardColor,
+                borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  InkWell(
+                    onTap: () => Navigator.pop(context),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24.0,
+                        vertical: 16.0,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: theme.dividerColor,
+                            width: 0.5,
+                          ),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        // ignore: prefer_const_literals_to_create_immutables
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                            ),
+                            child: DefaultTextStyle(
+                              child: Text('ยกเลิก'),
+                              style: TextStyle(
+                                color: Colors.blueAccent,
+                                fontSize: 24.0,
+                                fontFamily: 'FC-Minimal-Regular',
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 

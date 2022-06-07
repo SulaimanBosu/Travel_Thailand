@@ -99,8 +99,8 @@ class _ListviewState extends State<Listview> {
                   width: screenwidth,
                   height: screenhight * 0.13,
                   decoration: index % 2 == 0
-                      ? BoxDecoration(color: Colors.grey[100])
-                      : BoxDecoration(color: Colors.grey[200]),
+                      ? const BoxDecoration(color: Colors.white)
+                      : BoxDecoration(color: Colors.grey[50]),
                   child: Container(
                     padding:
                         const EdgeInsetsDirectional.only(top: 0.0, bottom: 0.0),

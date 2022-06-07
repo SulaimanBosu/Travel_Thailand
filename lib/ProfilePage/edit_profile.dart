@@ -11,6 +11,7 @@ import 'package:project/model/user_model.dart';
 import 'package:project/screen/home_screen.dart';
 import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
+import 'package:project/widgets/popover.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class EditProfile extends StatefulWidget {
@@ -117,6 +118,8 @@ class _EditProfileState extends State<EditProfile> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         foregroundColor: Colors.black54,
+        elevation: 0,
+        centerTitle: true,
         title: const Text(
           'Edit Account',
           style: TextStyle(
@@ -125,7 +128,6 @@ class _EditProfileState extends State<EditProfile> {
             fontFamily: 'FC-Minimal-Regular',
           ),
         ),
-        elevation: 0,
         actions: [
           IconButton(onPressed: () {}, icon: const Icon(Icons.info_outline))
         ],
@@ -141,78 +143,116 @@ class _EditProfileState extends State<EditProfile> {
   SafeArea buildContent(BuildContext context) {
     final fileName = file != null ? basename(file!.path) : profile!;
     return SafeArea(
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+      child: Center(
+        child: Stack(
           children: [
-            const SizedBox(
-              height: 10,
-            ),
-            showImage(context),
-            OutlinedButton(
-              style: OutlinedButton.styleFrom(
-                fixedSize: const Size(170, 35),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              onPressed: () {
-                _showPicker(context);
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                // ignore: prefer_const_literals_to_create_immutables
+            SingleChildScrollView(
+              child: Column(
                 children: [
-                  const Icon(
-                    Icons.add_a_photo_outlined,
-                    color: Colors.black54,
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  const Text(
-                    'เปลี่ยนรูปโปรไฟล์',
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      color: Colors.black54,
-                      fontFamily: 'FC-Minimal-Regular',
+                  Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        InkWell(
+                          onTap: () => _bottomSheet(context),
+                          child: Stack(
+                            children: [
+                              showImage(context),
+                              Positioned(
+                                child: ClipOval(
+                                    child: Container(
+                                  padding: const EdgeInsets.all(8),
+                                  color: Colors.grey[200],
+                                  child: const Icon(
+                                    Icons.mode_edit_sharp,
+                                    color: Color.fromARGB(255, 242, 55, 55),
+                                    size: 20,
+                                  ),
+                                )),
+                                right: 12,
+                                top: 50,
+                              ),
+                            ],
+                          ),
+                        ),
+                        // OutlinedButton(
+                        //   style: OutlinedButton.styleFrom(
+                        //     fixedSize: const Size(170, 35),
+                        //     shape: RoundedRectangleBorder(
+                        //       borderRadius: BorderRadius.circular(12),
+                        //     ),
+                        //   ),
+                        //   onPressed: () {
+                        //     _bottomSheet(context);
+                        //     // _showPicker(context);
+                        //   },
+                        //   child: Row(
+                        //     mainAxisAlignment: MainAxisAlignment.center,
+                        //     // ignore: prefer_const_literals_to_create_immutables
+                        //     children: [
+                        //       const Icon(
+                        //         Icons.add_a_photo_outlined,
+                        //         color: Colors.black54,
+                        //       ),
+                        //       const SizedBox(
+                        //         width: 10,
+                        //       ),
+                        //       const Text(
+                        //         'เปลี่ยนรูปโปรไฟล์',
+                        //         style: TextStyle(
+                        //           fontSize: 16.0,
+                        //           color: Colors.black54,
+                        //           fontFamily: 'FC-Minimal-Regular',
+                        //         ),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // ),
+                        // // SizedBox(height: 8),
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.center,
+                        //   children: [
+                        //     Text(
+                        //       fileName,
+                        //       overflow: TextOverflow.ellipsis,
+                        //       style: const TextStyle(
+                        //         //fontWeight: FontWeight.bold,
+                        //         fontSize: 16.0,
+                        //         color: Colors.black54,
+                        //         fontFamily: 'FC-Minimal-Regular',
+                        //       ),
+                        //     ),
+                        //   ],
+                        // ),
+                        MyStyle().mySizebox(),
+                        nameForm(),
+                        MyStyle().mySizebox(),
+                        lastnameForm(),
+                        MyStyle().mySizebox(),
+                        phoneForm(),
+                        MyStyle().mySizebox(),
+                        radio(),
+                        MyStyle().mySizebox(),
+                        emailForm(),
+                        MyStyle().mySizebox(),
+                        passwordForm(),
+                        MyStyle().mySizebox(),
+                        newpasswordForm(),
+                        MyStyle().mySizebox(),
+                        conpasswordForm(),
+                        MyStyle().mySizebox(),
+                        editButton(context),
+                        MyStyle().mySizebox(),
+                        MyStyle().mySizebox(),
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
-            // SizedBox(height: 8),
-            Text(
-              fileName,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                //fontWeight: FontWeight.bold,
-                fontSize: 16.0,
-                color: Colors.black54,
-                fontFamily: 'FC-Minimal-Regular',
-              ),
-              textAlign: TextAlign.center,
-            ),
-            MyStyle().mySizebox(),
-            nameForm(),
-            MyStyle().mySizebox(),
-            lastnameForm(),
-            MyStyle().mySizebox(),
-            phoneForm(),
-            MyStyle().mySizebox(),
-            radio(),
-            MyStyle().mySizebox(),
-            emailForm(),
-            MyStyle().mySizebox(),
-            passwordForm(),
-            MyStyle().mySizebox(),
-            newpasswordForm(),
-            MyStyle().mySizebox(),
-            conpasswordForm(),
-            MyStyle().mySizebox(),
-            editButton(context),
-            MyStyle().mySizebox(),
-            MyStyle().mySizebox(),
           ],
         ),
       ),
@@ -251,6 +291,193 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
+  void _bottomSheet(BuildContext context) {
+    showModalBottomSheet<int>(
+      backgroundColor: Colors.transparent,
+      context: context,
+      builder: (context) {
+        final theme = Theme.of(context);
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Popover(
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24.0,
+                      vertical: 16.0,
+                    ),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(
+                          color: theme.dividerColor,
+                          width: 0.5,
+                        ),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      // ignore: prefer_const_literals_to_create_immutables
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16.0,
+                          ),
+                          child: DefaultTextStyle(
+                            child: Text('เลือกรูปภาพ'),
+                            style: TextStyle(
+                              color: Colors.redAccent,
+                              fontSize: 24.0,
+                              //fontFamily: 'FC-Minimal-Regular',
+                            ),
+                          ),
+                        ),
+                        //const Spacer(),
+                      ],
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      getImage(ImageSource.camera);
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24.0,
+                        vertical: 16.0,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: theme.dividerColor,
+                            width: 0.5,
+                          ),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        // ignore: prefer_const_literals_to_create_immutables
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                            ),
+                            child: DefaultTextStyle(
+                              child: Text('ถ่ายภาพ'),
+                              style: TextStyle(
+                                color: Colors.blueAccent,
+                                fontSize: 24.0,
+                                fontFamily: 'FC-Minimal-Regular',
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      getImage(ImageSource.gallery);
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24.0,
+                        vertical: 16.0,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: theme.dividerColor,
+                            width: 0.5,
+                          ),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
+                        // ignore: prefer_const_literals_to_create_immutables
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                            ),
+                            child: DefaultTextStyle(
+                              child: Text('เลือกที่มีอยู่'),
+                              style: TextStyle(
+                                color: Colors.blueAccent,
+                                fontSize: 24.0,
+                                fontFamily: 'FC-Minimal-Regular',
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+              clipBehavior: Clip.antiAlias,
+              decoration: BoxDecoration(
+                color: theme.cardColor,
+                borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  InkWell(
+                    onTap: () => Navigator.pop(context),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24.0,
+                        vertical: 16.0,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: theme.dividerColor,
+                            width: 0.5,
+                          ),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        // ignore: prefer_const_literals_to_create_immutables
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                            ),
+                            child: DefaultTextStyle(
+                              child: Text('ยกเลิก'),
+                              style: TextStyle(
+                                color: Colors.blueAccent,
+                                fontSize: 24.0,
+                                fontFamily: 'FC-Minimal-Regular',
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _showPicker(context) {
     showModalBottomSheet(
         context: context,
@@ -258,7 +485,7 @@ class _EditProfileState extends State<EditProfile> {
           return SafeArea(
             child: Container(
               child: Wrap(
-                children: <Widget>[
+                children: [
                   ListTile(
                       leading: const Icon(Icons.photo_library),
                       title: const Text('Photo Library'),
@@ -443,7 +670,6 @@ class _EditProfileState extends State<EditProfile> {
             child: TextFormField(
               initialValue: name,
               onChanged: (value) => name = value.trim(),
-              autofocus: true,
               // controller: _name,
               decoration: InputDecoration(
                 prefixIcon: const Icon(
@@ -738,7 +964,7 @@ class _EditProfileState extends State<EditProfile> {
                       });
                     }),
                 prefixIcon: const Icon(
-                  Icons.lock_outline,
+                  Icons.lock,
                   color: Colors.black54,
                 ),
                 labelStyle: const TextStyle(

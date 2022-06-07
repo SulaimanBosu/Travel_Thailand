@@ -11,6 +11,7 @@ import 'package:project/utility/my_style.dart';
 import 'package:project/utility/signout_process.dart';
 import 'package:project/widgets/drawer.dart';
 import 'package:project/widgets/icon_button.dart';
+import 'package:project/widgets/popover.dart';
 import 'package:project/widgets/sliverAppBar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -62,6 +63,7 @@ class _ProfileState extends State<Profile> {
     gender = preferences.getString('Gender')!;
     email = preferences.getString('Email')!;
     password = preferences.getString('Password')!;
+    debugPrint('User id ====> $userId');
     if (userId.isNotEmpty) {
       setState(() {
         onData = true;
@@ -83,7 +85,7 @@ class _ProfileState extends State<Profile> {
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
-            SliverappBar().appbar(context, screenwidth, userId,scaffoldKey),
+            SliverappBar().appbar(context, screenwidth, userId, scaffoldKey),
             !onData
                 ? const SliverToBoxAdapter(child: Login())
                 : SliverToBoxAdapter(
@@ -96,39 +98,61 @@ class _ProfileState extends State<Profile> {
                                 //  const SizedBox(height: 10,),
                                 InkWell(
                                   onTap: () {
+                                    navigateSecondPage(const EditProfile());
+                                    // _bottomSheet();
                                     // showBottomsheet();
                                     // navigateSecondPage(const EditImagePage());
                                   },
-                                  child: CircleAvatar(
-                                    radius: 90,
-                                    backgroundColor: Colors.red,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(
-                                          2), // Border radius
-                                      child: ClipOval(
-                                        child: SizedBox.fromSize(
-                                          size: const Size.fromRadius(
-                                              88), // Image radius
-                                          child: file.isEmpty
-                                              ? Image.asset(
-                                                  'images/iconprofile.png')
-                                              : CachedNetworkImage(
-                                                  imageUrl:
-                                                      MyConstant().domain +
-                                                          file,
-                                                  progressIndicatorBuilder:
-                                                      (context, url,
-                                                              downloadProgress) =>
-                                                          MyStyle()
-                                                              .showProgress(),
-                                                  errorWidget: (context, url,
-                                                          error) =>
-                                                      const Icon(Icons.error),
-                                                  fit: BoxFit.cover,
-                                                ),
+                                  child: Stack(
+                                    children: [
+                                      CircleAvatar(
+                                        radius: 90,
+                                        backgroundColor: Colors.red,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(
+                                              2), // Border radius
+                                          child: ClipOval(
+                                            child: SizedBox.fromSize(
+                                              size: const Size.fromRadius(
+                                                  88), // Image radius
+                                              child: file.isEmpty
+                                                  ? Image.asset(
+                                                      'images/iconprofile.png')
+                                                  : CachedNetworkImage(
+                                                      imageUrl:
+                                                          MyConstant().domain +
+                                                              file,
+                                                      progressIndicatorBuilder:
+                                                          (context, url,
+                                                                  downloadProgress) =>
+                                                              MyStyle()
+                                                                  .showProgress(),
+                                                      errorWidget: (context,
+                                                              url, error) =>
+                                                          const Icon(
+                                                              Icons.error),
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                            ),
+                                          ),
                                         ),
                                       ),
-                                    ),
+                                      Positioned(
+                                        child: ClipOval(
+                                            child: Container(
+                                          padding: const EdgeInsets.all(8),
+                                          color: Colors.white,
+                                          child: const Icon(
+                                            Icons.mode_edit_sharp,
+                                            color: Color.fromARGB(
+                                                255, 242, 55, 55),
+                                            size: 20,
+                                          ),
+                                        )),
+                                        right: 8,
+                                        top: 15,
+                                      ),
+                                    ],
                                   ),
                                 ),
                                 buildUserInfoDisplay(
@@ -454,7 +478,7 @@ class _ProfileState extends State<Profile> {
             ),
             Container(
               width: screenwidth * 0.8,
-              height: screenhight * 0.047,
+              height: screenhight * 0.055,
               decoration: const BoxDecoration(
                 border: Border(
                   bottom: BorderSide(
@@ -523,5 +547,286 @@ class _ProfileState extends State<Profile> {
   void navigateSecondPage(Widget editForm) {
     Route route = MaterialPageRoute(builder: (context) => editForm);
     Navigator.pushAndRemoveUntil(context, route, (route) => true);
+  }
+
+  void _bottomSheet() {
+    showModalBottomSheet<int>(
+      backgroundColor: Colors.transparent,
+      context: context,
+      builder: (context) {
+        final theme = Theme.of(context);
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Popover(
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24.0,
+                      vertical: 16.0,
+                    ),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(
+                          color: theme.dividerColor,
+                          width: 0.5,
+                        ),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      // ignore: prefer_const_literals_to_create_immutables
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16.0,
+                          ),
+                          child: DefaultTextStyle(
+                            child: Text('เลือกรูปภาพ'),
+                            style: TextStyle(
+                              color: Colors.redAccent,
+                              fontSize: 24.0,
+                              //fontFamily: 'FC-Minimal-Regular',
+                            ),
+                          ),
+                        ),
+                        //const Spacer(),
+                      ],
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24.0,
+                        vertical: 16.0,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: theme.dividerColor,
+                            width: 0.5,
+                          ),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        // ignore: prefer_const_literals_to_create_immutables
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                            ),
+                            child: DefaultTextStyle(
+                              child: Text('ถ่ายภาพ'),
+                              style: TextStyle(
+                                color: Colors.blueAccent,
+                                fontSize: 24.0,
+                                fontFamily: 'FC-Minimal-Regular',
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24.0,
+                        vertical: 16.0,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: theme.dividerColor,
+                            width: 0.5,
+                          ),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
+                        // ignore: prefer_const_literals_to_create_immutables
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                            ),
+                            child: DefaultTextStyle(
+                              child: Text('เลือกที่มีอยู่'),
+                              style: TextStyle(
+                                color: Colors.blueAccent,
+                                fontSize: 24.0,
+                                fontFamily: 'FC-Minimal-Regular',
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+              clipBehavior: Clip.antiAlias,
+              decoration: BoxDecoration(
+                color: theme.cardColor,
+                borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  InkWell(
+                    onTap: () => Navigator.pop(context),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24.0,
+                        vertical: 16.0,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: theme.dividerColor,
+                            width: 0.5,
+                          ),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        // ignore: prefer_const_literals_to_create_immutables
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                            ),
+                            child: DefaultTextStyle(
+                              child: Text('ยกเลิก'),
+                              style: TextStyle(
+                                color: Colors.blueAccent,
+                                fontSize: 24.0,
+                                fontFamily: 'FC-Minimal-Regular',
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _handleFABPressed() {
+    showModalBottomSheet<int>(
+      backgroundColor: Colors.transparent,
+      context: context,
+      builder: (context) {
+        return Popover(
+          child: Column(
+            children: [
+              _buildListItem(
+                context,
+                title: const Text('Total Task'),
+                leading: const Icon(Icons.check_circle_outline),
+                trailing: Switch(
+                  value: true,
+                  onChanged: (value) {},
+                ),
+              ),
+              _buildListItem(
+                context,
+                title: const Text('Due Soon'),
+                leading: const Icon(Icons.inbox),
+                trailing: Switch(
+                  value: false,
+                  onChanged: (value) {},
+                ),
+              ),
+              _buildListItem(
+                context,
+                title: const Text('Completed'),
+                leading: const Icon(Icons.check_circle),
+                trailing: Switch(
+                  value: false,
+                  onChanged: (value) {},
+                ),
+              ),
+              _buildListItem(
+                context,
+                title: const Text('Working On'),
+                leading: const Icon(Icons.flag),
+                trailing: Switch(
+                  value: false,
+                  onChanged: (value) {},
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildListItem(
+    BuildContext context, {
+    Widget? title,
+    Widget? leading,
+    Widget? trailing,
+  }) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 24.0,
+        vertical: 10.0,
+      ),
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: theme.dividerColor,
+            width: 0.5,
+          ),
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          if (leading != null) leading,
+          if (title != null)
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+              ),
+              child: DefaultTextStyle(
+                child: title,
+                style: const TextStyle(
+                  color: Colors.blueAccent,
+                  fontSize: 20.0,
+                  fontFamily: 'FC-Minimal-Regular',
+                ),
+              ),
+            ),
+          const Spacer(),
+          if (trailing != null) trailing,
+        ],
+      ),
+    );
   }
 }
