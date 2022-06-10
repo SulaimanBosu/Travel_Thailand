@@ -45,33 +45,40 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        foregroundColor: Colors.black54,
-        backgroundColor: Colors.white,
-        elevation: 0,
-        
-        actions: [
-          CircleButton(
-            icon: MdiIcons.facebookMessenger,
-            iconSize: 30,
-            onPressed: () => debugPrint('facebookMessenger'),
-          ),
-        ],
-        centerTitle: true,
+      body: SafeArea(
+        child: Stack(
+          children: [
+            buildContent(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                    onPressed: () {
+                      MaterialPageRoute route = MaterialPageRoute(
+                        builder: (context) => const HomeScreen(
+                          index: 0,
+                        ),
+                      );
+                      Navigator.pushAndRemoveUntil(
+                          context, route, (route) => true);
+                    },
+                    icon: const Icon(Icons.arrow_back_ios_new_outlined)),
+                CircleButton(
+                  icon: MdiIcons.facebookMessenger,
+                  iconSize: 30,
+                  onPressed: () => debugPrint('facebookMessenger'),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
-      body: buildContent(),
     );
   }
 
   Container buildContent() {
     return Container(
-      decoration: const BoxDecoration(
-          // gradient: RadialGradient(
-          //   colors: <Color>[Colors.white, MyStyle().redColor],
-          //   center: Alignment(0, -0.3),
-          //   radius: 1.0,
-          // ),
-          ),
+      decoration: const BoxDecoration(),
       child: Center(
         child: SingleChildScrollView(
           child: Column(
@@ -249,7 +256,7 @@ class _LoginState extends State<Login> {
           String phone = result['Phone'];
           imageProfile = result['Image_profile'];
           SharedPreferences preferences = await SharedPreferences.getInstance();
-          
+
           preferences.setString('User_id', userID);
           preferences.setString('Email', emailformsql);
           preferences.setString('Password', password);
@@ -371,7 +378,9 @@ class _LoginState extends State<Login> {
 
   void routeToHome(UserModel userModel) {
     MaterialPageRoute route = MaterialPageRoute(
-      builder: (context) => const HomeScreen(index: 0,),
+      builder: (context) => const HomeScreen(
+        index: 0,
+      ),
     );
     Navigator.pushAndRemoveUntil(context, route, (route) => false);
   }
@@ -397,7 +406,9 @@ class _LoginState extends State<Login> {
             InkWell(
               onTap: () {
                 MaterialPageRoute route = MaterialPageRoute(
-                  builder: (context) => const HomeScreen(index: 0,),
+                  builder: (context) => const HomeScreen(
+                    index: 0,
+                  ),
                 );
                 Navigator.pushAndRemoveUntil(context, route, (route) => true);
               },

@@ -201,14 +201,14 @@ class _LandmarkState extends State<Landmark> {
                   ? SliverToBoxAdapter(
                       child: Container(
                           width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height * 0.78,
+                          height: MediaQuery.of(context).size.height * 0.7,
                           child: MyStyle().progress(context)),
                     )
                   : landmarks.isEmpty
                       ? SliverToBoxAdapter(
                           child: Container(
                             width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height * 0.78,
+                            height: MediaQuery.of(context).size.height * 0.7,
                             child: const Center(
                               child: Text(
                                 'ไม่พบรายการ',

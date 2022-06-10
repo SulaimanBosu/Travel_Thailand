@@ -166,14 +166,14 @@ class _FavoritesState extends State<Favorites> {
                   ? SliverToBoxAdapter(
                       child: Container(
                           width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height * 0.78,
+                          height: MediaQuery.of(context).size.height * 0.7,
                           child: MyStyle().progress(context)),
                     )
                   : landmark.landmarkId == null
                       ? SliverToBoxAdapter(
                           child: Container(
                             width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height * 0.78,
+                            height: MediaQuery.of(context).size.height * 0.7,
                             child: const Center(
                               child: Text(
                                 'ไม่มีรายการโปรด',
