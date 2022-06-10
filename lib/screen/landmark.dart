@@ -70,9 +70,12 @@ class _LandmarkState extends State<Landmark> {
   Future<void> readlandmark() async {
     Location location = Location();
     LocationData locationData = await location.getLocation();
-    location.enableBackgroundMode(enable: true);
+    // location.enableBackgroundMode(enable: false);
     lat1 = locationData.latitude!;
     lng1 = locationData.longitude!;
+    debugPrint('latitude ============ ${lat1.toString()}');
+    debugPrint('longitude ============ ${lng1.toString()}');
+
     String url = '${MyConstant().domain}/application/get_landmark.php';
     try {
       await Dio().get(url).then((value) {

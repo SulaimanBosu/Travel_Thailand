@@ -35,6 +35,7 @@ class _FavoritesState extends State<Favorites> {
   @override
   void initState() {
     getPreferences();
+    readlandmark();
     super.initState();
   }
 
@@ -53,7 +54,6 @@ class _FavoritesState extends State<Favorites> {
     name = preferences.getString('first_name')!;
     lastname = preferences.getString('last_name')!;
     profile = preferences.getString('Image_profile')!;
-    if (userid != '' || userid!.isNotEmpty) readlandmark();
   }
 
   Future<void> readlandmark() async {

@@ -72,6 +72,7 @@ class _PopularState extends State<Popular> {
     location.enableBackgroundMode(enable: true);
     lat1 = locationData.latitude!;
     lng1 = locationData.longitude!;
+    
     debugPrint('latitude ============ ${lat1.toString()}');
     debugPrint('longitude ============ ${lng1.toString()}');
     String url = '${MyConstant().domain}/application/getJSON_popular.php';
