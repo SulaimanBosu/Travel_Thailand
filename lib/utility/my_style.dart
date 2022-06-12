@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class MyStyle {
@@ -17,10 +18,15 @@ class MyStyle {
 
   Widget showProgress() {
     return const Center(
-      child: CircularProgressIndicator(
-        backgroundColor: Colors.white,
-        valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
+      child: CupertinoActivityIndicator(
+        animating: true,
+        radius: 15,
       ),
+
+      //  CircularProgressIndicator(
+      //   backgroundColor: Colors.white,
+      //   valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
+      // ),
     );
   }
 
@@ -372,16 +378,21 @@ class MyStyle {
                   child: SizedBox(
                     height: MediaQuery.of(context).size.width * 0.1,
                     width: MediaQuery.of(context).size.width * 0.1,
-                    child: const CircularProgressIndicator(
-                      value: null,
-                      backgroundColor: Colors.white,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
-                      strokeWidth: 7.0,
+                    child: const CupertinoActivityIndicator(
+                      animating: true,
+                      radius: 15,
                     ),
+
+                    // const CircularProgressIndicator(
+                    //   value: null,
+                    //   backgroundColor: Colors.white,
+                    //   valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
+                    //   strokeWidth: 7.0,
+                    // ),
                   ),
                 ),
                 Container(
-                  margin: const EdgeInsets.only(top: 25.0),
+                  margin: const EdgeInsets.only(top: 5.0),
                   child: const Center(
                     child: Text(
                       'ดาวน์โหลด...',

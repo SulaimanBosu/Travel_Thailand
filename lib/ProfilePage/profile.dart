@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:blurry_modal_progress_hud/blurry_modal_progress_hud.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:project/ProfilePage/edit_profile.dart';
@@ -14,6 +16,7 @@ import 'package:project/widgets/icon_button.dart';
 import 'package:project/widgets/popover.dart';
 import 'package:project/widgets/sliverAppBar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:user_profile_avatar/user_profile_avatar.dart';
 
 class Profile extends StatefulWidget {
   const Profile({
@@ -83,124 +86,134 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     screenwidth = MediaQuery.of(context).size.width;
     screenhight = MediaQuery.of(context).size.height;
-    return Scaffold(
-      backgroundColor: Colors.white,
-      key: scaffoldKey,
-      endDrawer: MyDrawer().showDrawer(context, file, name),
-      body: SafeArea(
-        child: isLoading
-            ? MyStyle().progress(context)
-            : onData == false ? const Login() : CustomScrollView(
-                slivers: [
-                  SliverappBar()
-                      .appbar(context, screenwidth, userId, scaffoldKey),
-                  SliverToBoxAdapter(
-                          child: SingleChildScrollView(
-                            child: Stack(
+    return BlurryModalProgressHUD(
+      inAsyncCall: isLoading,
+      blurEffectIntensity: 2,
+      progressIndicator: MyStyle().progress(context),
+      dismissible: false,
+      opacity: 0.3,
+      color: Colors.white,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        key: scaffoldKey,
+        endDrawer: MyDrawer().showDrawer(context, file, name,lastname,email),
+        body: SafeArea(
+          child: onData == false
+              ? const Login()
+              : CustomScrollView(
+                  slivers: [
+                    SliverappBar()
+                        .appbar(context, screenwidth, userId, scaffoldKey),
+                    SliverToBoxAdapter(
+                      child: SingleChildScrollView(
+                        child: Stack(
+                          children: [
+                            Column(
                               children: [
-                                Column(
+                                //  const SizedBox(height: 10,),
+                                InkWell(
+                                  onTap: () {
+                                    navigateSecondPage(const EditProfile());
+                                    // _bottomSheet();
+                                    // showBottomsheet();
+                                    // navigateSecondPage(const EditImagePage());
+                                  },
+                                  child: Stack(
                                     children: [
-                                      //  const SizedBox(height: 10,),
-                                      InkWell(
-                                        onTap: () {
-                                          navigateSecondPage(
-                                              const EditProfile());
-                                          // _bottomSheet();
-                                          // showBottomsheet();
-                                          // navigateSecondPage(const EditImagePage());
-                                        },
-                                        child: Stack(
-                                          children: [
-                                            CircleAvatar(
-                                              radius: 90,
-                                              backgroundColor: Colors.red,
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(
-                                                    2), // Border radius
-                                                child: ClipOval(
-                                                  child: SizedBox.fromSize(
-                                                    size: const Size.fromRadius(
-                                                        88), // Image radius
-                                                    child: file.isEmpty
-                                                        ? Image.asset(
-                                                            'images/iconprofile.png')
-                                                        : CachedNetworkImage(
-                                                            imageUrl:
-                                                                MyConstant()
-                                                                        .domain +
-                                                                    file,
-                                                            progressIndicatorBuilder:
-                                                                (context, url,
-                                                                        downloadProgress) =>
-                                                                    MyStyle()
-                                                                        .showProgress(),
-                                                            errorWidget: (context,
-                                                                    url,
-                                                                    error) =>
-                                                                const Icon(Icons
-                                                                    .error),
-                                                            fit: BoxFit.cover,
-                                                          ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            Positioned(
-                                              child: ClipOval(
-                                                  child: Container(
-                                                padding:
-                                                    const EdgeInsets.all(8),
-                                                color: Colors.white,
-                                                child: const Icon(
-                                                  Icons.mode_edit_sharp,
-                                                  color: Color.fromARGB(
-                                                      255, 242, 55, 55),
-                                                  size: 20,
-                                                ),
-                                              )),
-                                              right: 8,
-                                              top: 15,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      buildUserInfoDisplay(
-                                        name + ' ' + lastname,
-                                        'ชื่อ - สกุล',
-                                        const EditProfile(),
-                                      ),
-                                      buildUserInfoDisplay(
-                                        phone,
-                                        'เบอร์โทร',
-                                        const EditProfile(),
-                                      ),
-                                      buildUserInfoDisplay(
-                                        gender,
-                                        'เพศ',
-                                        const EditProfile(),
-                                      ),
-                                      buildUserInfoDisplay(
-                                        email,
-                                        'อีเมลล์',
-                                        const EditProfile(),
-                                      ),
-                                      signOutMenu(context),
+                                      showImage(context),
+                                      // userprofile(),
                                     ],
                                   ),
-                                
-                                // Column(
-                                //   mainAxisAlignment: MainAxisAlignment.end,
-                                //   children: [
-                                //     signOutMenu(context),
-                                //   ],
-                                // ),
+                                ),
+                                buildUserInfoDisplay(
+                                  name + ' ' + lastname,
+                                  'ชื่อ - สกุล',
+                                  const EditProfile(),
+                                ),
+                                buildUserInfoDisplay(
+                                  phone,
+                                  'เบอร์โทร',
+                                  const EditProfile(),
+                                ),
+                                buildUserInfoDisplay(
+                                  gender,
+                                  'เพศ',
+                                  const EditProfile(),
+                                ),
+                                buildUserInfoDisplay(
+                                  email,
+                                  'อีเมลล์',
+                                  const EditProfile(),
+                                ),
+                                signOutMenu(context),
                               ],
                             ),
-                          ),
-                        )
-                ],
-              ),
+
+                            // Column(
+                            //   mainAxisAlignment: MainAxisAlignment.end,
+                            //   children: [
+                            //     signOutMenu(context),
+                            //   ],
+                            // ),
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+        ),
       ),
+    );
+  }
+
+  CircleAvatar userprofile() {
+    return CircleAvatar(
+      radius: 90,
+      backgroundColor: Colors.red,
+      child: Padding(
+        padding: const EdgeInsets.all(2), // Border radius
+        child: ClipOval(
+          child: SizedBox.fromSize(
+            size: const Size.fromRadius(88), // Image radius
+            child: file.isEmpty
+                ? Image.asset('images/iconprofile.png')
+                : CachedNetworkImage(
+                    imageUrl: MyConstant().domain + file,
+                    progressIndicatorBuilder:
+                        (context, url, downloadProgress) =>
+                            MyStyle().showProgress(),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
+                    fit: BoxFit.cover,
+                  ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  //โชว์ภาพตัวอย่างก่อนเลือกรูปและหลังเลือกรูป
+  Container showImage(context) {
+    return Container(
+      padding: const EdgeInsets.only(top: 40),
+      child: file.isNotEmpty
+          ? UserProfileAvatar(
+              avatarUrl: MyConstant().domain + file,
+              onAvatarTap: () {
+                navigateSecondPage(const EditProfile());
+              },
+              avatarSplashColor: Colors.red,
+              radius: 90,
+              isActivityIndicatorSmall: true,
+              avatarBorderData: AvatarBorderData(
+                borderColor: Colors.redAccent,
+                borderWidth: 2.0,
+              ),
+            )
+          : const CircleAvatar(
+              radius: 90,
+              backgroundImage: AssetImage('images/iconprofile.png'),
+            ),
     );
   }
 
@@ -835,6 +848,23 @@ class _ProfileState extends State<Profile> {
           const Spacer(),
           if (trailing != null) trailing,
         ],
+      ),
+    );
+  }
+
+  Widget progress() {
+    return Center(
+      child: BlurryModalProgressHUD(
+        inAsyncCall: isLoading,
+        blurEffectIntensity: 4,
+        // progressIndicator: SpinKitFadingCircle(
+        // color: Colors.redAccent,
+        // size: 90.0,
+        // ),
+        dismissible: false,
+        opacity: 0.4,
+        color: Colors.black87,
+        child: const Scaffold(),
       ),
     );
   }

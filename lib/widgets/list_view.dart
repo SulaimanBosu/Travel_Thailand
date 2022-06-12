@@ -125,8 +125,6 @@ class _ListviewState extends State<Listview> {
                                   progressIndicatorBuilder:
                                       (context, url, downloadProgress) =>
                                           MyStyle().showProgress(),
-                                  // CircularProgressIndicator(
-                                  //     ),
                                   errorWidget: (context, url, error) =>
                                       const Icon(Icons.error),
                                   fit: BoxFit.cover,
@@ -258,7 +256,7 @@ class _ListviewState extends State<Listview> {
                                       ),
                                       OutlinedButton.icon(
                                         style: OutlinedButton.styleFrom(
-                                          fixedSize:  const Size(80, 10),
+                                          fixedSize: const Size(80, 10),
                                           // maximumSize: Size(screenwidth / 4.5,
                                           //     screenhight / 15),
                                         ),

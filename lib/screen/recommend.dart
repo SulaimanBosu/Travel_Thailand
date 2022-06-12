@@ -1,6 +1,7 @@
 // ignore_for_file: sized_box_for_whitespace, avoid_unnecessary_containers
 
 import 'dart:convert';
+import 'dart:math';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -28,7 +29,13 @@ class _RecommendState extends State<Recommend> {
   bool isLoading = true;
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
-   String userid = '', name='', lastname='', profile='';
+    String? userid = '',
+      name = '',
+      lastname = '',
+      profile = '',
+      phone = '',
+      gender = '',
+      email = '';
   late SharedPreferences preferences;
   var scaffoldKey = GlobalKey<ScaffoldState>();
   late double screenwidth;
@@ -55,6 +62,9 @@ class _RecommendState extends State<Recommend> {
     name = preferences.getString('first_name')!;
     lastname = preferences.getString('last_name')!;
     profile = preferences.getString('Image_profile')!;
+    phone = preferences.getString('Phone')!;
+    gender = preferences.getString('Gender')!;
+    email = preferences.getString('Email')!;
   }
 
   Future<void> readlandmark() async {
@@ -105,7 +115,7 @@ class _RecommendState extends State<Recommend> {
     return Scaffold(
       key: scaffoldKey,
       endDrawer:
-          isLoading ? null : MyDrawer().showDrawer(context, profile, name),
+          isLoading ? null : MyDrawer().showDrawer(context, profile!, name!,lastname!,email!),
       body: SafeArea(
         child: RefreshIndicator(
           key: _refreshIndicatorKey,
@@ -117,7 +127,7 @@ class _RecommendState extends State<Recommend> {
           },
           child: CustomScrollView(
             slivers: [
-              SliverappBar().appbar(context, screenwidth, userid,scaffoldKey),
+              SliverappBar().appbar(context, screenwidth, userid, scaffoldKey),
               // SliverAppBar(
               //   brightness: Brightness.light,
               //   backgroundColor: Colors.white,

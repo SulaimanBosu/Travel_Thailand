@@ -13,6 +13,7 @@ import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
 import 'package:project/widgets/popover.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:user_profile_avatar/user_profile_avatar.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile({

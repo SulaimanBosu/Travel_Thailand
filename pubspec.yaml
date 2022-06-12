@@ -49,6 +49,8 @@ dependencies:
   pull_to_refresh: ^2.0.0
   intl: ^0.17.0
   modal_bottom_sheet: ^2.0.1
+  user_profile_avatar: ^0.1.0
+  blurry_modal_progress_hud: ^1.0.3
     
 
 dev_dependencies:
