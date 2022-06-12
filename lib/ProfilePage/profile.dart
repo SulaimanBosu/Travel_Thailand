@@ -86,82 +86,111 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     screenwidth = MediaQuery.of(context).size.width;
     screenhight = MediaQuery.of(context).size.height;
-    return BlurryModalProgressHUD(
-      inAsyncCall: isLoading,
-      blurEffectIntensity: 2,
-      progressIndicator: MyStyle().progress(context),
-      dismissible: false,
-      opacity: 0.3,
-      color: Colors.white,
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        key: scaffoldKey,
-        endDrawer: MyDrawer().showDrawer(context, file, name,lastname,email),
-        body: SafeArea(
-          child: onData == false
-              ? const Login()
-              : CustomScrollView(
-                  slivers: [
-                    SliverappBar()
+    return
+        // BlurryModalProgressHUD(
+        //   inAsyncCall: isLoading,
+        //   blurEffectIntensity: 2,
+        //   progressIndicator: const CupertinoActivityIndicator(
+        //     animating: true,
+        //     radius: 15,
+        //   ),
+        //   dismissible: false,
+        //   opacity: 0.3,
+        //   color: Colors.white,
+        //   child:
+        Scaffold(
+      backgroundColor: Colors.white,
+      key: scaffoldKey,
+      endDrawer: isLoading
+          ? null
+          : MyDrawer().showDrawer(context, file, name, lastname, email),
+      body: SafeArea(
+        child: CustomScrollView(
+          slivers: [
+            isLoading
+                ? SliverToBoxAdapter(
+                    child: Container(),
+                  )
+                : onData == false
+                    ? SliverToBoxAdapter(
+                        child: Container(),
+                      )
+                    : SliverappBar()
                         .appbar(context, screenwidth, userId, scaffoldKey),
-                    SliverToBoxAdapter(
-                      child: SingleChildScrollView(
-                        child: Stack(
-                          children: [
-                            Column(
-                              children: [
-                                //  const SizedBox(height: 10,),
-                                InkWell(
-                                  onTap: () {
-                                    navigateSecondPage(const EditProfile());
-                                    // _bottomSheet();
-                                    // showBottomsheet();
-                                    // navigateSecondPage(const EditImagePage());
-                                  },
-                                  child: Stack(
-                                    children: [
-                                      showImage(context),
-                                      // userprofile(),
-                                    ],
-                                  ),
-                                ),
-                                buildUserInfoDisplay(
-                                  name + ' ' + lastname,
-                                  'ชื่อ - สกุล',
-                                  const EditProfile(),
-                                ),
-                                buildUserInfoDisplay(
-                                  phone,
-                                  'เบอร์โทร',
-                                  const EditProfile(),
-                                ),
-                                buildUserInfoDisplay(
-                                  gender,
-                                  'เพศ',
-                                  const EditProfile(),
-                                ),
-                                buildUserInfoDisplay(
-                                  email,
-                                  'อีเมลล์',
-                                  const EditProfile(),
-                                ),
-                                signOutMenu(context),
-                              ],
-                            ),
-
-                            // Column(
-                            //   mainAxisAlignment: MainAxisAlignment.end,
-                            //   children: [
-                            //     signOutMenu(context),
-                            //   ],
-                            // ),
-                          ],
+            isLoading
+                ? SliverToBoxAdapter(
+                    child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height * 0.84,
+                        child: MyStyle().progress(context)),
+                  )
+                : onData == false
+                    ? SliverToBoxAdapter(
+                        child: Container(
+                          alignment: Alignment.center,
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height * 0.7,
+                          child: const Login(),
                         ),
-                      ),
-                    )
-                  ],
-                ),
+                      )
+                    : SliverToBoxAdapter(
+                        child: SingleChildScrollView(
+                          child: Stack(
+                            children: [
+                              Column(
+                                children: [
+                                  //  const SizedBox(height: 10,),
+                                  InkWell(
+                                    onTap: () {
+                                      navigateSecondPage(const EditProfile());
+                                      // _bottomSheet();
+                                      // showBottomsheet();
+                                      // navigateSecondPage(const EditImagePage());
+                                    },
+                                    child: Stack(
+                                      children: [
+                                        showImage(context),
+                                        // userprofile(),
+                                      ],
+                                    ),
+                                  ),
+                                  buildUserInfoDisplay(
+                                    name + ' ' + lastname,
+                                    'ชื่อ - สกุล',
+                                    const EditProfile(),
+                                  ),
+                                  buildUserInfoDisplay(
+                                    phone,
+                                    'เบอร์โทร',
+                                    const EditProfile(),
+                                  ),
+                                  buildUserInfoDisplay(
+                                    gender,
+                                    'เพศ',
+                                    const EditProfile(),
+                                  ),
+                                  buildUserInfoDisplay(
+                                    email,
+                                    'อีเมลล์',
+                                    const EditProfile(),
+                                  ),
+                                  signOutMenu(context),
+                                ],
+                              ),
+
+                              // Column(
+                              //   mainAxisAlignment: MainAxisAlignment.end,
+                              //   children: [
+                              //     signOutMenu(context),
+                              //   ],
+                              // ),
+                            ],
+                          ),
+                        ),
+                      )
+          ],
         ),
+        //       ),
       ),
     );
   }

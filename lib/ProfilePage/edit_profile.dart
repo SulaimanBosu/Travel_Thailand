@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:path/path.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
@@ -1041,11 +1042,16 @@ class _EditProfileState extends State<EditProfile> {
     return Container(
         child: Stack(
       children: <Widget>[
-        buildContent(context),
+         buildContent(context),
+        Container(
+          color: Colors.transparent,
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+        ),
         Container(
           alignment: AlignmentDirectional.center,
           decoration: const BoxDecoration(
-            color: Colors.white24,
+            color: Colors.white70,
           ),
           child: Container(
             decoration: BoxDecoration(
@@ -1062,16 +1068,14 @@ class _EditProfileState extends State<EditProfile> {
                   child: SizedBox(
                     height: MediaQuery.of(context).size.width * 0.1,
                     width: MediaQuery.of(context).size.width * 0.1,
-                    child: const CircularProgressIndicator(
-                      value: null,
-                      backgroundColor: Colors.white,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
-                      strokeWidth: 7.0,
+                    child: const CupertinoActivityIndicator(
+                      animating: true,
+                      radius: 15,
                     ),
                   ),
                 ),
                 Container(
-                  margin: const EdgeInsets.only(top: 25.0),
+                  margin: const EdgeInsets.only(top: 5.0),
                   child: const Center(
                     child: Text(
                       'กำลังอัพเดต...',

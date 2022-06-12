@@ -4,8 +4,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
+import 'package:blurry_modal_progress_hud/blurry_modal_progress_hud.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -48,6 +50,7 @@ class _RegisterState extends State<Register> {
   late FocusNode myFocusEmail;
   late FocusNode myFocusPassword;
   late FocusNode myFocusConpassword;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -97,7 +100,7 @@ class _RegisterState extends State<Register> {
         centerTitle: true,
         backgroundColor: Colors.white,
       ),
-      body: buildContent(context),
+      body: isLoading ? progress(context) : buildContent(context),
     );
   }
 
@@ -478,6 +481,9 @@ class _RegisterState extends State<Register> {
               myFocusConpassword.requestFocus();
             } else {
               createUser(context);
+              setState(() {
+                isLoading = true;
+              });
             }
           },
           style: ElevatedButton.styleFrom(
@@ -541,13 +547,22 @@ class _RegisterState extends State<Register> {
         debugPrint('message == $message');
         debugPrint('Value == $value');
         if (success == '0') {
+          setState(() {
+            isLoading = false;
+          });
           MyStyle().showdialog(
               context, 'คำเตือน', 'มีผู้ใช้บัญชี $email \nอยู่แล้ว');
         } else if (success == '3') {
+          setState(() {
+            isLoading = false;
+          });
           MyStyle().showdialog(
               context, 'คำเตือน', 'มีผู้ใช้งานเบอร์โทรศัพท์ $phone \nอยู่แล้ว');
         } else if (success == '1') {
           registerlDialog(context);
+          setState(() {
+            isLoading = false;
+          });
         } else {
           MyStyle().showdialog(context, 'ล้มเหลว', 'การเชื่อมต่อขัดข้อง');
         }
@@ -596,7 +611,7 @@ class _RegisterState extends State<Register> {
                   // fontStyle: FontStyle.italic,
                   fontFamily: 'FC-Minimal-Regular',
                 ),
-                labelText: 'Name : ',
+                labelText: 'ชื่อ : ',
                 enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide: const BorderSide(color: Colors.black54)),
@@ -630,7 +645,7 @@ class _RegisterState extends State<Register> {
                   // fontStyle: FontStyle.italic,
                   fontFamily: 'FC-Minimal-Regular',
                 ),
-                labelText: 'LastName : ',
+                labelText: 'นามสกุล : ',
                 enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide: const BorderSide(color: Colors.black54)),
@@ -664,7 +679,7 @@ class _RegisterState extends State<Register> {
                   // fontStyle: FontStyle.italic,
                   fontFamily: 'FC-Minimal-Regular',
                 ),
-                labelText: 'Phone : ',
+                labelText: 'เบอร์ : ',
                 enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide: const BorderSide(color: Colors.black54)),
@@ -786,7 +801,7 @@ class _RegisterState extends State<Register> {
                   // fontStyle: FontStyle.italic,
                   fontFamily: 'FC-Minimal-Regular',
                 ),
-                labelText: 'Email : ',
+                labelText: 'อีเมลล์ : ',
                 enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide: const BorderSide(color: Colors.black54)),
@@ -836,7 +851,7 @@ class _RegisterState extends State<Register> {
                   // fontStyle: FontStyle.italic,
                   fontFamily: 'FC-Minimal-Regular',
                 ),
-                labelText: 'Password : ',
+                labelText: 'รหัสผ่าน : ',
                 enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide: const BorderSide(color: Colors.black54)),
@@ -886,7 +901,7 @@ class _RegisterState extends State<Register> {
                   // fontStyle: FontStyle.italic,
                   fontFamily: 'FC-Minimal-Regular',
                 ),
-                labelText: 'Confirm Password : ',
+                labelText: 'ยืนยันรหัสผ่าน : ',
                 enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide: const BorderSide(color: Colors.black54)),
@@ -907,7 +922,7 @@ class _RegisterState extends State<Register> {
         Container(
           alignment: AlignmentDirectional.center,
           decoration: const BoxDecoration(
-            color: Colors.white24,
+            color: Colors.transparent,
           ),
           child: Container(
             decoration: BoxDecoration(
@@ -924,16 +939,14 @@ class _RegisterState extends State<Register> {
                   child: SizedBox(
                     height: MediaQuery.of(context).size.width * 0.1,
                     width: MediaQuery.of(context).size.width * 0.1,
-                    child: const CircularProgressIndicator(
-                      value: null,
-                      backgroundColor: Colors.white,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
-                      strokeWidth: 7.0,
+                    child: const CupertinoActivityIndicator(
+                      animating: true,
+                      radius: 15,
                     ),
                   ),
                 ),
                 Container(
-                  margin: const EdgeInsets.only(top: 25.0),
+                  margin: const EdgeInsets.only(top: 5.0),
                   child: const Center(
                     child: Text(
                       'กำลังสมัครสมาชิก...',

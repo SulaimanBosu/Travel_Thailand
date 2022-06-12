@@ -104,8 +104,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   BottomNavigationBarItem showprofile() {
     return BottomNavigationBarItem(
-        icon: profile != null
-            ? CircleAvatar(
+        icon: profile == null
+            ? const Icon(
+                MdiIcons.accountDetails,
+                size: 30,
+              )
+            : CircleAvatar(
                 radius: 20,
                 backgroundColor: Colors.red,
                 child: Padding(
@@ -119,16 +123,12 @@ class _HomeScreenState extends State<HomeScreen> {
                             (context, url, downloadProgress) =>
                                 MyStyle().showProgress(),
                         errorWidget: (context, url, error) =>
-                            const Icon(Icons.error),
+                            Image.asset('images/iconprofile.png'),
                         fit: BoxFit.cover,
                       ),
                     ),
                   ),
                 ),
-              )
-            : const Icon(
-                MdiIcons.accountDetails,
-                size: 30,
               ),
         label: 'โปรไฟล์');
   }

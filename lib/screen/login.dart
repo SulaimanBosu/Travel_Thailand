@@ -78,11 +78,14 @@ class _LoginState extends State<Login> {
 
   Container buildContent() {
     return Container(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height,
       decoration: const BoxDecoration(),
       child: Center(
         child: SingleChildScrollView(
           child: Column(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            //mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               MyStyle().showTitle('ลงชื่อเข้าใช้'),
               MyStyle().mySizebox(),
