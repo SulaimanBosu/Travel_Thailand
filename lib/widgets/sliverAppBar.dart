@@ -14,7 +14,7 @@ class SliverappBar {
         'Travel Thailand',
         style: TextStyle(
             color: Colors.redAccent,
-            fontSize: screenwidth * 0.055,
+            fontSize: screenwidth * 0.05,
             fontWeight: FontWeight.bold,
             letterSpacing: -1.2),
       ),

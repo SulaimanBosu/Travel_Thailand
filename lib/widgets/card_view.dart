@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:project/model/landmark_model.dart';
+import 'package:project/screen/landmark_detail.dart';
 import 'package:project/utility/my_style.dart';
 
 class CardView extends StatefulWidget {
@@ -38,12 +39,12 @@ class _CardViewState extends State<CardView> {
       child: GestureDetector(
         onTap: () {
           debugPrint('you click index ${widget.index}');
-          // MaterialPageRoute route = MaterialPageRoute(
-          //   builder: (context) => ShopInfo(
-          //     shopModel: infomationShopModels[index],
-          //  ),
-          // );
-          //   Navigator.push(context, route);
+          MaterialPageRoute route = MaterialPageRoute(
+            builder: (context) => LandmarkDetail(
+              landmarkModel: widget.landmarkModel,
+           ),
+          );
+            Navigator.push(context, route);
         },
         // ignore: avoid_unnecessary_containers
         child: Card(
@@ -123,7 +124,7 @@ class _CardViewState extends State<CardView> {
     return Container(
       margin: const EdgeInsetsDirectional.only(start: 0.0, end: 0.0),
       width: MediaQuery.of(context).size.width * 1,
-      height: MediaQuery.of(context).size.height * 0.16,
+      height: MediaQuery.of(context).size.height * 0.14,
       child: Card(
         semanticContainer: true,
         clipBehavior: Clip.antiAliasWithSaveLayer,

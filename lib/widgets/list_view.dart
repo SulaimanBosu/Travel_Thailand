@@ -114,7 +114,7 @@ class _ListviewState extends State<Listview> {
                             padding: const EdgeInsetsDirectional.only(
                                 start: 0.0, end: 0.0),
                             width: MediaQuery.of(context).size.width * 0.4,
-                            height: MediaQuery.of(context).size.height * 0.16,
+                            height: MediaQuery.of(context).size.height * 0.15,
                             child: Container(
                               child: Card(
                                 semanticContainer: true,
@@ -261,6 +261,8 @@ class _ListviewState extends State<Listview> {
                                           fixedSize: const Size(80, 10),
                                           // maximumSize: Size(screenwidth / 4.5,
                                           //     screenhight / 15),
+                                           maximumSize: Size(screenwidth / 3.7,
+                                               screenhight / 10),
                                         ),
                                         onPressed: () {
                                           debugPrint('คุณคลิก นำทาง = $index');
