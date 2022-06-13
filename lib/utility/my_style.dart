@@ -35,9 +35,9 @@ class MyStyle {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const CircularProgressIndicator(
-            backgroundColor: Colors.white,
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
+          const CupertinoActivityIndicator(
+            animating: true,
+            radius: 15,
           ),
           const SizedBox(
             height: 10,

@@ -20,7 +20,7 @@ class Favorites extends StatefulWidget {
 }
 
 class _FavoritesState extends State<Favorites> {
-  late LandmarkModel landmark;
+  late LandmarkModel landmark= LandmarkModel();
   List<Widget> landmarkCards = [];
   int index = 0;
   bool isLoading = true;
@@ -94,10 +94,8 @@ class _FavoritesState extends State<Favorites> {
       });
     } catch (error) {
       debugPrint("ดาวน์โหลดไม่สำเร็จ: $error");
-      //  MyStyle().showdialog(context, 'รายการโปรด', 'ไม่พบรายการโปรด');
-      // MyStyle().showdialog(
-      //     context, 'ล้มเหลว', 'ไม่พบการเชื่อมต่อเครือข่ายอินเตอร์เน็ต');
-
+      MyStyle().showdialog(
+          context, 'ล้มเหลว', 'ไม่พบการเชื่อมต่อเครือข่ายอินเตอร์เน็ต');
       setState(
         () {
           isLoading = false;

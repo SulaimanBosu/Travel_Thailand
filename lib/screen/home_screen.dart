@@ -62,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
   BottomNavigationBarItem recommend() {
     return const BottomNavigationBarItem(
       icon: Icon(
-        Icons.recommend,
+        Icons.recommend_outlined,
         size: 30,
       ),
       label: 'แนะนำ',
@@ -72,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
   BottomNavigationBarItem popular() {
     return const BottomNavigationBarItem(
       icon: Icon(
-        Icons.star,
+        Icons.star_outline_outlined,
         size: 30,
       ),
       // ignore: deprecated_member_use
@@ -83,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
   BottomNavigationBarItem favorites() {
     return const BottomNavigationBarItem(
       icon: Icon(
-        Icons.favorite,
+        Icons.favorite_outline_outlined,
         size: 30,
       ),
       // ignore: deprecated_member_use

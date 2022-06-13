@@ -48,10 +48,12 @@ class _PopularState extends State<Popular> {
   double time = 0;
   late double screenwidth;
   late double screenhight;
+  bool isdata = false;
 
   @override
   void initState() {
     readlandmark();
+    isLoad();
     getPreferences();
     super.initState();
   }
@@ -75,13 +77,25 @@ class _PopularState extends State<Popular> {
     email = preferences.getString('Email')!;
   }
 
+  isLoad() {
+    Future.delayed(const Duration(milliseconds: 15000), () {
+      if (isdata == false) {
+        setState(() {
+          isLoading = false;
+        });
+        MyStyle().showdialog(
+            context, 'ล้มเหลว', 'ดาวน์โหลดข้อมูลล้มเหลว กรุณาลองใหม่อีกครั้ง');
+      }
+    });
+  }
+
   Future<void> readlandmark() async {
     Location location = Location();
     LocationData locationData = await location.getLocation();
     location.enableBackgroundMode(enable: true);
     lat1 = locationData.latitude!;
     lng1 = locationData.longitude!;
-    
+
     debugPrint('latitude ============ ${lat1.toString()}');
     debugPrint('longitude ============ ${lng1.toString()}');
     String url = '${MyConstant().domain}/application/getJSON_popular.php';
@@ -107,6 +121,7 @@ class _PopularState extends State<Popular> {
             time = MyApi().calculateTime(distance);
             // debugPrint('time min ============ ${time.toString()}');
             times.add(time);
+            isdata = true;
             isLoading = false;
             index++;
           });
@@ -118,6 +133,7 @@ class _PopularState extends State<Popular> {
           context, 'ล้มเหลว', 'ไม่พบการเชื่อมต่อเครือข่ายอินเตอร์เน็ต');
       setState(() {
         isLoading = false;
+        isdata = true;
         //delaydialog();
       });
     }
@@ -137,8 +153,9 @@ class _PopularState extends State<Popular> {
     screenhight = MediaQuery.of(context).size.height;
     return Scaffold(
       key: scaffoldKey,
-      endDrawer:
-          isLoading ? null : MyDrawer().showDrawer(context, profile!, name!,lastname!,email!),
+      endDrawer: isLoading
+          ? null
+          : MyDrawer().showDrawer(context, profile!, name!, lastname!, email!),
       body: SafeArea(
         child: RefreshIndicator(
           key: _refreshIndicatorKey,
@@ -148,7 +165,7 @@ class _PopularState extends State<Popular> {
           },
           child: CustomScrollView(
             slivers: [
-              SliverappBar().appbar(context, screenwidth, userid!,scaffoldKey),
+              SliverappBar().appbar(context, screenwidth, userid!, scaffoldKey),
               // SliverAppBar(
               //   brightness: Brightness.light,
               //   backgroundColor: Colors.white,

@@ -23,7 +23,7 @@ class Recommend extends StatefulWidget {
 }
 
 class _RecommendState extends State<Recommend> {
-  late LandmarkModel landmark;
+  late LandmarkModel landmark = LandmarkModel();
   List<Widget> landmarkCards = [];
   int index = 0;
   bool isLoading = true;

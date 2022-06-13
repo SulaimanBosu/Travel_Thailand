@@ -2,7 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:project/ProfilePage/edit_profile.dart';
+import 'package:project/screen/home_screen.dart';
 import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
 import 'package:project/utility/signout_process.dart';
@@ -90,7 +92,7 @@ class MyDrawer {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        '$name\t\t\t$lastname',
+                                        '$name\t\t$lastname',
                                         textAlign: TextAlign.start,
                                         style: const TextStyle(
                                           color: Colors.black54,
@@ -159,20 +161,132 @@ class MyDrawer {
                             ),
                             ListTile(
                               leading: const Icon(
-                                Icons.logout,
+                                Icons.recommend_outlined,
                                 color: Colors.black54,
                               ),
                               title: const Text(
-                                'Sign Out',
+                                'แหล่งท่องเที่ยวแนะนำ',
                                 style: TextStyle(
-                                    color: Colors.black54, fontSize: 18.0),
-                              ),
-                              subtitle: const Text(
-                                'ออกจากระบบ',
-                                style: TextStyle(color: Colors.black54),
+                                  color: Colors.black54,
+                                  fontSize: 20.0,
+                                  fontFamily: 'FC-Minimal-Regular',
+                                ),
                               ),
                               onTap: () {
-                                signOutProcess(context);
+                                MaterialPageRoute route = MaterialPageRoute(
+                                    builder: (value) => const HomeScreen(
+                                          index: 0,
+                                        ));
+                                Navigator.push(
+                                    context, route);
+                              },
+                            ),
+                            ListTile(
+                              leading: const Icon(
+                                Icons.star_outline_outlined,
+                                color: Colors.black54,
+                              ),
+                              title: const Text(
+                                'แหล่งท่องเที่ยวยอดฮิต',
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  fontSize: 20.0,
+                                  fontFamily: 'FC-Minimal-Regular',
+                                ),
+                              ),
+                              onTap: () {
+                                MaterialPageRoute route = MaterialPageRoute(
+                                    builder: (value) => const HomeScreen(
+                                          index: 1,
+                                        ));
+                                Navigator.push(
+                                    context, route);
+                              },
+                            ),
+                            ListTile(
+                              leading: const Icon(
+                                Icons.favorite_outline_outlined,
+                                color: Colors.black54,
+                              ),
+                              title: const Text(
+                                'รายการโปรด',
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  fontSize: 20.0,
+                                  fontFamily: 'FC-Minimal-Regular',
+                                ),
+                              ),
+                              onTap: () {
+                                MaterialPageRoute route = MaterialPageRoute(
+                                    builder: (value) => const HomeScreen(
+                                          index: 2,
+                                        ));
+                                Navigator.push(
+                                    context, route);
+                              },
+                            ),
+                            ListTile(
+                              leading: const Icon(
+                                Icons.add_location_alt_outlined,
+                                color: Colors.black54,
+                              ),
+                              title: const Text(
+                                'แหล่งท่องเที่ยวทั้งหมด',
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  fontSize: 20.0,
+                                  fontFamily: 'FC-Minimal-Regular',
+                                ),
+                              ),
+                              onTap: () {
+                                MaterialPageRoute route = MaterialPageRoute(
+                                    builder: (value) => const HomeScreen(
+                                          index: 3,
+                                        ));
+                                Navigator.push(
+                                    context, route);
+                              },
+                            ),
+                            ListTile(
+                              leading: const Icon(
+                                MdiIcons.accountDetails,
+                              ),
+                              title: const Text(
+                                'โปรไฟล์',
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  fontSize: 20.0,
+                                  fontFamily: 'FC-Minimal-Regular',
+                                ),
+                              ),
+                              onTap: () {
+                                MaterialPageRoute route = MaterialPageRoute(
+                                    builder: (value) => const HomeScreen(
+                                          index: 4,
+                                        ));
+                                Navigator.push(
+                                    context, route);
+                              },
+                            ),
+                             ListTile(
+                              leading: const Icon(
+                                MdiIcons.facebookMessenger,
+                              ),
+                              title: const Text(
+                                'ติดต่อเรา',
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  fontSize: 20.0,
+                                  fontFamily: 'FC-Minimal-Regular',
+                                ),
+                              ),
+                              onTap: () {
+                                MaterialPageRoute route = MaterialPageRoute(
+                                    builder: (value) => const HomeScreen(
+                                          index: 4,
+                                        ));
+                                Navigator.push(
+                                    context, route);
                               },
                             ),
                           ],

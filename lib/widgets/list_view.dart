@@ -97,7 +97,7 @@ class _ListviewState extends State<Listview> {
                 ),
                 child: Container(
                   width: screenwidth,
-                  height: screenhight * 0.13,
+                  height: screenhight * 0.16,
                   decoration: index % 2 == 0
                       ? const BoxDecoration(color: Colors.white)
                       : BoxDecoration(color: Colors.grey[50]),
@@ -114,7 +114,7 @@ class _ListviewState extends State<Listview> {
                             padding: const EdgeInsetsDirectional.only(
                                 start: 0.0, end: 0.0),
                             width: MediaQuery.of(context).size.width * 0.4,
-                            height: MediaQuery.of(context).size.height * 0.14,
+                            height: MediaQuery.of(context).size.height * 0.16,
                             child: Container(
                               child: Card(
                                 semanticContainer: true,
@@ -232,11 +232,13 @@ class _ListviewState extends State<Listview> {
                                     children: [
                                       OutlinedButton.icon(
                                         style: OutlinedButton.styleFrom(
-                                          fixedSize: const Size(100, 10),
-                                          // maximumSize: Size(screenwidth / 3.7,
-                                          //     screenhight / 10),
+                                        //  fixedSize: const Size(100, 10),
+                                           maximumSize: Size(screenwidth / 3.7,
+                                               screenhight / 10),
                                         ),
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          debugPrint('คุณคลิก รายระเอียด = $index');
+                                        },
                                         icon: const Icon(
                                           Icons.location_on,
                                           color: Colors.red,
@@ -260,7 +262,9 @@ class _ListviewState extends State<Listview> {
                                           // maximumSize: Size(screenwidth / 4.5,
                                           //     screenhight / 15),
                                         ),
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          debugPrint('คุณคลิก นำทาง = $index');
+                                        },
                                         icon: const Icon(
                                           Icons.navigation_outlined,
                                           size: 15,

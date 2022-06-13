@@ -123,7 +123,7 @@ class _CardViewState extends State<CardView> {
     return Container(
       margin: const EdgeInsetsDirectional.only(start: 0.0, end: 0.0),
       width: MediaQuery.of(context).size.width * 1,
-      height: MediaQuery.of(context).size.height * 0.14,
+      height: MediaQuery.of(context).size.height * 0.16,
       child: Card(
         semanticContainer: true,
         clipBehavior: Clip.antiAliasWithSaveLayer,

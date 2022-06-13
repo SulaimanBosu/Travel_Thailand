@@ -149,8 +149,8 @@ class _ProfileState extends State<Profile> {
                                     },
                                     child: Stack(
                                       children: [
-                                        showImage(context),
-                                        // userprofile(),
+                                       // showImage(context),
+                                         userprofile(),
                                       ],
                                     ),
                                   ),
@@ -195,26 +195,29 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  CircleAvatar userprofile() {
-    return CircleAvatar(
-      radius: 90,
-      backgroundColor: Colors.red,
-      child: Padding(
-        padding: const EdgeInsets.all(2), // Border radius
-        child: ClipOval(
-          child: SizedBox.fromSize(
-            size: const Size.fromRadius(88), // Image radius
-            child: file.isEmpty
-                ? Image.asset('images/iconprofile.png')
-                : CachedNetworkImage(
-                    imageUrl: MyConstant().domain + file,
-                    progressIndicatorBuilder:
-                        (context, url, downloadProgress) =>
-                            MyStyle().showProgress(),
-                    errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
-                    fit: BoxFit.cover,
-                  ),
+  Widget userprofile() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 40),
+      child: CircleAvatar(
+        radius: 90,
+        backgroundColor: Colors.red,
+        child: Padding(
+          padding: const EdgeInsets.all(2), // Border radius
+          child: ClipOval(
+            child: SizedBox.fromSize(
+              size: const Size.fromRadius(88), // Image radius
+              child: file.isEmpty
+                  ? Image.asset('images/iconprofile.png')
+                  : CachedNetworkImage(
+                      imageUrl: MyConstant().domain + file,
+                      progressIndicatorBuilder:
+                          (context, url, downloadProgress) =>
+                              MyStyle().showProgress(),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
+                      fit: BoxFit.cover,
+                    ),
+            ),
           ),
         ),
       ),

@@ -522,6 +522,11 @@ class _RegisterState extends State<Register> {
       }
     } catch (e) {
       debugPrint('อัพโหลดไม่สำเร็จ === ${e.toString()}');
+      MyStyle().showdialog(
+          context, 'ล้มเหลว', 'ไม่พบการเชื่อมต่อเครือข่ายอินเตอร์เน็ต');
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -571,6 +576,9 @@ class _RegisterState extends State<Register> {
       debugPrint("ดาวน์โหลดไม่สำเร็จ: $error");
       MyStyle().showdialog(
           context, 'ล้มเหลว', 'ไม่พบการเชื่อมต่อเครือข่ายอินเตอร์เน็ต');
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 

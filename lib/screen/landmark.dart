@@ -33,7 +33,7 @@ class _LandmarkState extends State<Landmark> {
   bool isLoading = true;
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
-    String? userid = '',
+  String? userid = '',
       name = '',
       lastname = '',
       profile = '',
@@ -48,10 +48,12 @@ class _LandmarkState extends State<Landmark> {
   double time = 0;
   late double screenwidth;
   late double screenhight;
+  bool isdata = false;
 
   @override
   void initState() {
     readlandmark();
+    isLoad();
     //getLocation(index);
     getPreferences();
     super.initState();
@@ -62,6 +64,18 @@ class _LandmarkState extends State<Landmark> {
       setState(() {
         readlandmark();
       });
+    });
+  }
+
+    isLoad() {
+    Future.delayed(const Duration(milliseconds: 20000), () {
+      if (isdata == false) {
+        setState(() {
+          isLoading = false;
+        });
+        MyStyle().showdialog(
+            context, 'ล้มเหลว', 'ดาวน์โหลดข้อมูลล้มเหลว กรุณาลองใหม่อีกครั้ง');
+      }
     });
   }
 
@@ -108,6 +122,7 @@ class _LandmarkState extends State<Landmark> {
             // debugPrint('time min ============ ${time.toString()}');
             times.add(time);
             isLoading = false;
+            isdata = true;
             index++;
           });
         }
@@ -118,6 +133,7 @@ class _LandmarkState extends State<Landmark> {
           context, 'ล้มเหลว', 'ไม่พบการเชื่อมต่อเครือข่ายอินเตอร์เน็ต');
       setState(() {
         isLoading = false;
+        isdata = true;
         //delaydialog();
       });
     }
@@ -156,8 +172,9 @@ class _LandmarkState extends State<Landmark> {
     screenhight = MediaQuery.of(context).size.height;
     return Scaffold(
       key: scaffoldKey,
-      endDrawer:
-          isLoading ? null : MyDrawer().showDrawer(context, profile!, name!,lastname!,email!),
+      endDrawer: isLoading
+          ? null
+          : MyDrawer().showDrawer(context, profile!, name!, lastname!, email!),
       body: SafeArea(
         child: RefreshIndicator(
           key: _refreshIndicatorKey,

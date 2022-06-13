@@ -5,7 +5,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:path/path.dart';
 import 'package:dio/dio.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:project/model/user_model.dart';
@@ -14,7 +13,6 @@ import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
 import 'package:project/widgets/popover.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:user_profile_avatar/user_profile_avatar.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile({
@@ -613,6 +611,11 @@ class _EditProfileState extends State<EditProfile> {
       }
     } catch (e) {
       debugPrint('อัพโหลดไม่สำเร็จ === ${e.toString()}');
+      MyStyle().showdialog(
+          context, 'ล้มเหลว', 'ไม่พบการเชื่อมต่อเครือข่ายอินเตอร์เน็ต');
+      setState(() {
+        onUpdate = true;
+      });
     }
   }
 
@@ -654,6 +657,9 @@ class _EditProfileState extends State<EditProfile> {
       debugPrint("ดาวน์โหลดไม่สำเร็จ: $error");
       MyStyle().showdialog(
           context, 'ล้มเหลว', 'ไม่พบการเชื่อมต่อเครือข่ายอินเตอร์เน็ต');
+      setState(() {
+        onUpdate = true;
+      });
     }
   }
 
@@ -1042,7 +1048,7 @@ class _EditProfileState extends State<EditProfile> {
     return Container(
         child: Stack(
       children: <Widget>[
-         buildContent(context),
+        buildContent(context),
         Container(
           color: Colors.transparent,
           width: MediaQuery.of(context).size.width,
