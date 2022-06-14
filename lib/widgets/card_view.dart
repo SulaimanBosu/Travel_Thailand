@@ -168,7 +168,7 @@ class _CardViewState extends State<CardView> {
         clipBehavior: Clip.antiAliasWithSaveLayer,
         child: CachedNetworkImage(
           width:screenwidth,
-          height: screenhight * 0.18,
+          height: screenhight * 0.14,
           imageUrl: imageURL,
           progressIndicatorBuilder: (context, url, downloadProgress) =>
               MyStyle().showProgress(),

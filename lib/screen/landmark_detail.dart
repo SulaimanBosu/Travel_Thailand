@@ -45,11 +45,21 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
   void initState() {
     landmarkModel = widget.landmarkModel;
     landmarkScore = landmarkModel.landmarkScore!;
+    getPreferences();
     readComment();
-    //  getPreferences();
+    delaydialog();
+
     debugPrint(landmarkModel.imageid.toString());
     // TODO: implement initState
     super.initState();
+  }
+
+  void delaydialog() {
+    Future.delayed(const Duration(milliseconds: 50), () {
+      setState(() {
+        getFavorites();
+      });
+    });
   }
 
   Future<void> getPreferences() async {
@@ -65,7 +75,6 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
 
   Future<void> readComment() async {
     String urlcomment = '${MyConstant().domain}/application/get_comment.php';
-    String urlFavorites = '${MyConstant().domain}/application/post_Favorites.php';
     FormData getcomment = FormData.fromMap(
       {
         "Landmark_id": landmarkModel.landmarkId,
@@ -87,24 +96,6 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
           );
         }
       });
-
-      FormData getFavorites = FormData.fromMap(
-        {
-          "id": 2,
-          "User_id": userid,
-          "Landmark_id": landmarkModel.landmarkId,
-        },
-      );
-      await Dio().post(urlFavorites, data: getFavorites).then((value) {
-        var result = json.decode(value.data);
-        debugPrint('Favorites == $result');
-        String success = result['success'];
-        if (success == '1') {
-          setState(() {
-            isFavorites = true;
-          });
-        }
-      });
     } catch (error) {
       debugPrint("ดาวน์โหลดไม่สำเร็จ: $error");
       MyStyle().showdialog(
@@ -115,6 +106,28 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
         },
       );
     }
+  }
+
+  Future<void> getFavorites() async {
+    String urlFavorites =
+        '${MyConstant().domain}/application/post_Favorites.php';
+    FormData getFavorites = FormData.fromMap(
+      {
+        "id": 2,
+        "User_id": userid,
+        "Landmark_id": landmarkModel.landmarkId,
+      },
+    );
+    await Dio().post(urlFavorites, data: getFavorites).then((value) {
+      var result = json.decode(value.data);
+      debugPrint('Favorites == $result');
+      String success = result['success'];
+      if (success == '1') {
+        setState(() {
+          isFavorites = true;
+        });
+      }
+    });
   }
 
   Future _refreshData() async {
@@ -155,8 +168,8 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                   child: Column(
                     children: [
                       const Padding(
-                        padding: EdgeInsets.only(
-                            left: 10.0, right: 10, bottom: 10, top: 10),
+                        padding:
+                            EdgeInsets.only(left: 10.0, right: 10, bottom: 10),
                         child: Divider(
                           color: Colors.black54,
                           thickness: 1.0,
@@ -338,9 +351,15 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                             shape: BoxShape.circle,
                           ),
                           child: IconButton(
-                            icon: isFavorites ? const Icon(Icons.favorite) : const Icon(Icons.favorite_outline_outlined),
-                            color: isFavorites ? Colors.red:Colors.black54,
+                            icon: isFavorites
+                                ? const Icon(Icons.favorite)
+                                : const Icon(Icons.favorite_outline_outlined),
+                            color: isFavorites ? Colors.red : Colors.black54,
+                            iconSize: 30,
                             onPressed: () {
+                              setState(() {
+                                isFavorites = !isFavorites;
+                              });
                               debugPrint('รายการโปรด');
                             },
                           ),
@@ -438,45 +457,6 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                   ],
                 ),
               ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20.0, right: 10, bottom: 10),
-            child: Row(
-              children: [
-                const Icon(
-                  Icons.location_on,
-                  color: Colors.redAccent,
-                  size: 15,
-                ),
-                Text(
-                  ' ตำบล ${landmarkModel.districtName!}\t',
-                  style: const TextStyle(
-                    color: Colors.black54,
-                    fontSize: 14.0,
-                    fontFamily: 'FC-Minimal-Regular',
-                  ),
-                  textAlign: TextAlign.left,
-                ),
-                Text(
-                  ' อำเภอ ${landmarkModel.amphurName!}\t',
-                  style: const TextStyle(
-                    color: Colors.black54,
-                    fontSize: 14.0,
-                    fontFamily: 'FC-Minimal-Regular',
-                  ),
-                  textAlign: TextAlign.left,
-                ),
-                Text(
-                  ' จังหวัด ${landmarkModel.provinceName!}\t',
-                  style: const TextStyle(
-                    color: Colors.black54,
-                    fontSize: 14.0,
-                    fontFamily: 'FC-Minimal-Regular',
-                  ),
-                  textAlign: TextAlign.left,
-                ),
-              ],
             ),
           ),
         ],

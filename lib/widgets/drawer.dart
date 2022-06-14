@@ -76,7 +76,7 @@ class MyDrawer {
                                                               .showProgress(),
                                                   errorWidget: (context, url,
                                                           error) =>
-                                                      const Icon(Icons.error),
+                                                      Image.asset('images/iconprofile.png'),
                                                   fit: BoxFit.cover,
                                                 ),
                                         ),
