@@ -21,7 +21,6 @@ class CardView extends StatefulWidget {
 class _CardViewState extends State<CardView> {
   late double screenwidth;
   late double screenhight;
-
   @override
   void initState() {
     SystemChrome.setPreferredOrientations([
@@ -91,14 +90,53 @@ class _CardViewState extends State<CardView> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            'คะแนน ${widget.landmarkModel.landmarkScore}/5',
-                            style: const TextStyle(
-                              color: Colors.red,
-                              fontSize: 12.0,
-                              fontFamily: 'FC-Minimal-Regular',
-                            ),
-                          ),
+                          Row(
+                                  children: [
+                                    Icon(Icons.star,
+                                        size: 15,
+                                        color: widget.landmarkModel
+                                                    .landmarkScore! >=
+                                                1
+                                            ? Colors.orange
+                                            : Colors.grey),
+                                    Icon(Icons.star,
+                                        size: 15,
+                                        color: widget.landmarkModel
+                                                    .landmarkScore! >=
+                                                2
+                                            ? Colors.orange
+                                            : Colors.grey),
+                                    Icon(Icons.star,
+                                        size: 15,
+                                        color: widget.landmarkModel
+                                                    .landmarkScore! >=
+                                                3
+                                            ? Colors.orange
+                                            : Colors.grey),
+                                    Icon(Icons.star,
+                                        size: 15,
+                                        color: widget.landmarkModel
+                                                    .landmarkScore! >=
+                                                4
+                                            ? Colors.orange
+                                            : Colors.grey),
+                                    Icon(Icons.star,
+                                        size: 15,
+                                        color: widget.landmarkModel
+                                                    .landmarkScore! ==
+                                                5
+                                            ? Colors.orange
+                                            : Colors.grey),
+                                  ],
+                                ),
+                          // Text(
+                          //   'คะแนน ${widget.landmarkModel.landmarkScore}/5',
+                          //   style: const TextStyle(
+                          //     color: Colors.red,
+                          //     fontSize: 12.0,
+                          //     fontFamily: 'FC-Minimal-Regular',
+                          //   ),
+                          // ),
                           Text(
                             'View ${widget.landmarkModel.landmarkView}',
                             style: const TextStyle(
@@ -123,12 +161,14 @@ class _CardViewState extends State<CardView> {
   Container showImage(BuildContext context, String imageURL) {
     return Container(
       margin: const EdgeInsetsDirectional.only(start: 0.0, end: 0.0),
-      width: MediaQuery.of(context).size.width * 1,
-      height: MediaQuery.of(context).size.height * 0.14,
+      // width: MediaQuery.of(context).size.width * 1,
+      // height: MediaQuery.of(context).size.height * 0.14,
       child: Card(
         semanticContainer: true,
         clipBehavior: Clip.antiAliasWithSaveLayer,
         child: CachedNetworkImage(
+          width:screenwidth,
+          height: screenhight * 0.18,
           imageUrl: imageURL,
           progressIndicatorBuilder: (context, url, downloadProgress) =>
               MyStyle().showProgress(),

@@ -49,6 +49,7 @@ class _LandmarkState extends State<Landmark> {
   late double screenwidth;
   late double screenhight;
   bool isdata = false;
+ 
 
   @override
   void initState() {

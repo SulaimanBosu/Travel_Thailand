@@ -8,7 +8,8 @@ class LandmarkModel {
   String? provinceName;
   String? latitude;
   String? longitude;
-  String? imagePath;
+   String? imagePath;
+  String? imageid;
   int? landmarkScore;
 
   LandmarkModel(
@@ -22,6 +23,7 @@ class LandmarkModel {
       this.latitude,
       this.longitude,
       this.imagePath,
+      this.imageid,
       this.landmarkScore});
 
   LandmarkModel.fromJson(Map<String, dynamic> json) {
@@ -35,11 +37,12 @@ class LandmarkModel {
     latitude = json['Latitude'];
     longitude = json['Longitude'];
     imagePath = json['ImagePath'];
+    imageid = json['Image_id'];
     landmarkScore = json['Landmark_score'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['Landmark_view'] = landmarkView;
     data['Landmark_id'] = landmarkId;
     data['Landmark_name'] = landmarkName;
@@ -50,6 +53,7 @@ class LandmarkModel {
     data['Latitude'] = latitude;
     data['Longitude'] = longitude;
     data['ImagePath'] = imagePath;
+    data['Image_id'] = imageid;
     data['Landmark_score'] = landmarkScore;
     return data;
   }

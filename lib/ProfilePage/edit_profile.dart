@@ -281,7 +281,7 @@ class _EditProfileState extends State<EditProfile> {
                               (context, url, downloadProgress) =>
                                   MyStyle().showProgress(),
                           errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
+                              Image.asset('images/iconprofile.png'),
                           fit: BoxFit.cover,
                         ),
             ),

@@ -214,7 +214,7 @@ class _ProfileState extends State<Profile> {
                           (context, url, downloadProgress) =>
                               MyStyle().showProgress(),
                       errorWidget: (context, url, error) =>
-                          const Icon(Icons.error),
+                          Image.asset('images/iconprofile.png'),
                       fit: BoxFit.cover,
                     ),
             ),

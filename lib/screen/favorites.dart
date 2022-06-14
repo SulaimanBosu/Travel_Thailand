@@ -13,14 +13,16 @@ import 'package:project/widgets/sliverAppBar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Favorites extends StatefulWidget {
-  const Favorites({Key? key}) : super(key: key);
+  const Favorites({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<Favorites> createState() => _FavoritesState();
 }
 
 class _FavoritesState extends State<Favorites> {
-  late LandmarkModel landmark= LandmarkModel();
+  late LandmarkModel landmark = LandmarkModel();
   List<Widget> landmarkCards = [];
   int index = 0;
   bool isLoading = true;
@@ -41,18 +43,19 @@ class _FavoritesState extends State<Favorites> {
   @override
   void initState() {
     getPreferences();
-    readlandmark();
+    //readlandmark();
+    delaydialog();
     super.initState();
   }
 
-  // void delaydialog() {
-  //   Future.delayed(const Duration(milliseconds: 10000), () {
-  //     setState(() {
-  //       isLoading = true;
-  //       readlandmark();
-  //     });
-  //   });
-  // }
+  void delaydialog() {
+    Future.delayed(const Duration(milliseconds: 1000), () {
+      setState(() {
+        isLoading = true;
+        readlandmark();
+      });
+    });
+  }
 
   Future<void> getPreferences() async {
     preferences = await SharedPreferences.getInstance();
@@ -121,12 +124,7 @@ class _FavoritesState extends State<Favorites> {
       key: scaffoldKey,
       endDrawer: isLoading
           ? null
-          : MyDrawer().showDrawer(
-              context,
-              profile!,
-              name!,
-              lastname!,email!
-            ),
+          : MyDrawer().showDrawer(context, profile!, name!, lastname!, email!),
       body: SafeArea(
         child: RefreshIndicator(
           key: _refreshIndicatorKey,

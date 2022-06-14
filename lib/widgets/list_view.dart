@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:project/model/landmark_model.dart';
+import 'package:project/screen/landmark_detail.dart';
 import 'package:project/utility/my_style.dart';
 
 class Listview extends StatefulWidget {
@@ -107,6 +108,12 @@ class _ListviewState extends State<Listview> {
                     child: GestureDetector(
                       onTap: () {
                         debugPrint('คุณคลิก index = $index');
+                        MaterialPageRoute route = MaterialPageRoute(
+                          builder: (context) => LandmarkDetail(
+                            landmarkModel: widget.landmarkModel[index],
+                          ),
+                        );
+                        Navigator.push(context, route);
                       },
                       child: Row(
                         children: [
@@ -171,21 +178,60 @@ class _ListviewState extends State<Listview> {
                                   ],
                                 ),
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    Expanded(
-                                      child: Text(
-                                        'คะแนน ${widget.landmarkModel[index].landmarkScore.toString()}/5',
-                                        //overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(
-                                          color: Colors.red,
-                                          fontSize: 12.0,
-                                          fontFamily: 'FC-Minimal-Regular',
-                                        ),
-                                      ),
-                                    ),
+                                    Icon(Icons.star,
+                                        size: 15,
+                                        color: widget.landmarkModel[index]
+                                                    .landmarkScore! >=
+                                                1
+                                            ? Colors.orange
+                                            : Colors.grey),
+                                    Icon(Icons.star,
+                                        size: 15,
+                                        color: widget.landmarkModel[index]
+                                                    .landmarkScore! >=
+                                                2
+                                            ? Colors.orange
+                                            : Colors.grey),
+                                    Icon(Icons.star,
+                                        size: 15,
+                                        color: widget.landmarkModel[index]
+                                                    .landmarkScore! >=
+                                                3
+                                            ? Colors.orange
+                                            : Colors.grey),
+                                    Icon(Icons.star,
+                                        size: 15,
+                                        color: widget.landmarkModel[index]
+                                                    .landmarkScore! >=
+                                                4
+                                            ? Colors.orange
+                                            : Colors.grey),
+                                    Icon(Icons.star,
+                                        size: 15,
+                                        color: widget.landmarkModel[index]
+                                                    .landmarkScore! ==
+                                                5
+                                            ? Colors.orange
+                                            : Colors.grey),
                                   ],
                                 ),
+                                // Row(
+                                //   mainAxisAlignment: MainAxisAlignment.start,
+                                //   children: [
+                                //     Expanded(
+                                //       child: Text(
+                                //         'คะแนน ${widget.landmarkModel[index].landmarkScore.toString()}/5',
+                                //         //overflow: TextOverflow.ellipsis,
+                                //         style: const TextStyle(
+                                //           color: Colors.red,
+                                //           fontSize: 12.0,
+                                //           fontFamily: 'FC-Minimal-Regular',
+                                //         ),
+                                //       ),
+                                //     ),
+                                //   ],
+                                // ),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   // ignore: prefer_const_literals_to_create_immutables
@@ -232,12 +278,22 @@ class _ListviewState extends State<Listview> {
                                     children: [
                                       OutlinedButton.icon(
                                         style: OutlinedButton.styleFrom(
-                                        //  fixedSize: const Size(100, 10),
-                                           maximumSize: Size(screenwidth / 3.7,
-                                               screenhight / 10),
+                                          //  fixedSize: const Size(100, 10),
+                                          maximumSize: Size(screenwidth / 3.7,
+                                              screenhight / 10),
                                         ),
                                         onPressed: () {
-                                          debugPrint('คุณคลิก รายระเอียด = $index');
+                                          debugPrint(
+                                              'คุณคลิก รายระเอียด = $index');
+                                          MaterialPageRoute route =
+                                              MaterialPageRoute(
+                                            builder: (context) =>
+                                                LandmarkDetail(
+                                              landmarkModel:
+                                                  widget.landmarkModel[index],
+                                            ),
+                                          );
+                                          Navigator.push(context, route);
                                         },
                                         icon: const Icon(
                                           Icons.location_on,
@@ -261,8 +317,8 @@ class _ListviewState extends State<Listview> {
                                           fixedSize: const Size(80, 10),
                                           // maximumSize: Size(screenwidth / 4.5,
                                           //     screenhight / 15),
-                                           maximumSize: Size(screenwidth / 3.7,
-                                               screenhight / 10),
+                                          maximumSize: Size(screenwidth / 3.7,
+                                              screenhight / 10),
                                         ),
                                         onPressed: () {
                                           debugPrint('คุณคลิก นำทาง = $index');
