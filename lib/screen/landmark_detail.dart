@@ -6,6 +6,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:project/model/comment_model.dart';
 import 'package:project/model/landmark_model.dart';
+import 'package:project/screen/login.dart';
+import 'package:project/utility/alert_dialog.dart';
 import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
 import 'package:project/widgets/comment_listview.dart';
@@ -57,7 +59,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
   void delaydialog() {
     Future.delayed(const Duration(milliseconds: 50), () {
       setState(() {
-        getFavorites();
+        favorites(2);
       });
     });
   }
@@ -108,12 +110,12 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
     }
   }
 
-  Future<void> getFavorites() async {
+  Future<void> favorites(int id) async {
     String urlFavorites =
         '${MyConstant().domain}/application/post_Favorites.php';
     FormData getFavorites = FormData.fromMap(
       {
-        "id": 2,
+        "id": id,
         "User_id": userid,
         "Landmark_id": landmarkModel.landmarkId,
       },
@@ -125,6 +127,10 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
       if (success == '1') {
         setState(() {
           isFavorites = true;
+        });
+      }else{
+        setState(() {
+          isFavorites = false;
         });
       }
     });
@@ -145,6 +151,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
     screenhight = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Container(
+        color: Colors.white,
         child: RefreshIndicator(
           key: _refreshIndicatorKey,
           color: Colors.red,
@@ -153,13 +160,12 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
           },
           child: CustomScrollView(
             slivers: [
-              Container(
-                child: SliverToBoxAdapter(
-                  child: Container(
-                    width: screenwidth,
-                    height: screenhight * 0.48,
-                    child: screenwidget(context),
-                  ),
+              SliverToBoxAdapter(
+                child: Container(
+                  color: Colors.white,
+                  width: screenwidth,
+                  height: screenhight * 0.48,
+                  child: screenwidget(context),
                 ),
               ),
               SliverToBoxAdapter(
@@ -357,9 +363,32 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                             color: isFavorites ? Colors.red : Colors.black54,
                             iconSize: 30,
                             onPressed: () {
-                              setState(() {
-                                isFavorites = !isFavorites;
-                              });
+                              if (userid!.isEmpty) {
+                                MyAlertDialog().showAlertDialog(
+                                  Icons.error_outline_outlined,
+                                  context,
+                                  'กรุณาเข้าสู่ระบบ',
+                                  'กรุณาเข้าสู่ระบบก่อนที่จะเพิ่มรายการโปรด',
+                                  'ตกลง',
+                                  () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => const Login(),
+                                      ),
+                                    );
+                                  },
+                                );
+                              } else {
+                                if (isFavorites) {
+                                   favorites(0);
+                                } else {
+                                   favorites(1);
+                                }
+                                setState(() {
+                                  isFavorites = !isFavorites;
+                                });
+                              }
                               debugPrint('รายการโปรด');
                             },
                           ),

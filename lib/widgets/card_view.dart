@@ -7,11 +7,12 @@ import 'package:project/utility/my_style.dart';
 
 class CardView extends StatefulWidget {
   final LandmarkModel landmarkModel;
+  final VoidCallback readlandmark;
   final int index;
   const CardView({
     Key? key,
     required this.landmarkModel,
-    required this.index,
+    required this.index, required this.readlandmark,
   }) : super(key: key);
 
   @override
@@ -43,7 +44,7 @@ class _CardViewState extends State<CardView> {
               landmarkModel: widget.landmarkModel,
            ),
           );
-            Navigator.push(context, route);
+            Navigator.push(context, route).then((value) => widget.readlandmark());
         },
         // ignore: avoid_unnecessary_containers
         child: Card(

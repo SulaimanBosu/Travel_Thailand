@@ -186,44 +186,6 @@ class _LandmarkState extends State<Landmark> {
           child: CustomScrollView(
             slivers: [
               SliverappBar().appbar(context, screenwidth, userid!, scaffoldKey),
-              // SliverAppBar(
-              //   brightness: Brightness.light,
-              //   backgroundColor: Colors.white,
-              //   title: Text(
-              //     'Travel Thailand',
-              //     style: TextStyle(
-              //         color: Colors.redAccent,
-              //         fontSize: screenwidth * 0.055,
-              //         fontWeight: FontWeight.bold,
-              //         letterSpacing: -1.2),
-              //   ),
-              //   centerTitle: false,
-              //   floating: true,
-              //   actions: [
-              //     CircleButton(
-              //       icon: Icons.search,
-              //       iconSize: 30,
-              //       onPressed: () => debugPrint('search'),
-              //     ),
-              //     CircleButton(
-              //       icon: MdiIcons.facebookMessenger,
-              //       iconSize: 30,
-              //       onPressed: () => debugPrint('facebookMessenger'),
-              //     ),
-              //     CircleButton(
-              //       icon: MdiIcons.accountDetails,
-              //       iconSize: 30,
-              //       onPressed: () {
-              //         if (userid!.isEmpty) {
-              //           MyStyle().routeToWidget(context, const Login(), true);
-              //         } else {
-              //           scaffoldKey.currentState!.openEndDrawer();
-              //         }
-              //         debugPrint('Account');
-              //       },
-              //     )
-              //   ],
-              // ),
               isLoading
                   ? SliverToBoxAdapter(
                       child: Container(

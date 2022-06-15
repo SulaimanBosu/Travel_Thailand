@@ -88,6 +88,9 @@ class _FavoritesState extends State<Favorites> {
               landmarkCards.add(CardView(
                 landmarkModel: landmark,
                 index: index,
+                readlandmark: () {
+                  _refreshData();
+                },
               ));
               index++;
               isLoading = false;
@@ -135,44 +138,6 @@ class _FavoritesState extends State<Favorites> {
           child: CustomScrollView(
             slivers: [
               SliverappBar().appbar(context, screenwidth, userid!, scaffoldKey),
-              // SliverAppBar(
-              //   brightness: Brightness.light,
-              //   backgroundColor: Colors.white,
-              //   title: Text(
-              //     'Travel Thailand',
-              //     style: TextStyle(
-              //         color: Colors.redAccent,
-              //         fontSize: screenwidth * 0.055,
-              //         fontWeight: FontWeight.bold,
-              //         letterSpacing: -1.2),
-              //   ),
-              //   centerTitle: false,
-              //   floating: true,
-              //   actions: [
-              //     CircleButton(
-              //       icon: Icons.search,
-              //       iconSize: 30,
-              //       onPressed: () => debugPrint('search'),
-              //     ),
-              //     CircleButton(
-              //       icon: MdiIcons.facebookMessenger,
-              //       iconSize: 30,
-              //       onPressed: () => debugPrint('facebookMessenger'),
-              //     ),
-              //     CircleButton(
-              //       icon: MdiIcons.accountDetails,
-              //       iconSize: 30,
-              //       onPressed: () {
-              //         if (userid!.isEmpty) {
-              //           MyStyle().routeToWidget(context, const Login(), true);
-              //         } else {
-              //           scaffoldKey.currentState!.openEndDrawer();
-              //         }
-              //         debugPrint('Account');
-              //       },
-              //     ),
-              //   ],
-              // ),
               isLoading
                   ? SliverToBoxAdapter(
                       child: Container(
@@ -202,26 +167,7 @@ class _FavoritesState extends State<Favorites> {
                           mainAxisSpacing: 20,
                           crossAxisSpacing: 10,
                           children: landmarkCards,
-                        )
-
-              // SliverToBoxAdapter(
-              //   child: landmarkCards.isEmpty
-              //       ? Container(
-              //           width: MediaQuery.of(context).size.width,
-              //           height: MediaQuery.of(context).size.height * 0.78,
-              //           child: progress(context))
-              //       : Container(
-              //           width: MediaQuery.of(context).size.width,
-              //           height: MediaQuery.of(context).size.height * 0.78,
-              //           //color: Colors.grey[400],
-              //           child: GridView.extent(
-              //             maxCrossAxisExtent: 265,
-              //             mainAxisSpacing: 20,
-              //             crossAxisSpacing: 10,
-              //             children: landmarkCards,
-              //           ),
-              //         ),
-              // )
+                        ),
             ],
           ),
         ),

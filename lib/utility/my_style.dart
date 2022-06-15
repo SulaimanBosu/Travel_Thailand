@@ -290,7 +290,7 @@ class MyStyle {
                     textTitle,
                     style: const TextStyle(
                       fontSize: 26.0,
-                      fontWeight: FontWeight.bold,
+                    //  fontWeight: FontWeight.bold,
                       color: Colors.red,
                       // fontStyle: FontStyle.italic,
                       fontFamily: 'FC-Minimal-Regular',
@@ -306,7 +306,7 @@ class MyStyle {
             textAlign: TextAlign.center,
             style: const TextStyle(
               fontSize: 22.0,
-              fontWeight: FontWeight.bold,
+             // fontWeight: FontWeight.bold,
               color: Colors.black45,
               fontFamily: 'FC-Minimal-Regular',
             ),

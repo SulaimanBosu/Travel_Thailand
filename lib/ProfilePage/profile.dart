@@ -2,9 +2,7 @@ import 'dart:async';
 
 import 'package:blurry_modal_progress_hud/blurry_modal_progress_hud.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:project/ProfilePage/edit_profile.dart';
 import 'package:project/model/user_model.dart';
 import 'package:project/screen/login.dart';
@@ -12,7 +10,6 @@ import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
 import 'package:project/utility/signout_process.dart';
 import 'package:project/widgets/drawer.dart';
-import 'package:project/widgets/icon_button.dart';
 import 'package:project/widgets/popover.dart';
 import 'package:project/widgets/sliverAppBar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -53,7 +50,7 @@ class _ProfileState extends State<Profile> {
   }
 
   void delaydialog() {
-    Future.delayed(const Duration(milliseconds: 1000), () {
+    Future.delayed(const Duration(milliseconds: 100), () {
       setState(() {
         isLoading = false;
       });
