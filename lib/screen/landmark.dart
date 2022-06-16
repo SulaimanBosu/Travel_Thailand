@@ -7,6 +7,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:project/model/landmark_model.dart';
+import 'package:project/screen/landmark_detail.dart';
 import 'package:project/screen/login.dart';
 import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_api.dart';
@@ -15,6 +16,7 @@ import 'package:project/widgets/drawer.dart';
 import 'package:project/widgets/icon_button.dart';
 import 'package:project/widgets/list_view.dart';
 import 'package:project/widgets/sliverAppBar.dart';
+import 'package:project/widgets/test_listview.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:location/location.dart';
 
@@ -49,7 +51,6 @@ class _LandmarkState extends State<Landmark> {
   late double screenwidth;
   late double screenhight;
   bool isdata = false;
- 
 
   @override
   void initState() {
@@ -68,7 +69,7 @@ class _LandmarkState extends State<Landmark> {
     });
   }
 
-    isLoad() {
+  isLoad() {
     Future.delayed(const Duration(milliseconds: 20000), () {
       if (isdata == false) {
         setState(() {
@@ -172,54 +173,72 @@ class _LandmarkState extends State<Landmark> {
     screenwidth = MediaQuery.of(context).size.width;
     screenhight = MediaQuery.of(context).size.height;
     return Scaffold(
-      key: scaffoldKey,
-      endDrawer: isLoading
-          ? null
-          : MyDrawer().showDrawer(context, profile!, name!, lastname!, email!),
-      body: SafeArea(
-        child: RefreshIndicator(
-          key: _refreshIndicatorKey,
-          color: Colors.red,
-          onRefresh: () async {
-            _refreshData();
-          },
-          child: CustomScrollView(
-            slivers: [
-              SliverappBar().appbar(context, screenwidth, userid!, scaffoldKey),
-              isLoading
-                  ? SliverToBoxAdapter(
-                      child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height * 0.7,
-                          child: MyStyle().progress(context)),
-                    )
-                  : landmarks.isEmpty
-                      ? SliverToBoxAdapter(
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height * 0.7,
-                            child: const Center(
-                              child: Text(
-                                'ไม่พบรายการ',
-                                style: TextStyle(
-                                  color: Colors.black54,
-                                  fontSize: 24.0,
-                                  fontFamily: 'FC-Minimal-Regular',
-                                ),
-                              ),
-                            ),
-                          ),
-                        )
-                      : Listview(
-                          landmarkModel: landmarks,
-                          distances: distances,
-                          times: times,
-                          index: index,
-                        )
-            ],
-          ),
-        ),
-      ),
-    );
+        key: scaffoldKey,
+        endDrawer: isLoading
+            ? null
+            : MyDrawer()
+                .showDrawer(context, profile!, name!, lastname!, email!),
+        body:
+        
+         isLoading
+            ? Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height * 0.7,
+                child: MyStyle().progress(context),
+              )
+            : TestListview(
+                landmarkModel: landmarks,
+                distances: distances,
+                times: times,
+                index: index,
+              )
+
+        // SafeArea(
+        //   child: RefreshIndicator(
+        //     key: _refreshIndicatorKey,
+        //     color: Colors.red,
+        //     onRefresh: () async {
+        //       _refreshData();
+        //     },
+        //     child: CustomScrollView(
+        //       slivers: [
+        //         SliverappBar().appbar(context, screenwidth, userid!, scaffoldKey),
+        //         isLoading
+        //             ? SliverToBoxAdapter(
+        //                 child: Container(
+        //                     width: MediaQuery.of(context).size.width,
+        //                     height: MediaQuery.of(context).size.height * 0.7,
+        //                     child: MyStyle().progress(context)),
+        //               )
+        //             : landmarks.isEmpty
+        //                 ? SliverToBoxAdapter(
+        //                     child: Container(
+        //                       width: MediaQuery.of(context).size.width,
+        //                       height: MediaQuery.of(context).size.height * 0.7,
+        //                       child: const Center(
+        //                         child: Text(
+        //                           'ไม่พบรายการ',
+        //                           style: TextStyle(
+        //                             color: Colors.black54,
+        //                             fontSize: 24.0,
+        //                             fontFamily: 'FC-Minimal-Regular',
+        //                           ),
+        //                         ),
+        //                       ),
+        //                     ),
+        //                   )
+        //                 :
+
+        //                  Listview(
+        //                     landmarkModel: landmarks,
+        //                     distances: distances,
+        //                     times: times,
+        //                     index: index,
+        //                   ),
+        //       ],
+        //     ),
+        //   ),
+        // ),
+        );
   }
 }

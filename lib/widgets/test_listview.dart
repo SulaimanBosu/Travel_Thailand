@@ -1,40 +1,67 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:lazy_loading_list/lazy_loading_list.dart';
 import 'package:project/model/landmark_model.dart';
 import 'package:project/screen/landmark_detail.dart';
 import 'package:project/utility/my_style.dart';
 
-class Listview extends StatefulWidget {
+class TestListview extends StatefulWidget {
   final List<LandmarkModel> landmarkModel;
   final List<String> distances;
   final List<double> times;
   final int index;
-
-  const Listview({
+  const TestListview({
     Key? key,
     required this.landmarkModel,
-    required this.index,
     required this.distances,
     required this.times,
-    
+    required this.index,
   }) : super(key: key);
 
   @override
-  State<Listview> createState() => _ListviewState();
+  State<TestListview> createState() => _TestListviewState();
 }
 
-class _ListviewState extends State<Listview> {
+class _TestListviewState extends State<TestListview> {
   late double screenwidth;
   late double screenhight;
+  late List landmarkModel;
+  ScrollController _scrollController = ScrollController();
+  int _currentMax = 10;
+ // int index = 0;
+  bool _isLoading = false;
 
   @override
   void initState() {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
+    //index = widget.index;
+    
+    landmarkModel = List.generate(10, (index) => widget.landmarkModel[index]);
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        _isLoading = true;
+        getMoreData();
+      }
+    });
     super.initState();
+  }
+
+  getMoreData() {
+    debugPrint('getMoreData');
+    for (int i = _currentMax; i < _currentMax + 10; i++) {
+    //  if (i < widget.landmarkModel.length) {
+        setState(() {
+          landmarkModel.add(widget.landmarkModel[i]);
+          _currentMax = _currentMax + 10;
+          _isLoading = false;
+        });
+     // }
+      // landmarkModel.add(widget.landmarkModel[i]);
+
+    }
   }
 
   @override
@@ -42,12 +69,20 @@ class _ListviewState extends State<Listview> {
     screenwidth = MediaQuery.of(context).size.width;
     screenhight = MediaQuery.of(context).size.height;
     return Container(
-      child: SliverList(
-        delegate: SliverChildBuilderDelegate(
-          (context, index) {
+      child: ListView.builder(
+          controller: _scrollController,
+          //itemExtent: screenhight * 0.2,
+          itemCount:
+           widget.index == landmarkModel.length ? landmarkModel.length :  landmarkModel.length + 1,
+          itemBuilder: (context, index) {
+            if (index == landmarkModel.length) {
+              return const CupertinoActivityIndicator(
+                radius: 15,
+              );
+            }
             return Container(
               child: Slidable(
-                key: Key(widget.landmarkModel[index].landmarkId!),
+                key: Key(landmarkModel[index].landmarkId!),
                 // startActionPane: ActionPane(
                 //   motion: const ScrollMotion(),
                 //   dismissible: DismissiblePane(onDismissed: () {}),
@@ -77,13 +112,13 @@ class _ListviewState extends State<Listview> {
                       flex: 3,
                       onPressed: (context) {
                         Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => LandmarkDetail(
-                                  landmarkModel: widget.landmarkModel[index],
-                                ),
-                              ),
-                            );
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => LandmarkDetail(
+                              landmarkModel: landmarkModel[index],
+                            ),
+                          ),
+                        );
                       },
                       backgroundColor: const Color(0xFF0392CF),
                       foregroundColor: Colors.white,
@@ -115,7 +150,7 @@ class _ListviewState extends State<Listview> {
                         debugPrint('คุณคลิก index = $index');
                         MaterialPageRoute route = MaterialPageRoute(
                           builder: (context) => LandmarkDetail(
-                            landmarkModel: widget.landmarkModel[index],
+                            landmarkModel: landmarkModel[index],
                           ),
                         );
                         Navigator.push(context, route);
@@ -132,8 +167,7 @@ class _ListviewState extends State<Listview> {
                                 semanticContainer: true,
                                 clipBehavior: Clip.antiAliasWithSaveLayer,
                                 child: CachedNetworkImage(
-                                  imageUrl:
-                                      '${widget.landmarkModel[index].imagePath}',
+                                  imageUrl: '${landmarkModel[index].imagePath}',
                                   progressIndicatorBuilder:
                                       (context, url, downloadProgress) =>
                                           MyStyle().showProgress(),
@@ -162,8 +196,7 @@ class _ListviewState extends State<Listview> {
                                   children: [
                                     Expanded(
                                       child: Text(
-                                        widget
-                                            .landmarkModel[index].landmarkName!,
+                                        landmarkModel[index].landmarkName!,
                                         overflow: TextOverflow.ellipsis,
                                         style: MyStyle().mainTitle,
                                       ),
@@ -175,7 +208,7 @@ class _ListviewState extends State<Listview> {
                                   children: [
                                     Expanded(
                                       child: Text(
-                                        'จังหวัด ${widget.landmarkModel[index].provinceName}',
+                                        'จังหวัด ${landmarkModel[index].provinceName}',
                                         overflow: TextOverflow.ellipsis,
                                         style: MyStyle().mainH2Title,
                                       ),
@@ -186,35 +219,35 @@ class _ListviewState extends State<Listview> {
                                   children: [
                                     Icon(Icons.star,
                                         size: 15,
-                                        color: widget.landmarkModel[index]
+                                        color: landmarkModel[index]
                                                     .landmarkScore! >=
                                                 1
                                             ? Colors.orange
                                             : Colors.grey),
                                     Icon(Icons.star,
                                         size: 15,
-                                        color: widget.landmarkModel[index]
+                                        color: landmarkModel[index]
                                                     .landmarkScore! >=
                                                 2
                                             ? Colors.orange
                                             : Colors.grey),
                                     Icon(Icons.star,
                                         size: 15,
-                                        color: widget.landmarkModel[index]
+                                        color: landmarkModel[index]
                                                     .landmarkScore! >=
                                                 3
                                             ? Colors.orange
                                             : Colors.grey),
                                     Icon(Icons.star,
                                         size: 15,
-                                        color: widget.landmarkModel[index]
+                                        color: landmarkModel[index]
                                                     .landmarkScore! >=
                                                 4
                                             ? Colors.orange
                                             : Colors.grey),
                                     Icon(Icons.star,
                                         size: 15,
-                                        color: widget.landmarkModel[index]
+                                        color: landmarkModel[index]
                                                     .landmarkScore! ==
                                                 5
                                             ? Colors.orange
@@ -256,7 +289,7 @@ class _ListviewState extends State<Listview> {
                                     Expanded(
                                       flex: 3,
                                       child: Text(
-                                        'View ${widget.landmarkModel[index].landmarkView}',
+                                        'View ${landmarkModel[index].landmarkView}',
                                         //overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(
                                           color: Colors.black54,
@@ -295,7 +328,7 @@ class _ListviewState extends State<Listview> {
                                             builder: (context) =>
                                                 LandmarkDetail(
                                               landmarkModel:
-                                                  widget.landmarkModel[index],
+                                                  landmarkModel[index],
                                             ),
                                           );
                                           Navigator.push(context, route);
@@ -365,10 +398,11 @@ class _ListviewState extends State<Listview> {
                 ),
               ),
             );
-          },
-          childCount: widget.landmarkModel.length,
-        ),
-      ),
+
+            //  ListTile(
+            //   title: Text('${landmarkModel[index]}'),
+            // );
+          }),
     );
   }
 }

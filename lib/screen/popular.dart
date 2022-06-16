@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:project/model/landmark_model.dart';
+import 'package:project/screen/landmark_detail.dart';
 import 'package:project/screen/login.dart';
 import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_api.dart';
@@ -54,6 +55,7 @@ class _PopularState extends State<Popular> {
   void initState() {
     readlandmark();
     isLoad();
+
     getPreferences();
     super.initState();
   }
