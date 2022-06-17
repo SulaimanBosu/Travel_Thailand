@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:location/location.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:project/model/landmark_model.dart';
 import 'package:project/screen/login.dart';
@@ -40,11 +41,13 @@ class _RecommendState extends State<Recommend> {
   var scaffoldKey = GlobalKey<ScaffoldState>();
   late double screenwidth;
   late double screenhight;
+  double lat1 = 0, lng1 = 0;
 
   @override
   void initState() {
     readlandmark();
     getPreferences();
+    getLocation();
     super.initState();
   }
 
@@ -54,6 +57,16 @@ class _RecommendState extends State<Recommend> {
         readlandmark();
       });
     });
+  }
+
+  Future<void> getLocation() async {
+    Location location = Location();
+    LocationData locationData = await location.getLocation();
+    location.enableBackgroundMode(enable: true);
+    lat1 = locationData.latitude!;
+    lng1 = locationData.longitude!;
+    debugPrint('latitude ============ ${lat1.toString()}');
+    debugPrint('longitude ============ ${lng1.toString()}');
   }
 
   Future<void> getPreferences() async {
@@ -84,6 +97,8 @@ class _RecommendState extends State<Recommend> {
               readlandmark: () {
                 // _refreshData();
               },
+              // lat: lat1,
+              // lng: lng1,
             ));
             index++;
             isLoading = false;
@@ -131,7 +146,11 @@ class _RecommendState extends State<Recommend> {
           },
           child: CustomScrollView(
             slivers: [
-              SliverappBar().appbar(context, screenwidth, userid, scaffoldKey),
+              isLoading
+                  ? SliverappBar()
+                      .appbar(context, screenwidth, userid!, scaffoldKey, true)
+                  : SliverappBar().appbar(
+                      context, screenwidth, userid!, scaffoldKey, false),
               isLoading
                   ? SliverToBoxAdapter(
                       child: Container(

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:lazy_loading_list/lazy_loading_list.dart';
+import 'package:location/location.dart';
 import 'package:project/model/landmark_model.dart';
 import 'package:project/screen/landmark_detail.dart';
 import 'package:project/utility/my_style.dart';
@@ -31,10 +32,10 @@ class _TestListviewState extends State<TestListview> {
   late List landmarkModel;
   ScrollController _scrollController = ScrollController();
   int _currentMax = 10;
+  double lat1 = 0, lng1 = 0;
 
   @override
   void initState() {
-    
     landmarkModel = List.generate(10, (index) => widget.landmarkModel[index]);
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
@@ -45,13 +46,23 @@ class _TestListviewState extends State<TestListview> {
     super.initState();
   }
 
+  Future<void> getLocation() async {
+    Location location = Location();
+    LocationData locationData = await location.getLocation();
+    location.enableBackgroundMode(enable: true);
+    lat1 = locationData.latitude!;
+    lng1 = locationData.longitude!;
+    debugPrint('latitude ============ ${lat1.toString()}');
+    debugPrint('longitude ============ ${lng1.toString()}');
+  }
+
   getMoreData() {
     debugPrint('getMoreData');
     for (int i = _currentMax; i < _currentMax + 10; i++) {
-        setState(() {
-          landmarkModel.add(widget.landmarkModel[i]);
-          _currentMax = _currentMax + 10;
-        });
+      setState(() {
+        landmarkModel.add(widget.landmarkModel[i]);
+        _currentMax = _currentMax + 10;
+      });
     }
   }
 
@@ -63,8 +74,9 @@ class _TestListviewState extends State<TestListview> {
       child: ListView.builder(
           controller: _scrollController,
           //itemExtent: screenhight * 0.2,
-          itemCount:
-           widget.index == landmarkModel.length ? landmarkModel.length :  landmarkModel.length + 1,
+          itemCount: widget.index == landmarkModel.length
+              ? landmarkModel.length
+              : landmarkModel.length + 1,
           itemBuilder: (context, index) {
             if (index == landmarkModel.length) {
               return const CupertinoActivityIndicator(
@@ -86,6 +98,8 @@ class _TestListviewState extends State<TestListview> {
                           MaterialPageRoute(
                             builder: (context) => LandmarkDetail(
                               landmarkModel: landmarkModel[index],
+                              // lat: lat1,
+                              // lng: lng1,
                             ),
                           ),
                         );
@@ -121,6 +135,8 @@ class _TestListviewState extends State<TestListview> {
                         MaterialPageRoute route = MaterialPageRoute(
                           builder: (context) => LandmarkDetail(
                             landmarkModel: landmarkModel[index],
+                            // lat: lat1,
+                            // lng: lng1,
                           ),
                         );
                         Navigator.push(context, route);
@@ -299,6 +315,8 @@ class _TestListviewState extends State<TestListview> {
                                                 LandmarkDetail(
                                               landmarkModel:
                                                   landmarkModel[index],
+                                              // lat: lat1,
+                                              // lng: lng1,
                                             ),
                                           );
                                           Navigator.push(context, route);

@@ -6,7 +6,7 @@ import 'package:project/widgets/icon_button.dart';
 
 class SliverappBar {
   Widget appbar(BuildContext context, double screenwidth, String? userid,
-      var scaffoldKey) {
+      var scaffoldKey, bool isLoading) {
     return SliverAppBar(
       brightness: Brightness.light,
       backgroundColor: Colors.white,
@@ -22,25 +22,46 @@ class SliverappBar {
       floating: true,
       actions: [
         CircleButton(
-          icon: Icons.search,
-          iconSize: 30,
-          onPressed: () => debugPrint('search'),
-        ),
+            icon: Icons.search,
+            iconSize: 30,
+            onPressed: () {
+              if (!isLoading) {
+                if (userid == '') {
+                  MyStyle().routeToWidget(context, const Login(), true);
+                } else {
+                  scaffoldKey.currentState!.openEndDrawer();
+                }
+              } else {
+                debugPrint('search');
+              }
+            }),
         CircleButton(
-          icon: MdiIcons.facebookMessenger,
-          iconSize: 30,
-          onPressed: () => debugPrint('facebookMessenger'),
-        ),
+            icon: MdiIcons.facebookMessenger,
+            iconSize: 30,
+            onPressed: () {
+              if (!isLoading) {
+                if (userid == '') {
+                  MyStyle().routeToWidget(context, const Login(), true);
+                } else {
+                  scaffoldKey.currentState!.openEndDrawer();
+                }
+              } else {
+                debugPrint('facebookMessenger');
+              }
+            }),
         CircleButton(
           icon: MdiIcons.accountDetails,
           iconSize: 30,
           onPressed: () {
-            if (userid == '') {
-              MyStyle().routeToWidget(context, const Login(), true);
+            if (!isLoading) {
+              if (userid == '') {
+                MyStyle().routeToWidget(context, const Login(), true);
+              } else {
+                scaffoldKey.currentState!.openEndDrawer();
+              }
             } else {
-              scaffoldKey.currentState!.openEndDrawer();
+              debugPrint('Account');
             }
-            debugPrint('Account');
           },
         )
       ],

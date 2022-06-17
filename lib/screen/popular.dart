@@ -167,7 +167,11 @@ class _PopularState extends State<Popular> {
           },
           child: CustomScrollView(
             slivers: [
-              SliverappBar().appbar(context, screenwidth, userid!, scaffoldKey),
+              isLoading
+                  ? SliverappBar()
+                      .appbar(context, screenwidth, userid!, scaffoldKey, true)
+                  : SliverappBar().appbar(
+                      context, screenwidth, userid!, scaffoldKey, false),
               // SliverAppBar(
               //   brightness: Brightness.light,
               //   backgroundColor: Colors.white,
@@ -235,6 +239,8 @@ class _PopularState extends State<Popular> {
                           distances: distances,
                           times: times,
                           index: index,
+                          lat1: lat1,
+                          lng1: lng1,
                         )
               // SliverToBoxAdapter(
               //   child: popularlandmarks.isEmpty

@@ -105,15 +105,14 @@ class _ProfileState extends State<Profile> {
         child: CustomScrollView(
           slivers: [
             isLoading
-                ? SliverToBoxAdapter(
-                    child: Container(),
-                  )
+                ? SliverappBar()
+                    .appbar(context, screenwidth, userId, scaffoldKey, true)
                 : onData == false
                     ? SliverToBoxAdapter(
                         child: Container(),
                       )
-                    : SliverappBar()
-                        .appbar(context, screenwidth, userId, scaffoldKey),
+                    : SliverappBar().appbar(
+                        context, screenwidth, userId, scaffoldKey, false),
             isLoading
                 ? SliverToBoxAdapter(
                     child: Container(
@@ -146,8 +145,8 @@ class _ProfileState extends State<Profile> {
                                     },
                                     child: Stack(
                                       children: [
-                                       // showImage(context),
-                                         userprofile(),
+                                        // showImage(context),
+                                        userprofile(),
                                       ],
                                     ),
                                   ),

@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:location/location.dart';
 import 'package:project/model/comment_model.dart';
 import 'package:project/model/landmark_model.dart';
 import 'package:project/screen/login.dart';
@@ -11,12 +12,19 @@ import 'package:project/utility/alert_dialog.dart';
 import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
 import 'package:project/widgets/comment_listview.dart';
+import 'package:project/widgets/google_map_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LandmarkDetail extends StatefulWidget {
-  const LandmarkDetail({Key? key, required this.landmarkModel})
+  const LandmarkDetail(
+      {Key? key,
+      required this.landmarkModel,
+      // required this.lat,
+      // required this.lng
+      })
       : super(key: key);
   final LandmarkModel landmarkModel;
+  // final double lat, lng;
 
   @override
   State<LandmarkDetail> createState() => _LandmarkDetailState();
@@ -32,6 +40,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
   int index = 0;
   bool isLoading = true;
   bool isFavorites = false;
+  bool isLocation = false;
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
   late SharedPreferences preferences;
@@ -42,12 +51,16 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
       phone = '',
       gender = '',
       email = '';
+  final CupertinoActivityIndicator _refresh = const CupertinoActivityIndicator(
+    radius: 15,
+  );
 
   @override
   void initState() {
     landmarkModel = widget.landmarkModel;
     landmarkScore = landmarkModel.landmarkScore!;
     getPreferences();
+    //  getLocation();
     readComment();
     delaydialog();
 
@@ -60,9 +73,23 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
     Future.delayed(const Duration(milliseconds: 50), () {
       setState(() {
         favorites(2);
+        logLandmarkview();
       });
     });
   }
+
+  // Future<void> getLocation() async {
+  //   Location location = Location();
+  //   LocationData locationData = await location.getLocation();
+  //   location.enableBackgroundMode(enable: true);
+  //   lat1 = locationData.latitude!;
+  //   lng1 = locationData.longitude!;
+  //   if (lat1 != 0 && lng1 != 0) {
+  //     isLocation = true;
+  //   }
+  //   debugPrint('latitude ============ ${lat1.toString()}');
+  //   debugPrint('longitude ============ ${lng1.toString()}');
+  // }
 
   Future<void> getPreferences() async {
     preferences = await SharedPreferences.getInstance();
@@ -73,6 +100,27 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
     phone = preferences.getString('Phone')!;
     gender = preferences.getString('Gender')!;
     email = preferences.getString('Email')!;
+  }
+
+  Future<void> logLandmarkview() async {
+    String urllandmarkview =
+        '${MyConstant().domain}/application/log_landmarkview.php';
+    FormData landmarkview = FormData.fromMap(
+      {
+        "User_id": userid,
+        "Landmark_id": landmarkModel.landmarkId,
+      },
+    );
+    await Dio().post(urllandmarkview, data: landmarkview).then((value) {
+      var result = json.decode(value.data);
+      debugPrint('landmarkview == $result');
+      String success = result['success'];
+      if (success == '1') {
+        debugPrint('บันทึกข้อมูลสำเร็จ');
+      } else {
+        debugPrint('บันทึกข้อมูลล้มเหลว');
+      }
+    });
   }
 
   Future<void> readComment() async {
@@ -128,7 +176,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
         setState(() {
           isFavorites = true;
         });
-      }else{
+      } else {
         setState(() {
           isFavorites = false;
         });
@@ -263,6 +311,22 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
               ),
               isLoading
                   ? const SliverToBoxAdapter(
+                      child: Center(
+                        child: CupertinoActivityIndicator(
+                          animating: true,
+                          radius: 15,
+                        ),
+                      ),
+                    )
+                  : SliverToBoxAdapter(
+                      child: GoogleMapWidget(
+                        // lat: widget.lat,
+                        // lng: widget.lng,
+                        landmarkModel: landmarkModel,
+                      ),
+                    ),
+              isLoading
+                  ? const SliverToBoxAdapter(
                       child: CupertinoActivityIndicator(
                         animating: true,
                         radius: 15,
@@ -381,9 +445,9 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                                 );
                               } else {
                                 if (isFavorites) {
-                                   favorites(0);
+                                  favorites(0);
                                 } else {
-                                   favorites(1);
+                                  favorites(1);
                                 }
                                 setState(() {
                                   isFavorites = !isFavorites;

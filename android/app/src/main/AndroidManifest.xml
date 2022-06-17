@@ -10,6 +10,7 @@
         android:label="Travel Thailand"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyCo3iKeK_TG_3FCGLzbBn5tBpzy4GNg4E4"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"

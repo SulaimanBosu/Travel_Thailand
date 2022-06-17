@@ -137,7 +137,11 @@ class _FavoritesState extends State<Favorites> {
           },
           child: CustomScrollView(
             slivers: [
-              SliverappBar().appbar(context, screenwidth, userid!, scaffoldKey),
+              isLoading
+                  ? SliverappBar()
+                      .appbar(context, screenwidth, userid!, scaffoldKey, true)
+                  : SliverappBar().appbar(
+                      context, screenwidth, userid!, scaffoldKey, false),
               isLoading
                   ? SliverToBoxAdapter(
                       child: Container(

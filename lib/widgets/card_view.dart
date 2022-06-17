@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:location/location.dart';
 import 'package:project/model/landmark_model.dart';
 import 'package:project/screen/landmark_detail.dart';
 import 'package:project/utility/my_style.dart';
@@ -9,10 +10,14 @@ class CardView extends StatefulWidget {
   final LandmarkModel landmarkModel;
   final VoidCallback readlandmark;
   final int index;
+ // final double lat, lng;
   const CardView({
     Key? key,
     required this.landmarkModel,
-    required this.index, required this.readlandmark,
+    required this.index,
+    required this.readlandmark,
+    // required this.lat,
+    // required this.lng,
   }) : super(key: key);
 
   @override
@@ -42,12 +47,18 @@ class _CardViewState extends State<CardView> {
           MaterialPageRoute route = MaterialPageRoute(
             builder: (context) => LandmarkDetail(
               landmarkModel: widget.landmarkModel,
-           ),
+              // lat: widget.lat,
+              // lng: widget.lng,
+            ),
           );
-            Navigator.push(context, route).then((value) => widget.readlandmark());
+          Navigator.push(context, route).then((value) => widget.readlandmark());
         },
         // ignore: avoid_unnecessary_containers
         child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          elevation: 5,
           color: Colors.grey[300],
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -92,44 +103,39 @@ class _CardViewState extends State<CardView> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Row(
-                                  children: [
-                                    Icon(Icons.star,
-                                        size: 15,
-                                        color: widget.landmarkModel
-                                                    .landmarkScore! >=
-                                                1
-                                            ? Colors.orange
-                                            : Colors.grey),
-                                    Icon(Icons.star,
-                                        size: 15,
-                                        color: widget.landmarkModel
-                                                    .landmarkScore! >=
-                                                2
-                                            ? Colors.orange
-                                            : Colors.grey),
-                                    Icon(Icons.star,
-                                        size: 15,
-                                        color: widget.landmarkModel
-                                                    .landmarkScore! >=
-                                                3
-                                            ? Colors.orange
-                                            : Colors.grey),
-                                    Icon(Icons.star,
-                                        size: 15,
-                                        color: widget.landmarkModel
-                                                    .landmarkScore! >=
-                                                4
-                                            ? Colors.orange
-                                            : Colors.grey),
-                                    Icon(Icons.star,
-                                        size: 15,
-                                        color: widget.landmarkModel
-                                                    .landmarkScore! ==
-                                                5
-                                            ? Colors.orange
-                                            : Colors.grey),
-                                  ],
-                                ),
+                            children: [
+                              Icon(Icons.star,
+                                  size: 15,
+                                  color:
+                                      widget.landmarkModel.landmarkScore! >= 1
+                                          ? Colors.orange
+                                          : Colors.grey),
+                              Icon(Icons.star,
+                                  size: 15,
+                                  color:
+                                      widget.landmarkModel.landmarkScore! >= 2
+                                          ? Colors.orange
+                                          : Colors.grey),
+                              Icon(Icons.star,
+                                  size: 15,
+                                  color:
+                                      widget.landmarkModel.landmarkScore! >= 3
+                                          ? Colors.orange
+                                          : Colors.grey),
+                              Icon(Icons.star,
+                                  size: 15,
+                                  color:
+                                      widget.landmarkModel.landmarkScore! >= 4
+                                          ? Colors.orange
+                                          : Colors.grey),
+                              Icon(Icons.star,
+                                  size: 15,
+                                  color:
+                                      widget.landmarkModel.landmarkScore! == 5
+                                          ? Colors.orange
+                                          : Colors.grey),
+                            ],
+                          ),
                           // Text(
                           //   'คะแนน ${widget.landmarkModel.landmarkScore}/5',
                           //   style: const TextStyle(
@@ -168,7 +174,7 @@ class _CardViewState extends State<CardView> {
         semanticContainer: true,
         clipBehavior: Clip.antiAliasWithSaveLayer,
         child: CachedNetworkImage(
-          width:screenwidth,
+          width: screenwidth,
           height: screenhight * 0.14,
           imageUrl: imageURL,
           progressIndicatorBuilder: (context, url, downloadProgress) =>

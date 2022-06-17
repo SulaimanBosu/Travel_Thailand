@@ -11,6 +11,7 @@ class Listview extends StatefulWidget {
   final List<String> distances;
   final List<double> times;
   final int index;
+  final double lat1, lng1;
 
   const Listview({
     Key? key,
@@ -18,7 +19,8 @@ class Listview extends StatefulWidget {
     required this.index,
     required this.distances,
     required this.times,
-    
+    required this.lat1,
+    required this.lng1,
   }) : super(key: key);
 
   @override
@@ -77,13 +79,15 @@ class _ListviewState extends State<Listview> {
                       flex: 3,
                       onPressed: (context) {
                         Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => LandmarkDetail(
-                                  landmarkModel: widget.landmarkModel[index],
-                                ),
-                              ),
-                            );
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => LandmarkDetail(
+                              landmarkModel: widget.landmarkModel[index],
+                              // lat: widget.lat1,
+                              // lng: widget.lng1,
+                            ),
+                          ),
+                        );
                       },
                       backgroundColor: const Color(0xFF0392CF),
                       foregroundColor: Colors.white,
@@ -116,6 +120,8 @@ class _ListviewState extends State<Listview> {
                         MaterialPageRoute route = MaterialPageRoute(
                           builder: (context) => LandmarkDetail(
                             landmarkModel: widget.landmarkModel[index],
+                            // lat: widget.lat1,
+                            // lng: widget.lng1,
                           ),
                         );
                         Navigator.push(context, route);
@@ -296,6 +302,8 @@ class _ListviewState extends State<Listview> {
                                                 LandmarkDetail(
                                               landmarkModel:
                                                   widget.landmarkModel[index],
+                                              // lat: widget.lat1,
+                                              // lng: widget.lng1,
                                             ),
                                           );
                                           Navigator.push(context, route);
