@@ -31,18 +31,14 @@ class _TestListviewState extends State<TestListview> {
   late List landmarkModel;
   ScrollController _scrollController = ScrollController();
   int _currentMax = 10;
- // int index = 0;
-  bool _isLoading = false;
 
   @override
   void initState() {
-    //index = widget.index;
     
     landmarkModel = List.generate(10, (index) => widget.landmarkModel[index]);
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
-        _isLoading = true;
         getMoreData();
       }
     });
@@ -52,15 +48,10 @@ class _TestListviewState extends State<TestListview> {
   getMoreData() {
     debugPrint('getMoreData');
     for (int i = _currentMax; i < _currentMax + 10; i++) {
-    //  if (i < widget.landmarkModel.length) {
         setState(() {
           landmarkModel.add(widget.landmarkModel[i]);
           _currentMax = _currentMax + 10;
-          _isLoading = false;
         });
-     // }
-      // landmarkModel.add(widget.landmarkModel[i]);
-
     }
   }
 
@@ -82,27 +73,6 @@ class _TestListviewState extends State<TestListview> {
             }
             return Container(
               child: Slidable(
-                key: Key(landmarkModel[index].landmarkId!),
-                // startActionPane: ActionPane(
-                //   motion: const ScrollMotion(),
-                //   dismissible: DismissiblePane(onDismissed: () {}),
-                //   children: const [
-                //     SlidableAction(
-                //       onPressed: null,
-                //       backgroundColor: Color(0xFFFE4A49),
-                //       foregroundColor: Colors.white,
-                //       icon: Icons.delete,
-                //       label: 'Delete',
-                //     ),
-                //     SlidableAction(
-                //       onPressed: null,
-                //       backgroundColor: Color(0xFF21B7CA),
-                //       foregroundColor: Colors.white,
-                //       icon: Icons.share,
-                //       label: 'Share',
-                //     ),
-                //   ],
-                // ),
                 endActionPane: ActionPane(
                   dragDismissible: true,
                   motion: const ScrollMotion(),

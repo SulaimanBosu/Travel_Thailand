@@ -173,72 +173,68 @@ class _LandmarkState extends State<Landmark> {
     screenwidth = MediaQuery.of(context).size.width;
     screenhight = MediaQuery.of(context).size.height;
     return Scaffold(
-        key: scaffoldKey,
-        endDrawer: isLoading
-            ? null
-            : MyDrawer()
-                .showDrawer(context, profile!, name!, lastname!, email!),
-        body:
-        
-         isLoading
-            ? Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height * 0.7,
-                child: MyStyle().progress(context),
-              )
-            : TestListview(
-                landmarkModel: landmarks,
-                distances: distances,
-                times: times,
-                index: index,
-              )
+      key: scaffoldKey,
+      endDrawer: isLoading
+          ? null
+          : MyDrawer().showDrawer(context, profile!, name!, lastname!, email!),
+      body:
+          //  isLoading
+          //     ? Container(
+          //         width: MediaQuery.of(context).size.width,
+          //         height: MediaQuery.of(context).size.height * 0.7,
+          //         child: MyStyle().progress(context),
+          //       )
+          //     : TestListview(
+          //         landmarkModel: landmarks,
+          //         distances: distances,
+          //         times: times,
+          //         index: index,
+          //       )
 
-        // SafeArea(
-        //   child: RefreshIndicator(
-        //     key: _refreshIndicatorKey,
-        //     color: Colors.red,
-        //     onRefresh: () async {
-        //       _refreshData();
-        //     },
-        //     child: CustomScrollView(
-        //       slivers: [
-        //         SliverappBar().appbar(context, screenwidth, userid!, scaffoldKey),
-        //         isLoading
-        //             ? SliverToBoxAdapter(
-        //                 child: Container(
-        //                     width: MediaQuery.of(context).size.width,
-        //                     height: MediaQuery.of(context).size.height * 0.7,
-        //                     child: MyStyle().progress(context)),
-        //               )
-        //             : landmarks.isEmpty
-        //                 ? SliverToBoxAdapter(
-        //                     child: Container(
-        //                       width: MediaQuery.of(context).size.width,
-        //                       height: MediaQuery.of(context).size.height * 0.7,
-        //                       child: const Center(
-        //                         child: Text(
-        //                           'ไม่พบรายการ',
-        //                           style: TextStyle(
-        //                             color: Colors.black54,
-        //                             fontSize: 24.0,
-        //                             fontFamily: 'FC-Minimal-Regular',
-        //                           ),
-        //                         ),
-        //                       ),
-        //                     ),
-        //                   )
-        //                 :
-
-        //                  Listview(
-        //                     landmarkModel: landmarks,
-        //                     distances: distances,
-        //                     times: times,
-        //                     index: index,
-        //                   ),
-        //       ],
-        //     ),
-        //   ),
-        // ),
-        );
+          SafeArea(
+        child: RefreshIndicator(
+          key: _refreshIndicatorKey,
+          color: Colors.red,
+          onRefresh: () async {
+            _refreshData();
+          },
+          child: CustomScrollView(
+            slivers: [
+              SliverappBar().appbar(context, screenwidth, userid!, scaffoldKey),
+              isLoading
+                  ? SliverToBoxAdapter(
+                      child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height * 0.7,
+                          child: MyStyle().progress(context)),
+                    )
+                  : landmarks.isEmpty
+                      ? SliverToBoxAdapter(
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height * 0.7,
+                            child: const Center(
+                              child: Text(
+                                'ไม่พบรายการ',
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  fontSize: 24.0,
+                                  fontFamily: 'FC-Minimal-Regular',
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                      : Listview(
+                          landmarkModel: landmarks,
+                          distances: distances,
+                          times: times,
+                          index: index,
+                        ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
