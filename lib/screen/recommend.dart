@@ -1,18 +1,15 @@
 // ignore_for_file: sized_box_for_whitespace, avoid_unnecessary_containers
 
 import 'dart:convert';
-import 'dart:math';
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:project/model/landmark_model.dart';
-import 'package:project/screen/login.dart';
 import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
 import 'package:project/widgets/card_view.dart';
 import 'package:project/widgets/drawer.dart';
-import 'package:project/widgets/icon_button.dart';
 import 'package:project/widgets/sliverAppBar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -28,8 +25,6 @@ class _RecommendState extends State<Recommend> {
   List<Widget> landmarkCards = [];
   int index = 0;
   bool isLoading = true;
-  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
-      GlobalKey<RefreshIndicatorState>();
   String? userid = '',
       name = '',
       lastname = '',
@@ -47,7 +42,7 @@ class _RecommendState extends State<Recommend> {
   void initState() {
     readlandmark();
     getPreferences();
-    getLocation();
+    // getLocation();
     super.initState();
   }
 
@@ -89,16 +84,12 @@ class _RecommendState extends State<Recommend> {
         debugPrint('Value == $result');
         for (var map in result) {
           landmark = LandmarkModel.fromJson(map);
-
           setState(() {
             landmarkCards.add(CardView(
               landmarkModel: landmark,
               index: index,
-              readlandmark: () {
-                // _refreshData();
-              },
-              // lat: lat1,
-              // lng: lng1,
+              readlandmark: () {},
+            //  isFavorites: false,
             ));
             index++;
             isLoading = false;
@@ -136,53 +127,47 @@ class _RecommendState extends State<Recommend> {
           ? null
           : MyDrawer().showDrawer(context, profile!, name!, lastname!, email!),
       body: SafeArea(
-        child: RefreshIndicator(
-          key: _refreshIndicatorKey,
-          color: Colors.red,
-          onRefresh: () async {
-            setState(() {
-              _refreshData();
-            });
-          },
-          child: CustomScrollView(
-            slivers: [
-              isLoading
-                  ? SliverappBar()
-                      .appbar(context, screenwidth, userid!, scaffoldKey, true)
-                  : SliverappBar().appbar(
-                      context, screenwidth, userid!, scaffoldKey, false),
-              isLoading
-                  ? SliverToBoxAdapter(
-                      child: Container(
+        child: CustomScrollView(
+          slivers: [
+            isLoading
+                ? SliverappBar()
+                    .appbar(context, screenwidth, userid!, scaffoldKey, true)
+                : SliverappBar()
+                    .appbar(context, screenwidth, userid!, scaffoldKey, false),
+            CupertinoSliverRefreshControl(
+              onRefresh: _refreshData,
+            ),
+            isLoading
+                ? SliverToBoxAdapter(
+                    child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height * 0.7,
+                        child: MyStyle().progress(context)),
+                  )
+                : landmark.landmarkId == null
+                    ? SliverToBoxAdapter(
+                        child: Container(
                           width: MediaQuery.of(context).size.width,
                           height: MediaQuery.of(context).size.height * 0.7,
-                          child: MyStyle().progress(context)),
-                    )
-                  : landmark.landmarkId == null
-                      ? SliverToBoxAdapter(
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height * 0.7,
-                            child: const Center(
-                              child: Text(
-                                'ไม่พบรายการแนะนำ',
-                                style: TextStyle(
-                                  color: Colors.black54,
-                                  fontSize: 24.0,
-                                  fontFamily: 'FC-Minimal-Regular',
-                                ),
+                          child: const Center(
+                            child: Text(
+                              'ไม่พบรายการแนะนำ',
+                              style: TextStyle(
+                                color: Colors.black54,
+                                fontSize: 24.0,
+                                fontFamily: 'FC-Minimal-Regular',
                               ),
                             ),
                           ),
-                        )
-                      : SliverGrid.extent(
-                          maxCrossAxisExtent: 265,
-                          mainAxisSpacing: 20,
-                          crossAxisSpacing: 10,
-                          children: landmarkCards,
                         ),
-            ],
-          ),
+                      )
+                    : SliverGrid.extent(
+                        maxCrossAxisExtent: 265,
+                        mainAxisSpacing: 20,
+                        crossAxisSpacing: 10,
+                        children: landmarkCards,
+                      ),
+          ],
         ),
       ),
     );

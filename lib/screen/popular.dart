@@ -2,19 +2,16 @@ import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:project/model/landmark_model.dart';
-import 'package:project/screen/landmark_detail.dart';
-import 'package:project/screen/login.dart';
 import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_api.dart';
 import 'package:project/utility/my_style.dart';
 import 'package:project/widgets/drawer.dart';
-import 'package:project/widgets/icon_button.dart';
 import 'package:project/widgets/list_view.dart';
 import 'package:project/widgets/sliverAppBar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -32,8 +29,6 @@ class _PopularState extends State<Popular> {
   List<String> distances = [];
   List<double> times = [];
   bool isLoading = true;
-  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
-      GlobalKey<RefreshIndicatorState>();
   String? userid = '',
       name = '',
       lastname = '',
@@ -43,7 +38,7 @@ class _PopularState extends State<Popular> {
       email = '';
   late SharedPreferences preferences;
   var scaffoldKey = GlobalKey<ScaffoldState>();
-  late double lat1, lng1, lat2, lng2, distance;
+  double lat1 = 0, lng1 = 0, lat2 = 0, lng2 = 0, distance = 0;
   late String distanceString;
   int index = 0;
   double time = 0;
@@ -90,6 +85,24 @@ class _PopularState extends State<Popular> {
       }
     });
   }
+
+  // Future<void> getLocation() async {
+  //   Location location = Location();
+  //   LocationData locationData = await location.getLocation();
+  //   location.enableBackgroundMode(enable: true);
+  //   lat1 = locationData.latitude!;
+  //   lng1 = locationData.longitude!;
+  //   debugPrint('latitude ============ ${lat1.toString()}');
+  //   debugPrint('longitude ============ ${lng1.toString()}');
+  //   distance = MyApi().calculateDistance(lat1, lng1, lat2, lng2);
+  //   var myFormat = NumberFormat('#0.00', 'en_US');
+  //   distanceString = myFormat.format(distance);
+  //   distances.add(distanceString);
+
+  //   time = MyApi().calculateTime(distance);
+  //   // debugPrint('time min ============ ${time.toString()}');
+  //   times.add(time);
+  // }
 
   Future<void> readlandmark() async {
     Location location = Location();
@@ -159,105 +172,101 @@ class _PopularState extends State<Popular> {
           ? null
           : MyDrawer().showDrawer(context, profile!, name!, lastname!, email!),
       body: SafeArea(
-        child: RefreshIndicator(
-          key: _refreshIndicatorKey,
-          color: Colors.red,
-          onRefresh: () async {
-            _refreshData();
-          },
-          child: CustomScrollView(
-            slivers: [
-              isLoading
-                  ? SliverappBar()
-                      .appbar(context, screenwidth, userid!, scaffoldKey, true)
-                  : SliverappBar().appbar(
-                      context, screenwidth, userid!, scaffoldKey, false),
-              // SliverAppBar(
-              //   brightness: Brightness.light,
-              //   backgroundColor: Colors.white,
-              //   title: Text(
-              //     'Travel Thailand',
-              //     style: TextStyle(
-              //         color: Colors.redAccent,
-              //         fontSize: screenwidth * 0.055,
-              //         fontWeight: FontWeight.bold,
-              //         letterSpacing: -1.2),
-              //   ),
-              //   centerTitle: false,
-              //   floating: true,
-              //   actions: [
-              //     CircleButton(
-              //       icon: Icons.search,
-              //       iconSize: 30,
-              //       onPressed: () => debugPrint('search'),
-              //     ),
-              //     CircleButton(
-              //       icon: MdiIcons.facebookMessenger,
-              //       iconSize: 30,
-              //       onPressed: () => debugPrint('facebookMessenger'),
-              //     ),
-              //     CircleButton(
-              //       icon: MdiIcons.accountDetails,
-              //       iconSize: 30,
-              //       onPressed: () {
-              //         if (userid!.isEmpty) {
-              //           MyStyle().routeToWidget(context, const Login(), true);
-              //         } else {
-              //           scaffoldKey.currentState!.openEndDrawer();
-              //         }
-              //         debugPrint('Account');
-              //       },
-              //     )
-              //   ],
-              // ),
-              isLoading
-                  ? SliverToBoxAdapter(
-                      child: Container(
+        child: CustomScrollView(
+          slivers: [
+            isLoading
+                ? SliverappBar()
+                    .appbar(context, screenwidth, userid!, scaffoldKey, true)
+                : SliverappBar()
+                    .appbar(context, screenwidth, userid!, scaffoldKey, false),
+            // SliverAppBar(
+            //   brightness: Brightness.light,
+            //   backgroundColor: Colors.white,
+            //   title: Text(
+            //     'Travel Thailand',
+            //     style: TextStyle(
+            //         color: Colors.redAccent,
+            //         fontSize: screenwidth * 0.055,
+            //         fontWeight: FontWeight.bold,
+            //         letterSpacing: -1.2),
+            //   ),
+            //   centerTitle: false,
+            //   floating: true,
+            //   actions: [
+            //     CircleButton(
+            //       icon: Icons.search,
+            //       iconSize: 30,
+            //       onPressed: () => debugPrint('search'),
+            //     ),
+            //     CircleButton(
+            //       icon: MdiIcons.facebookMessenger,
+            //       iconSize: 30,
+            //       onPressed: () => debugPrint('facebookMessenger'),
+            //     ),
+            //     CircleButton(
+            //       icon: MdiIcons.accountDetails,
+            //       iconSize: 30,
+            //       onPressed: () {
+            //         if (userid!.isEmpty) {
+            //           MyStyle().routeToWidget(context, const Login(), true);
+            //         } else {
+            //           scaffoldKey.currentState!.openEndDrawer();
+            //         }
+            //         debugPrint('Account');
+            //       },
+            //     )
+            //   ],
+            // ),
+            CupertinoSliverRefreshControl(
+              onRefresh: _refreshData,
+            ),
+            isLoading
+                ? SliverToBoxAdapter(
+                    child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height * 0.7,
+                        child: MyStyle().progress(context)),
+                  )
+                : popularlandmarks.isEmpty
+                    ? SliverToBoxAdapter(
+                        child: Container(
                           width: MediaQuery.of(context).size.width,
                           height: MediaQuery.of(context).size.height * 0.7,
-                          child: MyStyle().progress(context)),
-                    )
-                  : popularlandmarks.isEmpty
-                      ? SliverToBoxAdapter(
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height * 0.7,
-                            child: const Center(
-                              child: Text(
-                                'ไม่พบรายการ',
-                                style: TextStyle(
-                                  color: Colors.black54,
-                                  fontSize: 24.0,
-                                  fontFamily: 'FC-Minimal-Regular',
-                                ),
+                          child: const Center(
+                            child: Text(
+                              'ไม่พบรายการ',
+                              style: TextStyle(
+                                color: Colors.black54,
+                                fontSize: 24.0,
+                                fontFamily: 'FC-Minimal-Regular',
                               ),
                             ),
                           ),
-                        )
-                      : Listview(
-                          landmarkModel: popularlandmarks,
-                          distances: distances,
-                          times: times,
-                          index: index,
-                          lat1: lat1,
-                          lng1: lng1,
-                        )
-              // SliverToBoxAdapter(
-              //   child: popularlandmarks.isEmpty
-              //     ? Container(
-              //         width: MediaQuery.of(context).size.width,
-              //         height: MediaQuery.of(context).size.height * 0.78,
-              //         child: MyStyle().progress(context))
-              //     :
-              //   Container(
-              //     width: MediaQuery.of(context).size.width,
-              //     height: MediaQuery.of(context).size.height * 0.78,
-              //     // color: Colors.grey[400],
-              //     child: showListLandmark(),
-              //   ),
-              // )
-            ],
-          ),
+                        ),
+                      )
+                    : Listview(
+                        landmarkModel: popularlandmarks,
+                        distances: distances,
+                        times: times,
+                        index: index,
+                        lat1: lat1,
+                        lng1: lng1,
+                      )
+            // SliverToBoxAdapter(
+            //   child: popularlandmarks.isEmpty
+            //     ? Container(
+            //         width: MediaQuery.of(context).size.width,
+            //         height: MediaQuery.of(context).size.height * 0.78,
+            //         child: MyStyle().progress(context))
+            //     :
+            //   Container(
+            //     width: MediaQuery.of(context).size.width,
+            //     height: MediaQuery.of(context).size.height * 0.78,
+            //     // color: Colors.grey[400],
+            //     child: showListLandmark(),
+            //   ),
+            // )
+          ],
         ),
       ),
     );

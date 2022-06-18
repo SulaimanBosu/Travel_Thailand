@@ -16,13 +16,12 @@ import 'package:project/widgets/google_map_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LandmarkDetail extends StatefulWidget {
-  const LandmarkDetail(
-      {Key? key,
-      required this.landmarkModel,
-      // required this.lat,
-      // required this.lng
-      })
-      : super(key: key);
+  const LandmarkDetail({
+    Key? key,
+    required this.landmarkModel,
+    // required this.lat,
+    // required this.lng
+  }) : super(key: key);
   final LandmarkModel landmarkModel;
   // final double lat, lng;
 
@@ -41,9 +40,8 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
   bool isLoading = true;
   bool isFavorites = false;
   bool isLocation = false;
-  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
-      GlobalKey<RefreshIndicatorState>();
   late SharedPreferences preferences;
+  double lat = 0, lng = 0;
   String? userid = '',
       name = '',
       lastname = '',
@@ -51,14 +49,12 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
       phone = '',
       gender = '',
       email = '';
-  final CupertinoActivityIndicator _refresh = const CupertinoActivityIndicator(
-    radius: 15,
-  );
 
   @override
   void initState() {
     landmarkModel = widget.landmarkModel;
     landmarkScore = landmarkModel.landmarkScore!;
+    debugPrint('latitude ============ ${landmarkModel.latitude.toString()}');
     getPreferences();
     //  getLocation();
     readComment();
@@ -70,7 +66,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
   }
 
   void delaydialog() {
-    Future.delayed(const Duration(milliseconds: 50), () {
+    Future.delayed(const Duration(milliseconds: 150), () {
       setState(() {
         favorites(2);
         logLandmarkview();
@@ -78,18 +74,18 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
     });
   }
 
-  // Future<void> getLocation() async {
-  //   Location location = Location();
-  //   LocationData locationData = await location.getLocation();
-  //   location.enableBackgroundMode(enable: true);
-  //   lat1 = locationData.latitude!;
-  //   lng1 = locationData.longitude!;
-  //   if (lat1 != 0 && lng1 != 0) {
-  //     isLocation = true;
-  //   }
-  //   debugPrint('latitude ============ ${lat1.toString()}');
-  //   debugPrint('longitude ============ ${lng1.toString()}');
-  // }
+  Future<void> getLocation() async {
+    Location location = Location();
+    LocationData locationData = await location.getLocation();
+    location.enableBackgroundMode(enable: true);
+    lat = locationData.latitude!;
+    lng = locationData.longitude!;
+    if (lat != 0 && lng != 0) {
+      isLocation = true;
+    }
+    debugPrint('latitude ============ ${lat.toString()}');
+    debugPrint('longitude ============ ${lng.toString()}');
+  }
 
   Future<void> getPreferences() async {
     preferences = await SharedPreferences.getInstance();
@@ -198,164 +194,157 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
     screenwidth = MediaQuery.of(context).size.width;
     screenhight = MediaQuery.of(context).size.height;
     return Scaffold(
-      body: Container(
-        color: Colors.white,
-        child: RefreshIndicator(
-          key: _refreshIndicatorKey,
-          color: Colors.red,
-          onRefresh: () async {
-            _refreshData();
-          },
-          child: CustomScrollView(
-            slivers: [
-              SliverToBoxAdapter(
-                child: Container(
-                  color: Colors.white,
-                  width: screenwidth,
-                  height: screenhight * 0.48,
-                  child: screenwidget(context),
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  color: Colors.white,
-                  child: Column(
-                    children: [
-                      const Padding(
-                        padding:
-                            EdgeInsets.only(left: 10.0, right: 10, bottom: 10),
-                        child: Divider(
-                          color: Colors.black54,
-                          thickness: 1.0,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            left: 10.0, right: 10, bottom: 10, top: 10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'รายละเอียด',
-                              style: TextStyle(
-                                color: Colors.black54,
-                                fontSize: 24.0,
-                                fontFamily: 'FC-Minimal-Regular',
-                              ),
-                              textAlign: TextAlign.left,
-                            ),
-                            MyStyle().mySizebox(),
-                            Text(
-                              '\t\t\t\t${landmarkModel.landmarkDetail!}',
-                              style: const TextStyle(
-                                color: Colors.black54,
-                                fontSize: 18.0,
-                                fontFamily: 'FC-Minimal-Regular',
-                              ),
-                              //textAlign: TextAlign.left,
-                            ),
-                          ],
-                        ),
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.only(
-                            left: 10.0, right: 10, bottom: 10, top: 10),
-                        child: Divider(
-                          color: Colors.black54,
-                          thickness: 1.0,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            left: 20.0, right: 10, bottom: 10),
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.location_on,
-                              color: Colors.redAccent,
-                              size: 15,
-                            ),
-                            Text(
-                              ' ตำบล ${landmarkModel.districtName!}\t',
-                              style: const TextStyle(
-                                color: Colors.black54,
-                                fontSize: 14.0,
-                                fontFamily: 'FC-Minimal-Regular',
-                              ),
-                              textAlign: TextAlign.left,
-                            ),
-                            Text(
-                              ' อำเภอ ${landmarkModel.amphurName!}\t',
-                              style: const TextStyle(
-                                color: Colors.black54,
-                                fontSize: 14.0,
-                                fontFamily: 'FC-Minimal-Regular',
-                              ),
-                              textAlign: TextAlign.left,
-                            ),
-                            Text(
-                              ' จังหวัด ${landmarkModel.provinceName!}\t',
-                              style: const TextStyle(
-                                color: Colors.black54,
-                                fontSize: 14.0,
-                                fontFamily: 'FC-Minimal-Regular',
-                              ),
-                              textAlign: TextAlign.left,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+      body: bodywidget(context),
+    );
+  }
+
+  Widget bodywidget(BuildContext context) {
+    return Container(
+      color: Colors.white,
+      child: CustomScrollView(
+        slivers: [
+          CupertinoSliverRefreshControl(
+            onRefresh: _refreshData,
+          ),
+          SliverToBoxAdapter(
+            child: Container(
+              color: Colors.white,
+              width: screenwidth,
+              height: screenhight * 0.48,
+              child: screenwidget(context),
+            ),
+          ),
+          information(),
+          SliverToBoxAdapter(
+            child: GoogleMapWidget(
+              // lat: widget.lat,
+              // lng: widget.lng,
+              landmarkModel: landmarkModel,
+            ),
+          ),
+          isLoading
+              ? const SliverToBoxAdapter(
+                  child: CupertinoActivityIndicator(
+                    animating: true,
+                    radius: 15,
                   ),
-                ),
-              ),
-              isLoading
-                  ? const SliverToBoxAdapter(
-                      child: Center(
-                        child: CupertinoActivityIndicator(
-                          animating: true,
-                          radius: 15,
-                        ),
-                      ),
-                    )
-                  : SliverToBoxAdapter(
-                      child: GoogleMapWidget(
-                        // lat: widget.lat,
-                        // lng: widget.lng,
-                        landmarkModel: landmarkModel,
-                      ),
-                    ),
-              isLoading
-                  ? const SliverToBoxAdapter(
-                      child: CupertinoActivityIndicator(
-                        animating: true,
-                        radius: 15,
-                      ),
-                    )
-                  : commentModel.userFirstName == null
-                      ? SliverToBoxAdapter(
-                          child: Container(
-                            color: Colors.white,
-                            child: const Center(
-                              widthFactor: 3,
-                              heightFactor: 3,
-                              child: Text(
-                                'ไม่มี Comment',
-                                style: TextStyle(
-                                  color: Colors.black54,
-                                  fontSize: 18.0,
-                                  fontFamily: 'FC-Minimal-Regular',
-                                ),
-                              ),
+                )
+              : commentModel.userFirstName == null
+                  ? SliverToBoxAdapter(
+                      child: Container(
+                        color: Colors.white,
+                        child: const Center(
+                          widthFactor: 3,
+                          heightFactor: 3,
+                          child: Text(
+                            'ไม่มี Comment',
+                            style: TextStyle(
+                              color: Colors.black54,
+                              fontSize: 18.0,
+                              fontFamily: 'FC-Minimal-Regular',
                             ),
                           ),
-                        )
-                      : CommentListview(
-                          commentModels: commentModels,
-                          index: index,
                         ),
-            ],
-          ),
+                      ),
+                    )
+                  : CommentListview(
+                      commentModels: commentModels,
+                      index: index,
+                    ),
+        ],
+      ),
+    );
+  }
+
+  Widget information() {
+    return SliverToBoxAdapter(
+      child: Container(
+        color: Colors.white,
+        child: Column(
+          children: [
+            const Padding(
+              padding: EdgeInsets.only(left: 10.0, right: 10, bottom: 10),
+              child: Divider(
+                color: Colors.black54,
+                thickness: 1.0,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                  left: 10.0, right: 10, bottom: 10, top: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'รายละเอียด',
+                    style: TextStyle(
+                      color: Colors.black54,
+                      fontSize: 24.0,
+                      fontFamily: 'FC-Minimal-Regular',
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                  MyStyle().mySizebox(),
+                  Text(
+                    '\t\t\t\t${landmarkModel.landmarkDetail!}',
+                    style: const TextStyle(
+                      color: Colors.black54,
+                      fontSize: 18.0,
+                      fontFamily: 'FC-Minimal-Regular',
+                    ),
+                    //textAlign: TextAlign.left,
+                  ),
+                ],
+              ),
+            ),
+            const Padding(
+              padding:
+                  EdgeInsets.only(left: 10.0, right: 10, bottom: 10, top: 10),
+              child: Divider(
+                color: Colors.black54,
+                thickness: 1.0,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 20.0, right: 10, bottom: 10),
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.location_on,
+                    color: Colors.redAccent,
+                    size: 15,
+                  ),
+                  Text(
+                    ' ตำบล ${landmarkModel.districtName!}\t',
+                    style: const TextStyle(
+                      color: Colors.black54,
+                      fontSize: 14.0,
+                      fontFamily: 'FC-Minimal-Regular',
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                  Text(
+                    ' อำเภอ ${landmarkModel.amphurName!}\t',
+                    style: const TextStyle(
+                      color: Colors.black54,
+                      fontSize: 14.0,
+                      fontFamily: 'FC-Minimal-Regular',
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                  Text(
+                    ' จังหวัด ${landmarkModel.provinceName!}\t',
+                    style: const TextStyle(
+                      color: Colors.black54,
+                      fontSize: 14.0,
+                      fontFamily: 'FC-Minimal-Regular',
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

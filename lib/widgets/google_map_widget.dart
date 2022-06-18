@@ -1,10 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:project/model/landmark_model.dart';
 import 'package:project/utility/my_style.dart';
 
 class GoogleMapWidget extends StatefulWidget {
- // final double lat, lng;
+  // final double lat, lng;
   final LandmarkModel landmarkModel;
   const GoogleMapWidget({
     Key? key,
@@ -21,7 +22,6 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
   late double screenwidth;
   late double screenhight;
   late double lat2, lng2;
-
   late CameraPosition position;
 
   @override
@@ -66,18 +66,18 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
       ),
       icon: BitmapDescriptor.defaultMarker,
       infoWindow: InfoWindow(
-        title:widget.landmarkModel.landmarkName!,
+        title: widget.landmarkModel.landmarkName!,
+        snippet: widget.landmarkModel.provinceName!,
       ),
     );
   }
 
   Set<Marker> mySet() {
-    return <Marker>
-    {
+    return <Marker>{
       //userMarker(),
-     landmarkMarker()};
+      landmarkMarker()
+    };
   }
-
 
   Set<Polyline> polyline() {
     return <Polyline>{
@@ -86,7 +86,7 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
         visible: true,
         points: <LatLng>[
           LatLng(lat2, lng2),
-         // LatLng(widget.lat, widget.lng),
+          // LatLng(widget.lat, widget.lng),
         ],
         width: 5,
         color: Colors.red,
@@ -103,7 +103,7 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
       );
     }
     return Container(
-      margin: const EdgeInsets.only(left: 10, right: 10, bottom: 32),
+      margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
       height: 300.0,
       child: lat2.isInfinite
           ? MyStyle().showProgress()
@@ -111,25 +111,28 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
               semanticContainer: true,
               clipBehavior: Clip.antiAliasWithSaveLayer,
               child: GoogleMap(
-                mapType: MapType.terrain,
+                mapType: MapType.normal,
                 compassEnabled: true,
                 mapToolbarEnabled: true,
 
                 indoorViewEnabled: true,
                 trafficEnabled: true,
                 buildingsEnabled: true,
-
+            //    circles:  <Circle>{ Circle(
+                  // circleId: const CircleId('circle'),
+                  // center: LatLng(lat2, lng2),
+                  // radius: 10,fillColor: Colors.red)},
                 rotateGesturesEnabled: true,
                 scrollGesturesEnabled: true,
                 zoomControlsEnabled: true,
                 zoomGesturesEnabled: true,
-                // liteModeEnabled: true,
-                //tiltGesturesEnabled: true,
-                //myLocationButtonEnabled: true,
+               // liteModeEnabled: false,
+                tiltGesturesEnabled: true,
+                myLocationButtonEnabled: true,
                 myLocationEnabled: true,
                 initialCameraPosition: position,
 
-                onMapCreated: (controller) {},
+                // onMapCreated: (controller) {},
                 markers: mySet(),
                 //polylines: polyline(),
               ),
