@@ -47,7 +47,7 @@ class _LandmarkState extends State<Landmark> {
   void initState() {
     readlandmark();
     isLoad();
-   // getLocation();
+    // getLocation();
     getPreferences();
     super.initState();
   }

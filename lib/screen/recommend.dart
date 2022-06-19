@@ -89,7 +89,7 @@ class _RecommendState extends State<Recommend> {
               landmarkModel: landmark,
               index: index,
               readlandmark: () {},
-            //  isFavorites: false,
+             // isFavorites: false,
             ));
             index++;
             isLoading = false;

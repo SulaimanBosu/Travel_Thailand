@@ -52,6 +52,7 @@ dependencies:
   blurry_modal_progress_hud: ^1.0.3
   lazy_loading_list: ^1.0.1
   google_maps_flutter: ^2.1.8
+  carousel_slider: ^4.1.1
     
 
 dev_dependencies:

@@ -23,6 +23,7 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
   late double screenhight;
   late double lat2, lng2;
   late CameraPosition position;
+  late GoogleMapController _controller;
 
   @override
   void initState() {
@@ -101,6 +102,7 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
         target: latLng,
         zoom: 6.0,
       );
+      
     }
     return Container(
       margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
@@ -114,23 +116,23 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
                 mapType: MapType.normal,
                 compassEnabled: true,
                 mapToolbarEnabled: true,
-
                 indoorViewEnabled: true,
                 trafficEnabled: true,
                 buildingsEnabled: true,
-            //    circles:  <Circle>{ Circle(
-                  // circleId: const CircleId('circle'),
-                  // center: LatLng(lat2, lng2),
-                  // radius: 10,fillColor: Colors.red)},
+                //    circles:  <Circle>{ Circle(
+                // circleId: const CircleId('circle'),
+                // center: LatLng(lat2, lng2),
+                // radius: 10,fillColor: Colors.red)},
                 rotateGesturesEnabled: true,
                 scrollGesturesEnabled: true,
                 zoomControlsEnabled: true,
                 zoomGesturesEnabled: true,
-               // liteModeEnabled: false,
+                // liteModeEnabled: false,
                 tiltGesturesEnabled: true,
                 myLocationButtonEnabled: true,
                 myLocationEnabled: true,
-                initialCameraPosition: position,
+                initialCameraPosition:position,
+                minMaxZoomPreference: const MinMaxZoomPreference(6, 19),
 
                 // onMapCreated: (controller) {},
                 markers: mySet(),

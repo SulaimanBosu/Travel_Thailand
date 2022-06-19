@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:blurry_modal_progress_hud/blurry_modal_progress_hud.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:project/ProfilePage/edit_profile.dart';
 import 'package:project/model/user_model.dart';
@@ -138,7 +139,8 @@ class _ProfileState extends State<Profile> {
                                   //  const SizedBox(height: 10,),
                                   InkWell(
                                     onTap: () {
-                                      navigateSecondPage(const EditProfile());
+                                      _bottomSheet();
+                                      // navigateSecondPage(const EditProfile());
                                       // _bottomSheet();
                                       // showBottomsheet();
                                       // navigateSecondPage(const EditImagePage());
@@ -634,7 +636,7 @@ class _ProfileState extends State<Profile> {
                             horizontal: 16.0,
                           ),
                           child: DefaultTextStyle(
-                            child: Text('เลือกรูปภาพ'),
+                            child: Text('โปรไฟล์'),
                             style: TextStyle(
                               color: Colors.redAccent,
                               fontSize: 24.0,
@@ -649,6 +651,7 @@ class _ProfileState extends State<Profile> {
                   InkWell(
                     onTap: () {
                       Navigator.pop(context);
+                      navigateSecondPage(FullImageProfile(imageProfile: file));
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(
@@ -673,7 +676,7 @@ class _ProfileState extends State<Profile> {
                               horizontal: 16.0,
                             ),
                             child: DefaultTextStyle(
-                              child: Text('ถ่ายภาพ'),
+                              child: Text('ดูรูปโปรไฟล์'),
                               style: TextStyle(
                                 color: Colors.blueAccent,
                                 fontSize: 24.0,
@@ -688,6 +691,7 @@ class _ProfileState extends State<Profile> {
                   InkWell(
                     onTap: () {
                       Navigator.pop(context);
+                      navigateSecondPage(const EditProfile());
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(
@@ -712,7 +716,7 @@ class _ProfileState extends State<Profile> {
                               horizontal: 16.0,
                             ),
                             child: DefaultTextStyle(
-                              child: Text('เลือกที่มีอยู่'),
+                              child: Text('แก้ไข'),
                               style: TextStyle(
                                 color: Colors.blueAccent,
                                 fontSize: 24.0,
@@ -783,117 +787,78 @@ class _ProfileState extends State<Profile> {
       },
     );
   }
+}
 
-  void _handleFABPressed() {
-    showModalBottomSheet<int>(
-      backgroundColor: Colors.transparent,
-      context: context,
-      builder: (context) {
-        return Popover(
-          child: Column(
-            children: [
-              _buildListItem(
-                context,
-                title: const Text('Total Task'),
-                leading: const Icon(Icons.check_circle_outline),
-                trailing: Switch(
-                  value: true,
-                  onChanged: (value) {},
-                ),
-              ),
-              _buildListItem(
-                context,
-                title: const Text('Due Soon'),
-                leading: const Icon(Icons.inbox),
-                trailing: Switch(
-                  value: false,
-                  onChanged: (value) {},
-                ),
-              ),
-              _buildListItem(
-                context,
-                title: const Text('Completed'),
-                leading: const Icon(Icons.check_circle),
-                trailing: Switch(
-                  value: false,
-                  onChanged: (value) {},
-                ),
-              ),
-              _buildListItem(
-                context,
-                title: const Text('Working On'),
-                leading: const Icon(Icons.flag),
-                trailing: Switch(
-                  value: false,
-                  onChanged: (value) {},
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
+class FullImageProfile extends StatefulWidget {
+  const FullImageProfile({Key? key, required this.imageProfile})
+      : super(key: key);
+  final String imageProfile;
 
-  Widget _buildListItem(
-    BuildContext context, {
-    Widget? title,
-    Widget? leading,
-    Widget? trailing,
-  }) {
-    final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 24.0,
-        vertical: 10.0,
-      ),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: theme.dividerColor,
-            width: 0.5,
-          ),
-        ),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          if (leading != null) leading,
-          if (title != null)
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16.0,
-              ),
-              child: DefaultTextStyle(
-                child: title,
-                style: const TextStyle(
-                  color: Colors.blueAccent,
-                  fontSize: 20.0,
-                  fontFamily: 'FC-Minimal-Regular',
-                ),
+  @override
+  State<FullImageProfile> createState() => _FullImageProfileState();
+}
+
+class _FullImageProfileState extends State<FullImageProfile> {
+  bool isLoading = true;
+  double minScele = 1.0;
+  double maxScele = 4.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.imageProfile.isEmpty
+        ? Image.asset('images/iconprofile.png')
+        : InteractiveViewer(
+            clipBehavior: Clip.none,
+            minScale: minScele,
+            maxScale: maxScele,
+            panEnabled: false,
+            child: Scaffold(
+              backgroundColor: Colors.black,
+              body: Stack(
+                alignment: Alignment.topRight,
+                children: [
+                  InteractiveViewer(
+                    clipBehavior: Clip.none,
+                    minScale: minScele,
+                    maxScale: maxScele,
+                    panEnabled: false,
+                    child: Container(
+                      color: Colors.transparent,
+                      child: Center(
+                        child: CachedNetworkImage(
+                          imageUrl: MyConstant().domain + widget.imageProfile,
+                          progressIndicatorBuilder:
+                              (context, url, downloadProgress) => const Center(
+                            child: CupertinoActivityIndicator(
+                              animating: true,
+                              color: Colors.white,
+                              radius: 15,
+                            ),
+                          ),
+                          errorWidget: (context, url, error) =>
+                              Image.asset('images/iconprofile.png'),
+                          fit: BoxFit.cover,
+                          // height: height,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    child: IconButton(
+                      icon: const Icon(
+                        Icons.close,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                    top: 40,
+                    right: 20,
+                  ),
+                ],
               ),
             ),
-          const Spacer(),
-          if (trailing != null) trailing,
-        ],
-      ),
-    );
-  }
-
-  Widget progress() {
-    return Center(
-      child: BlurryModalProgressHUD(
-        inAsyncCall: isLoading,
-        blurEffectIntensity: 4,
-        // progressIndicator: SpinKitFadingCircle(
-        // color: Colors.redAccent,
-        // size: 90.0,
-        // ),
-        dismissible: false,
-        opacity: 0.4,
-        color: Colors.black87,
-        child: const Scaffold(),
-      ),
-    );
+          );
   }
 }

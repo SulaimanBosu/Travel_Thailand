@@ -87,7 +87,7 @@ class _FavoritesState extends State<Favorites> {
                 readlandmark: () {
                   _refreshData();
                 }, 
-              //  isFavorites: true,
+               // isFavorites: true,
               ));
               index++;
               isLoading = false;

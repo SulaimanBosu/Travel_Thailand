@@ -4,9 +4,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:location/location.dart';
 import 'package:project/model/comment_model.dart';
 import 'package:project/model/landmark_model.dart';
+import 'package:project/screen/full_image.dart';
 import 'package:project/screen/login.dart';
 import 'package:project/utility/alert_dialog.dart';
 import 'package:project/utility/myConstant.dart';
@@ -52,6 +54,9 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
 
   @override
   void initState() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
     landmarkModel = widget.landmarkModel;
     landmarkScore = landmarkModel.landmarkScore!;
     debugPrint('latitude ============ ${landmarkModel.latitude.toString()}');
@@ -64,6 +69,16 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
     // TODO: implement initState
     super.initState();
   }
+
+  // @override
+  // void dispose() {
+  //   SystemChrome.setPreferredOrientations([
+  //     DeviceOrientation.portraitDown,
+  //     DeviceOrientation.landscapeRight,
+  //     DeviceOrientation.landscapeLeft,
+  //   ]);
+  //   super.dispose();
+  // }
 
   void delaydialog() {
     Future.delayed(const Duration(milliseconds: 150), () {
@@ -546,26 +561,38 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
     );
   }
 
-  Container showImage(BuildContext context, String imageURL) {
-    return Container(
-      margin: const EdgeInsetsDirectional.only(start: 0.0, end: 0.0),
-      width: MediaQuery.of(context).size.width * 1,
-      height: MediaQuery.of(context).size.height * 0.35,
-      child: Card(
-        semanticContainer: true,
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        child: CachedNetworkImage(
-          imageUrl: imageURL,
-          progressIndicatorBuilder: (context, url, downloadProgress) =>
-              MyStyle().showProgress(),
-          errorWidget: (context, url, error) => const Icon(Icons.error),
-          fit: BoxFit.cover,
+  Widget showImage(BuildContext context, String imageURL) {
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => FullImage(
+              landmarkId: landmarkModel.landmarkId!,
+            ),
+          ),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsetsDirectional.only(start: 0.0, end: 0.0),
+        width: MediaQuery.of(context).size.width * 1,
+        height: MediaQuery.of(context).size.height * 0.35,
+        child: Card(
+          semanticContainer: true,
+          clipBehavior: Clip.antiAliasWithSaveLayer,
+          child: CachedNetworkImage(
+            imageUrl: imageURL,
+            progressIndicatorBuilder: (context, url, downloadProgress) =>
+                MyStyle().showProgress(),
+            errorWidget: (context, url, error) => const Icon(Icons.error),
+            fit: BoxFit.cover,
+          ),
+          // shape: RoundedRectangleBorder(
+          //   borderRadius: BorderRadius.circular(30.0),
+          // ),
+          elevation: 5,
+          margin: const EdgeInsets.all(0),
         ),
-        // shape: RoundedRectangleBorder(
-        //   borderRadius: BorderRadius.circular(30.0),
-        // ),
-        elevation: 5,
-        margin: const EdgeInsets.all(0),
       ),
     );
   }
