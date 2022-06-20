@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dio/dio.dart';
@@ -47,6 +48,11 @@ class _FullImageState extends State<FullImage>
 
   @override
   void dispose() {
+    // Platform.isIOS
+    //     ? SystemChrome.setPreferredOrientations([
+    //         DeviceOrientation.portraitDown,
+    //       ]).then((value) => debugPrint('setPreferredOrientations'))
+    //     : null;
     //  _animationController.dispose();
     super.dispose();
   }

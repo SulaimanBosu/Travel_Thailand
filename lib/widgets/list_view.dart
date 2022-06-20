@@ -1,3 +1,7 @@
+// ignore_for_file: deprecated_member_use
+
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -5,6 +9,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:project/model/landmark_model.dart';
 import 'package:project/screen/landmark_detail.dart';
 import 'package:project/utility/my_style.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Listview extends StatefulWidget {
   final List<LandmarkModel> landmarkModel;
@@ -345,6 +350,11 @@ class _ListviewState extends State<Listview> {
                                         ),
                                         onPressed: () {
                                           debugPrint('คุณคลิก นำทาง = $index');
+                                          launchMapUrl(
+                                              widget.landmarkModel[index]
+                                                  .latitude!,
+                                              widget.landmarkModel[index]
+                                                  .longitude!);
                                         },
                                         icon: const Icon(
                                           Icons.navigation_outlined,
@@ -389,4 +399,33 @@ class _ListviewState extends State<Listview> {
       ),
     );
   }
+
+  Future<void> launchMapUrl(String latitude, String longitude) async {
+    double lat = double.parse(latitude);
+    double lng = double.parse(longitude);
+      var httpsUri = Uri(
+        scheme: 'https',
+        host: 'www.google.com',
+        path: '/maps/search/',
+        queryParameters: {
+          'api': '1',
+          'query': '$lat,$lng',
+        },
+      );
+      try {
+        final bool nativeAppLaunchSucceeded = await launchUrl(
+          httpsUri,
+          mode: LaunchMode.externalNonBrowserApplication,
+        );
+        if (!nativeAppLaunchSucceeded) {
+          await launchUrl(
+            httpsUri,
+            mode: LaunchMode.inAppWebView,
+          );
+        }
+      } catch (error) { 
+        debugPrint('คุณคลิก นำทาง error = $error');
+        throw ("Cannot launch Apple map");
+      }
+    }
 }
