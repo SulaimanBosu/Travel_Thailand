@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:project/model/user_model.dart';
 import 'package:project/screen/favorites.dart';
@@ -32,6 +33,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
     indexPage = widget.index;
     delaydialog();
     listwidgets.add(const Recommend());

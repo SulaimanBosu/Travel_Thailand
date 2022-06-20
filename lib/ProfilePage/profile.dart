@@ -69,6 +69,7 @@ class _ProfileState extends State<Profile> {
     email = preferences.getString('Email')!;
     password = preferences.getString('Password')!;
     debugPrint('User id ====> $userId');
+    debugPrint('Profile ====> ${MyConstant().domain + file}');
     if (userId.isNotEmpty || userId != '') {
       setState(() {
         onData = true;

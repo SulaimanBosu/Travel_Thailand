@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
@@ -42,6 +43,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
   bool isLoading = true;
   bool isFavorites = false;
   bool isLocation = false;
+  bool moreComment = false;
   late SharedPreferences preferences;
   double lat = 0, lng = 0;
   String? userid = '',
@@ -70,15 +72,10 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
     super.initState();
   }
 
-  // @override
-  // void dispose() {
-  //   SystemChrome.setPreferredOrientations([
-  //     DeviceOrientation.portraitDown,
-  //     DeviceOrientation.landscapeRight,
-  //     DeviceOrientation.landscapeLeft,
-  //   ]);
-  //   super.dispose();
-  // }
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   void delaydialog() {
     Future.delayed(const Duration(milliseconds: 150), () {
@@ -217,6 +214,9 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
     return Container(
       color: Colors.white,
       child: CustomScrollView(
+        shrinkWrap: true,
+        primary: false,
+        physics: const BouncingScrollPhysics(),
         slivers: [
           CupertinoSliverRefreshControl(
             onRefresh: _refreshData,
@@ -237,6 +237,35 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
               landmarkModel: landmarkModel,
             ),
           ),
+          SliverToBoxAdapter(
+              child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Divider(
+                color: Colors.grey.shade200,
+                thickness: 10,
+              ),
+              Container(
+                margin: const EdgeInsets.only(
+                    top: 10, left: 10, right: 10, bottom: 5),
+                child: Text(
+                  commentModel.userFirstName == null ?'ความคิดเห็น (0)':'ความคิดเห็น (${commentModels.length})',
+                  style: const TextStyle(
+                    color: Colors.black54,
+                    fontSize: 18.0,
+                    fontFamily: 'FC-Minimal-Regular',
+                  ),
+                  textAlign: TextAlign.start,
+                ),
+              ),
+              const Divider(
+                // indent: 10,
+                // endIndent: 10,
+                color: Colors.black12,
+                thickness: 1,
+              ),
+            ],
+          )),
           isLoading
               ? const SliverToBoxAdapter(
                   child: CupertinoActivityIndicator(
@@ -265,7 +294,80 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                   : CommentListview(
                       commentModels: commentModels,
                       index: index,
+                      moreComment: moreComment,
                     ),
+          commentModels.length > 3
+              ? SliverToBoxAdapter(
+                  child: moreComment
+                      ? Column(
+                          children: [
+                            const Icon(Icons.arrow_drop_up,),
+                            InkWell(
+                              onTap: () {
+                                setState(() {
+                                  moreComment = false;
+                                });
+                              },
+                              child: Container(
+                                
+                                width: screenwidth,
+                                color: Colors.white,
+                                child: const Center(
+                                  widthFactor: 1,
+                                  heightFactor: 2,
+                                  child: Text(
+                                    'Comment น้อยลง',
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                      fontSize: 18.0,
+                                      fontFamily: 'FC-Minimal-Regular',
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Divider(
+                              color: Colors.grey.shade200,
+                              thickness: 1,
+                            ),
+                          ],
+                        )
+                      : Column(
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                setState(() {
+                                  moreComment = true;
+                                });
+                              },
+                              child: Container(
+                                width: screenwidth,
+                                color: Colors.white,
+                                child: const Center(
+                                  widthFactor: 1,
+                                  heightFactor: 2,
+                                  child: Text(
+                                    'Comment เพิ่มเติม...',
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                      fontSize: 18.0,
+                                      fontFamily: 'FC-Minimal-Regular',
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const Icon(Icons.arrow_drop_down),
+                            Divider(
+                              color: Colors.grey.shade200,
+                              thickness: 1,
+                            ),
+                          ],
+                        ),
+                )
+              : SliverToBoxAdapter(
+                  child: Container(),
+                )
         ],
       ),
     );
@@ -277,11 +379,11 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
         color: Colors.white,
         child: Column(
           children: [
-            const Padding(
-              padding: EdgeInsets.only(left: 10.0, right: 10, bottom: 10),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10, top: 10),
               child: Divider(
-                color: Colors.black54,
-                thickness: 1.0,
+                color: Colors.grey.shade200,
+                thickness: 10.0,
               ),
             ),
             Padding(
@@ -290,14 +392,26 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'รายละเอียด',
-                    style: TextStyle(
-                      color: Colors.black54,
-                      fontSize: 24.0,
-                      fontFamily: 'FC-Minimal-Regular',
+                  Card(
+                    semanticContainer: true,
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5.0),
                     ),
-                    textAlign: TextAlign.left,
+                    elevation: 5,
+                    child: const Padding(
+                      padding: EdgeInsets.only(
+                          left: 10.0, right: 10, bottom: 10, top: 10),
+                      child: Text(
+                        'รายละเอียด',
+                        style: TextStyle(
+                          color: Colors.black54,
+                          fontSize: 24.0,
+                          fontFamily: 'FC-Minimal-Regular',
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
                   ),
                   MyStyle().mySizebox(),
                   Text(
@@ -312,12 +426,11 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                 ],
               ),
             ),
-            const Padding(
-              padding:
-                  EdgeInsets.only(left: 10.0, right: 10, bottom: 10, top: 10),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10, top: 10),
               child: Divider(
-                color: Colors.black54,
-                thickness: 1.0,
+                color: Colors.grey.shade200,
+                thickness: 10.0,
               ),
             ),
             Padding(
@@ -571,7 +684,11 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
               landmarkId: landmarkModel.landmarkId!,
             ),
           ),
-        );
+        ).then((value) {
+          SystemChrome.setPreferredOrientations([
+            DeviceOrientation.portraitUp,
+          ]);
+        });
       },
       child: Container(
         margin: const EdgeInsetsDirectional.only(start: 0.0, end: 0.0),

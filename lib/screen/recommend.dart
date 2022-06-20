@@ -1,9 +1,11 @@
 // ignore_for_file: sized_box_for_whitespace, avoid_unnecessary_containers
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:location/location.dart';
 import 'package:project/model/landmark_model.dart';
 import 'package:project/utility/myConstant.dart';
@@ -44,6 +46,12 @@ class _RecommendState extends State<Recommend> {
     getPreferences();
     // getLocation();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
   }
 
   void delaydialog() {
@@ -89,7 +97,7 @@ class _RecommendState extends State<Recommend> {
               landmarkModel: landmark,
               index: index,
               readlandmark: () {},
-             // isFavorites: false,
+              // isFavorites: false,
             ));
             index++;
             isLoading = false;
@@ -128,6 +136,9 @@ class _RecommendState extends State<Recommend> {
           : MyDrawer().showDrawer(context, profile!, name!, lastname!, email!),
       body: SafeArea(
         child: CustomScrollView(
+          shrinkWrap: true,
+          primary: false,
+          physics: const BouncingScrollPhysics(),
           slivers: [
             isLoading
                 ? SliverappBar()

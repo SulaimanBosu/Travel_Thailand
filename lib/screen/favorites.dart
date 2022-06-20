@@ -86,8 +86,8 @@ class _FavoritesState extends State<Favorites> {
                 index: index,
                 readlandmark: () {
                   _refreshData();
-                }, 
-               // isFavorites: true,
+                },
+                // isFavorites: true,
               ));
               index++;
               isLoading = false;
@@ -127,6 +127,9 @@ class _FavoritesState extends State<Favorites> {
           : MyDrawer().showDrawer(context, profile!, name!, lastname!, email!),
       body: SafeArea(
         child: CustomScrollView(
+          shrinkWrap: true,
+          primary: false,
+          physics: const BouncingScrollPhysics(),
           slivers: [
             isLoading
                 ? SliverappBar()

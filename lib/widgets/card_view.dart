@@ -11,7 +11,7 @@ class CardView extends StatefulWidget {
   final LandmarkModel landmarkModel;
   final VoidCallback readlandmark;
   final int index;
- // final double lat, lng;
+  // final double lat, lng;
   const CardView({
     Key? key,
     required this.landmarkModel,
@@ -52,7 +52,12 @@ class _CardViewState extends State<CardView> {
               // lng: widget.lng,
             ),
           );
-          Navigator.push(context, route).then((value) => widget.readlandmark());
+          Navigator.push(context, route).then((value) {
+            widget.readlandmark();
+            SystemChrome.setPreferredOrientations([
+              DeviceOrientation.portraitUp,
+            ]);
+          });
         },
         // ignore: avoid_unnecessary_containers
         child: Card(
@@ -192,4 +197,3 @@ class _CardViewState extends State<CardView> {
     );
   }
 }
-

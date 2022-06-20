@@ -155,9 +155,12 @@ class _PopularState extends State<Popular> {
   }
 
   Future _refreshData() async {
-    popularlandmarks.clear();
     setState(() {
       isLoading = true;
+      popularlandmarks.clear();
+      distances.clear();
+      times.clear();
+      index = 0;
       readlandmark();
     });
   }
@@ -173,50 +176,15 @@ class _PopularState extends State<Popular> {
           : MyDrawer().showDrawer(context, profile!, name!, lastname!, email!),
       body: SafeArea(
         child: CustomScrollView(
+          shrinkWrap: true,
+          primary: false,
+          physics: const BouncingScrollPhysics(),
           slivers: [
             isLoading
                 ? SliverappBar()
                     .appbar(context, screenwidth, userid!, scaffoldKey, true)
                 : SliverappBar()
                     .appbar(context, screenwidth, userid!, scaffoldKey, false),
-            // SliverAppBar(
-            //   brightness: Brightness.light,
-            //   backgroundColor: Colors.white,
-            //   title: Text(
-            //     'Travel Thailand',
-            //     style: TextStyle(
-            //         color: Colors.redAccent,
-            //         fontSize: screenwidth * 0.055,
-            //         fontWeight: FontWeight.bold,
-            //         letterSpacing: -1.2),
-            //   ),
-            //   centerTitle: false,
-            //   floating: true,
-            //   actions: [
-            //     CircleButton(
-            //       icon: Icons.search,
-            //       iconSize: 30,
-            //       onPressed: () => debugPrint('search'),
-            //     ),
-            //     CircleButton(
-            //       icon: MdiIcons.facebookMessenger,
-            //       iconSize: 30,
-            //       onPressed: () => debugPrint('facebookMessenger'),
-            //     ),
-            //     CircleButton(
-            //       icon: MdiIcons.accountDetails,
-            //       iconSize: 30,
-            //       onPressed: () {
-            //         if (userid!.isEmpty) {
-            //           MyStyle().routeToWidget(context, const Login(), true);
-            //         } else {
-            //           scaffoldKey.currentState!.openEndDrawer();
-            //         }
-            //         debugPrint('Account');
-            //       },
-            //     )
-            //   ],
-            // ),
             CupertinoSliverRefreshControl(
               onRefresh: _refreshData,
             ),

@@ -124,7 +124,11 @@ class _ListviewState extends State<Listview> {
                             // lng: widget.lng1,
                           ),
                         );
-                        Navigator.push(context, route);
+                        Navigator.push(context, route).then((value) {
+                          SystemChrome.setPreferredOrientations([
+                            DeviceOrientation.portraitUp,
+                          ]);
+                        });
                       },
                       child: Row(
                         children: [
@@ -306,7 +310,13 @@ class _ListviewState extends State<Listview> {
                                               // lng: widget.lng1,
                                             ),
                                           );
-                                          Navigator.push(context, route);
+                                          Navigator.push(context, route)
+                                              .then((value) {
+                                            SystemChrome
+                                                .setPreferredOrientations([
+                                              DeviceOrientation.portraitUp,
+                                            ]);
+                                          });
                                         },
                                         icon: const Icon(
                                           Icons.location_on,

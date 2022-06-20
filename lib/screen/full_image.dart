@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dio/dio.dart';
@@ -9,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:project/model/image_model.dart';
 import 'package:project/utility/myConstant.dart';
+import 'package:project/utility/my_style.dart';
 
 class FullImage extends StatefulWidget {
   const FullImage({
@@ -25,7 +24,6 @@ class _FullImageState extends State<FullImage>
     with SingleTickerProviderStateMixin {
   int _current = 0;
   final CarouselController _controller = CarouselController();
-  late TransformationController _transformationController;
   // late AnimationController _animationController;
   // Animation<Matrix4>? _animation;
   bool isLoading = true;
@@ -40,7 +38,6 @@ class _FullImageState extends State<FullImage>
       DeviceOrientation.landscapeLeft,
     ]);
     getImage();
-    _transformationController = TransformationController();
     // _animationController = AnimationController(
     //   vsync: this,
     // //  duration: Duration(milliseconds: 200),
@@ -50,10 +47,6 @@ class _FullImageState extends State<FullImage>
 
   @override
   void dispose() {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitDown,
-    ]);
-    _transformationController.dispose();
     //  _animationController.dispose();
     super.dispose();
   }
@@ -65,20 +58,93 @@ class _FullImageState extends State<FullImage>
         "Landmark_id": widget.landmarkId,
       },
     );
-    await Dio().post(urlgetImage, data: getImage).then((value) {
-      var result = json.decode(value.data);
-      debugPrint('data == $result');
+    try {
+      await Dio().post(urlgetImage, data: getImage).then((value) {
+        var result = json.decode(value.data);
+        debugPrint('data == $result');
 
-      for (var map in result) {
-        ImageModel imageModel = ImageModel.fromJson(map);
-        setState(
-          () {
-            imgList.add(imageModel.imagePath!);
-            isLoading = false;
-          },
+        for (var map in result) {
+          ImageModel imageModel = ImageModel.fromJson(map);
+          setState(
+            () {
+              imgList.add(imageModel.imagePath!);
+              isLoading = false;
+            },
+          );
+        }
+      });
+    } catch (error) {
+      debugPrint("ดาวน์โหลดไม่สำเร็จ: $error");
+      showdialog(context, 'ล้มเหลว', 'ไม่พบการเชื่อมต่อเครือข่ายอินเตอร์เน็ต');
+      setState(
+        () {
+          isLoading = false;
+        },
+      );
+    }
+  }
+
+  showdialog(
+    BuildContext context,
+    String textTitle,
+    String textContent,
+  ) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Column(
+            children: [
+              Row(
+                children: [
+                  const Icon(
+                    Icons.error_outline_outlined,
+                    color: Colors.red,
+                  ),
+                  const SizedBox(
+                    width: 8,
+                  ),
+                  Text(
+                    textTitle,
+                    style: const TextStyle(
+                      fontSize: 26.0,
+                      //  fontWeight: FontWeight.bold,
+                      color: Colors.red,
+                      // fontStyle: FontStyle.italic,
+                      fontFamily: 'FC-Minimal-Regular',
+                    ),
+                  )
+                ],
+              ),
+              const Divider(color: Colors.black54, thickness: 1)
+            ],
+          ),
+          content: Text(
+            textContent,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 22.0,
+              // fontWeight: FontWeight.bold,
+              color: Colors.black45,
+              fontFamily: 'FC-Minimal-Regular',
+            ),
+          ),
+          actions: [
+            // ignore: deprecated_member_use
+            FlatButton(
+              child: const Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop();
+                delay();
+              },
+            ),
+          ],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
         );
-      }
-    });
+      },
+    );
   }
 
   @override
@@ -91,9 +157,13 @@ class _FullImageState extends State<FullImage>
       child: Scaffold(
         backgroundColor: Colors.black,
         body: isLoading
-            ? const Center(
-                child: CupertinoActivityIndicator(
-                  radius: 20.0,
+            ? Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                color: Colors.black,
+                child: const CupertinoActivityIndicator(
+                  animating: true,
+                  radius: 15,
                   color: Colors.white,
                 ),
               )
@@ -103,40 +173,37 @@ class _FullImageState extends State<FullImage>
                   return Stack(
                     alignment: Alignment.bottomCenter,
                     children: [
-                      CarouselSlider(
-                        options: CarouselOptions(
-                            //pageSnapping: true,
-                            height: height,
-                            viewportFraction: 1.0,
-                            enlargeCenterPage: false,
-                            onPageChanged: (index, reason) {
-                              setState(() {
-                                SystemChrome.setPreferredOrientations([
-                                  DeviceOrientation.portraitUp,
-                                  DeviceOrientation.landscapeRight,
-                                  DeviceOrientation.landscapeLeft,
-                                ]);
-                                _current = index;
-                              });
-                            }
-                            // autoPlay: false,
-                            ),
-                        items: imgList
-                            .map(
-                              (item) => InteractiveViewer(
-                                //  scaleEnabled: true,
-                                transformationController:
-                                    _transformationController,
-                                onInteractionEnd: (endDetails) {
-                                  // resetAnimation();
-                                },
-                                clipBehavior: Clip.none,
-                                minScale: minScele,
-                                maxScale: maxScele,
-                                panEnabled: false,
-                                child: Container(
-                                  color: Colors.transparent,
-                                  child: Center(
+                      InteractiveViewer(
+                        clipBehavior: Clip.none,
+                        minScale: minScele,
+                        maxScale: maxScele,
+                        panEnabled: false,
+                        child: CarouselSlider(
+                          options: CarouselOptions(
+                              //pageSnapping: true,
+                              height: height,
+                              viewportFraction: 1.0,
+                              enlargeCenterPage: false,
+                              onPageChanged: (index, reason) {
+                                setState(() {
+                                  SystemChrome.setPreferredOrientations([
+                                    DeviceOrientation.portraitUp,
+                                    DeviceOrientation.landscapeRight,
+                                    DeviceOrientation.landscapeLeft,
+                                  ]);
+                                  _current = index;
+                                });
+                              }
+                              // autoPlay: false,
+                              ),
+                          items: imgList
+                              .map(
+                                (item) => Center(
+                                  child: InteractiveViewer(
+                                    clipBehavior: Clip.none,
+                                    minScale: minScele,
+                                    maxScale: maxScele,
+                                    panEnabled: false,
                                     child: CachedNetworkImage(
                                       imageUrl: item,
                                       progressIndicatorBuilder:
@@ -159,9 +226,9 @@ class _FullImageState extends State<FullImage>
                                     ),
                                   ),
                                 ),
-                              ),
-                            )
-                            .toList(),
+                              )
+                              .toList(),
+                        ),
                       ),
                       Positioned(
                         bottom: 35,
@@ -211,6 +278,14 @@ class _FullImageState extends State<FullImage>
               ),
       ),
     );
+  }
+
+  void delay() {
+    Future.delayed(const Duration(milliseconds: 50), () {
+      setState(() {
+        Navigator.of(context).pop();
+      });
+    });
   }
 
   // void resetAnimation() {
