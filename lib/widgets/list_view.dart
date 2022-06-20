@@ -9,6 +9,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:project/model/landmark_model.dart';
 import 'package:project/screen/landmark_detail.dart';
 import 'package:project/utility/my_style.dart';
+import 'package:project/widgets/popover.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Listview extends StatefulWidget {
@@ -403,29 +404,274 @@ class _ListviewState extends State<Listview> {
   Future<void> launchMapUrl(String latitude, String longitude) async {
     double lat = double.parse(latitude);
     double lng = double.parse(longitude);
-      var httpsUri = Uri(
-        scheme: 'https',
-        host: 'www.google.com',
-        path: '/maps/search/',
-        queryParameters: {
-          'api': '1',
-          'query': '$lat,$lng',
-        },
-      );
-      try {
+    // var appleMapUrl1 = 'https://maps.apple.com/?q=$lat,$lng';
+    var appleMapUrl = Uri(
+      scheme: 'https',
+      host: 'maps.apple.com',
+      path: '/maps/search/',
+      queryParameters: {
+        'q': '$lat,$lng',
+      },
+    );
+    var googlemapsUri = Uri(
+      scheme: 'https',
+      host: 'www.google.com',
+      path: '/maps/search/',
+      queryParameters: {
+        'api': '1',
+        'query': '$lat,$lng',
+      },
+    );
+    try {
+      if (Platform.isAndroid) {
         final bool nativeAppLaunchSucceeded = await launchUrl(
-          httpsUri,
+          googlemapsUri,
           mode: LaunchMode.externalNonBrowserApplication,
         );
         if (!nativeAppLaunchSucceeded) {
           await launchUrl(
-            httpsUri,
+            googlemapsUri,
             mode: LaunchMode.inAppWebView,
           );
         }
-      } catch (error) { 
-        debugPrint('คุณคลิก นำทาง error = $error');
-        throw ("Cannot launch Apple map");
+      } else {
+        _bottomSheet(lat, lng);
+        // final bool nativeAppLaunchSucceeded = await launchUrl(
+        //   appleMapUrl,
+        //   mode: LaunchMode.externalNonBrowserApplication,
+        // );
+        // if (!nativeAppLaunchSucceeded) {
+        //   await launchUrl(
+        //     appleMapUrl,
+        //     mode: LaunchMode.inAppWebView,
+        //   );
+        // }
       }
+    } catch (error) {
+      debugPrint('คุณคลิก นำทาง error = $error');
+      throw ("Cannot launch Apple map");
     }
+  }
+
+  void _bottomSheet(double lat, double lng) {
+    showModalBottomSheet<int>(
+      backgroundColor: Colors.transparent,
+      context: context,
+      builder: (context) {
+        final theme = Theme.of(context);
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Popover(
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24.0,
+                      vertical: 16.0,
+                    ),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(
+                          color: theme.dividerColor,
+                          width: 0.5,
+                        ),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      // ignore: prefer_const_literals_to_create_immutables
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16.0,
+                          ),
+                          child: DefaultTextStyle(
+                            child: Text('เลือกแผนที่'),
+                            style: TextStyle(
+                              color: Colors.redAccent,
+                              fontSize: 24.0,
+                              //fontFamily: 'FC-Minimal-Regular',
+                            ),
+                          ),
+                        ),
+                        //const Spacer(),
+                      ],
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () async {
+                      Navigator.pop(context);
+                      var googlemapsUri = Uri(
+                        scheme: 'https',
+                        host: 'www.google.com',
+                        path: '/maps/search/',
+                        queryParameters: {
+                          'api': '1',
+                          'query': '$lat,$lng',
+                        },
+                      );
+                      final bool nativeAppLaunchSucceeded = await launchUrl(
+                        googlemapsUri,
+                        mode: LaunchMode.externalNonBrowserApplication,
+                      );
+                      if (!nativeAppLaunchSucceeded) {
+                        await launchUrl(
+                          googlemapsUri,
+                          mode: LaunchMode.inAppWebView,
+                        );
+                      }
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24.0,
+                        vertical: 16.0,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: theme.dividerColor,
+                            width: 0.5,
+                          ),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        // ignore: prefer_const_literals_to_create_immutables
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                            ),
+                            child: DefaultTextStyle(
+                              child: Text('Google Maps'),
+                              style: TextStyle(
+                                color: Colors.blueAccent,
+                                fontSize: 24.0,
+                                fontFamily: 'FC-Minimal-Regular',
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () async {
+                      Navigator.pop(context);
+                      var appleMapUrl = Uri(
+                        scheme: 'https',
+                        host: 'maps.apple.com',
+                        path: '/maps/search/',
+                        queryParameters: {
+                          'q': '$lat,$lng',
+                        },
+                      );
+                      final bool nativeAppLaunchSucceeded = await launchUrl(
+                        appleMapUrl,
+                        mode: LaunchMode.externalNonBrowserApplication,
+                      );
+                      if (!nativeAppLaunchSucceeded) {
+                        await launchUrl(
+                          appleMapUrl,
+                          mode: LaunchMode.inAppWebView,
+                        );
+                      }
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24.0,
+                        vertical: 16.0,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: theme.dividerColor,
+                            width: 0.5,
+                          ),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
+                        // ignore: prefer_const_literals_to_create_immutables
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                            ),
+                            child: DefaultTextStyle(
+                              child: Text('Apple Maps'),
+                              style: TextStyle(
+                                color: Colors.blueAccent,
+                                fontSize: 24.0,
+                                fontFamily: 'FC-Minimal-Regular',
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+              clipBehavior: Clip.antiAlias,
+              decoration: BoxDecoration(
+                color: theme.cardColor,
+                borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  InkWell(
+                    onTap: () => Navigator.pop(context),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24.0,
+                        vertical: 16.0,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: theme.dividerColor,
+                            width: 0.5,
+                          ),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        // ignore: prefer_const_literals_to_create_immutables
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                            ),
+                            child: DefaultTextStyle(
+                              child: Text('ยกเลิก'),
+                              style: TextStyle(
+                                color: Colors.blueAccent,
+                                fontSize: 24.0,
+                                fontFamily: 'FC-Minimal-Regular',
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
