@@ -1,37 +1,7 @@
-import 'dart:convert';
 import 'dart:math';
 
-import 'package:dio/dio.dart';
-import 'package:project/utility/myConstant.dart';
 
 class MyApi {
-
-  //  bool favorites(int id, String landmarkId) {
-  //   bool isFavorites = false;
-  //   String urlFavorites =
-  //       '${MyConstant().domain}/application/post_Favorites.php';
-  //   FormData getFavorites = FormData.fromMap(
-  //     {
-  //       "id": id,
-  //       "User_id": userid,
-  //       "Landmark_id": landmarkId,
-  //     },
-  //   );
-  //    Dio().post(urlFavorites, data: getFavorites).then((value) {
-  //     var result = json.decode(value.data);
-  //    // debugPrint('Favorites == $result');
-  //     String success = result['success'];
-  //     if (success == '1') {
-        
-  //         isFavorites = true;
-  //     } else {
-        
-  //         isFavorites = false;
-       
-  //     }
-  //   });
-  //   return isFavorites;
-  // }
 
     double calculateDistance(double lat1, double lng1, double lat2, double lng2) {
     double distance = 0;
@@ -71,7 +41,5 @@ class MyApi {
     }
     return time;
   }
-
-
   MyApi();
 }

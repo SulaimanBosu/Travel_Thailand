@@ -1,11 +1,14 @@
 // ignore_for_file: deprecated_member_use
 
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_share/flutter_share.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:project/model/landmark_model.dart';
 import 'package:project/screen/landmark_detail.dart';
 import 'package:project/utility/my_style.dart';
@@ -100,10 +103,12 @@ class _ListviewState extends State<Listview> {
                       icon: Icons.save,
                       label: 'เปิด',
                     ),
-                    const SlidableAction(
+                    SlidableAction(
                       autoClose: true,
                       flex: 3,
-                      onPressed: null,
+                      onPressed: (context) {
+                        share(widget.landmarkModel[index]);
+                      },
                       backgroundColor: Color.fromARGB(255, 224, 2, 2),
                       foregroundColor: Colors.white,
                       icon: Icons.share,
@@ -436,16 +441,6 @@ class _ListviewState extends State<Listview> {
         }
       } else {
         _bottomSheet(lat, lng);
-        // final bool nativeAppLaunchSucceeded = await launchUrl(
-        //   appleMapUrl,
-        //   mode: LaunchMode.externalNonBrowserApplication,
-        // );
-        // if (!nativeAppLaunchSucceeded) {
-        //   await launchUrl(
-        //     appleMapUrl,
-        //     mode: LaunchMode.inAppWebView,
-        //   );
-        // }
       }
     } catch (error) {
       debugPrint('คุณคลิก นำทาง error = $error');
@@ -673,5 +668,47 @@ class _ListviewState extends State<Listview> {
         );
       },
     );
+  }
+
+  Future<void> share(LandmarkModel model) async {
+    try {
+      var googlemapsUri = Uri(
+        scheme: 'https',
+        host: 'www.google.com',
+        path: '/maps/search/',
+        queryParameters: {
+          'api': '1',
+          'query': '${model.latitude},${model.longitude}',
+        },
+      );
+      Uint8List bytes =
+          (await NetworkAssetBundle(Uri.parse("${model.imagePath}"))
+                  .load("${model.imagePath}"))
+              .buffer
+              .asUint8List();
+      Directory? directory;
+      if (Platform.isAndroid) {
+        directory = await getExternalStorageDirectory();
+      } else {
+        directory = await getApplicationDocumentsDirectory();
+      }
+      File file = await File(
+              "${directory!.path}/${DateTime.now().toIso8601String()}.jpg")
+          .writeAsBytes(bytes, mode: FileMode.write);
+      debugPrint('path ========>>> ${file.path.toString()}');
+      debugPrint('google map ========>>> ${googlemapsUri.toString()}');
+      await FlutterShare.shareFile(
+        title: 'สถานที่ท่องเที่ยวของจังหวัด:${model.provinceName}',
+        text:
+            'มีสถานที่ท่องเที่ยวสวยๆมากมาย อย่างเช่น${model.landmarkName}\n\t\t\t${model.landmarkDetail}\n\nพิกัด : ตำบล${model.districtName}\t\tอำเภอ${model.amphurName}\t\tจังหวัด${model.provinceName}\nที่มา :Application Travel Thailand\nLocation : ${googlemapsUri.toString()}\n',
+        chooserTitle: 'แชร์',
+        filePath: file.path,
+        fileType: 'image/jpg',
+      );
+    } catch (error) {
+      debugPrint("ดาวน์โหลดไม่สำเร็จ: $error");
+      MyStyle().showdialog(
+          context, 'ล้มเหลว', 'ไม่พบการเชื่อมต่อเครือข่ายอินเตอร์เน็ต');
+    }
   }
 }

@@ -1,12 +1,15 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
+import 'dart:typed_data';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_share/flutter_share.dart';
 import 'package:location/location.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:project/model/comment_model.dart';
 import 'package:project/model/landmark_model.dart';
 import 'package:project/screen/full_image.dart';
@@ -249,7 +252,9 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                 margin: const EdgeInsets.only(
                     top: 10, left: 10, right: 10, bottom: 5),
                 child: Text(
-                  commentModel.userFirstName == null ?'ความคิดเห็น (0)':'ความคิดเห็น (${commentModels.length})',
+                  commentModel.userFirstName == null
+                      ? 'ความคิดเห็น (0)'
+                      : 'ความคิดเห็น (${commentModels.length})',
                   style: const TextStyle(
                     color: Colors.black54,
                     fontSize: 18.0,
@@ -301,35 +306,40 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                   child: moreComment
                       ? Column(
                           children: [
-                            const Icon(Icons.arrow_drop_up,),
                             InkWell(
                               onTap: () {
                                 setState(() {
                                   moreComment = false;
                                 });
                               },
-                              child: Container(
-                                
-                                width: screenwidth,
-                                color: Colors.white,
-                                child: const Center(
-                                  widthFactor: 1,
-                                  heightFactor: 2,
-                                  child: Text(
-                                    'Comment น้อยลง',
-                                    style: TextStyle(
-                                      color: Colors.red,
-                                      fontSize: 18.0,
-                                      fontFamily: 'FC-Minimal-Regular',
+                              child: Column(
+                                children: [
+                                  const Icon(
+                                    Icons.arrow_drop_up,
+                                  ),
+                                  Container(
+                                    width: screenwidth,
+                                    color: Colors.grey.shade100,
+                                    child: const Center(
+                                      widthFactor: 1,
+                                      heightFactor: 2,
+                                      child: Text(
+                                        'Comment น้อยลง',
+                                        style: TextStyle(
+                                          color: Colors.red,
+                                          fontSize: 18.0,
+                                          fontFamily: 'FC-Minimal-Regular',
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
+                                ],
                               ),
                             ),
-                            Divider(
-                              color: Colors.grey.shade200,
-                              thickness: 1,
-                            ),
+                            // Divider(
+                            //   color: Colors.grey.shade200,
+                            //   thickness: 1,
+                            // ),
                           ],
                         )
                       : Column(
@@ -340,34 +350,42 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                                   moreComment = true;
                                 });
                               },
-                              child: Container(
-                                width: screenwidth,
-                                color: Colors.white,
-                                child: const Center(
-                                  widthFactor: 1,
-                                  heightFactor: 2,
-                                  child: Text(
-                                    'Comment เพิ่มเติม...',
-                                    style: TextStyle(
-                                      color: Colors.red,
-                                      fontSize: 18.0,
-                                      fontFamily: 'FC-Minimal-Regular',
+                              child: Column(
+                                children: [
+                                  Container(
+                                    width: screenwidth,
+                                    color: Colors.grey.shade100,
+                                    child: const Center(
+                                      widthFactor: 1,
+                                      heightFactor: 2,
+                                      child: Text(
+                                        'Comment เพิ่มเติม...',
+                                        style: TextStyle(
+                                          color: Colors.red,
+                                          fontSize: 18.0,
+                                          fontFamily: 'FC-Minimal-Regular',
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
+                                  const Icon(Icons.arrow_drop_down),
+                                ],
                               ),
                             ),
-                            const Icon(Icons.arrow_drop_down),
-                            Divider(
-                              color: Colors.grey.shade200,
-                              thickness: 1,
-                            ),
+
+                            // Divider(
+                            //   color: Colors.grey.shade200,
+                            //   thickness: 1,
+                            // ),
                           ],
                         ),
                 )
               : SliverToBoxAdapter(
                   child: Container(),
-                )
+                ),
+          SliverToBoxAdapter(
+            child: MyStyle().mySizebox(),
+          )
         ],
       ),
     );
@@ -510,6 +528,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                   icon: const Icon(Icons.share),
                   color: Colors.white,
                   onPressed: () {
+                    share();
                     debugPrint('share');
                   },
                 ),
@@ -712,5 +731,46 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
         ),
       ),
     );
+  }
+
+  Future<void> share() async {
+    try {
+      var googlemapsUri = Uri(
+        scheme: 'https',
+        host: 'www.google.com',
+        path: '/maps/search/',
+        queryParameters: {
+          'api': '1',
+          'query': '${landmarkModel.latitude},${landmarkModel.longitude}',
+        },
+      );
+      Uint8List bytes =
+          (await NetworkAssetBundle(Uri.parse("${landmarkModel.imagePath}"))
+                  .load("${landmarkModel.imagePath}"))
+              .buffer
+              .asUint8List();
+      Directory? directory;
+      if (Platform.isAndroid) {
+        directory = await getExternalStorageDirectory();
+      } else {
+        directory = await getApplicationDocumentsDirectory();
+      }
+      File file = await File(
+              "${directory!.path}/${DateTime.now().toIso8601String()}.jpg")
+          .writeAsBytes(bytes, mode: FileMode.write);
+      debugPrint('path ========>>> ${file.path.toString()}');
+      await FlutterShare.shareFile(
+        title: 'สถานที่ท่องเที่ยวของจังหวัด:${landmarkModel.provinceName}',
+        text:
+            'มีสถานที่ท่องเที่ยวสวยๆมากมาย อย่างเช่น${landmarkModel.landmarkName}\n\t\t\t${landmarkModel.landmarkDetail}\n\nพิกัด : ตำบล${landmarkModel.districtName}\t\tอำเภอ${landmarkModel.amphurName}\t\tจังหวัด${landmarkModel.provinceName}\nที่มา :Application Travel Thailand\nLocation : ${googlemapsUri.toString()}\n',
+        chooserTitle: 'แชร์',
+        filePath: file.path,
+        fileType: 'image/jpg',
+      );
+    } catch (error) {
+      debugPrint("ดาวน์โหลดไม่สำเร็จ: $error");
+      MyStyle().showdialog(
+          context, 'ล้มเหลว', 'ไม่พบการเชื่อมต่อเครือข่ายอินเตอร์เน็ต');
+    }
   }
 }
