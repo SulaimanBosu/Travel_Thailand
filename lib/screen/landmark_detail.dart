@@ -56,7 +56,8 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
       phone = '',
       gender = '',
       email = '';
-
+  int score = 0;
+  int landmark_score = 0;
   @override
   void initState() {
     SystemChrome.setPreferredOrientations([
@@ -111,6 +112,49 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
     phone = preferences.getString('Phone')!;
     gender = preferences.getString('Gender')!;
     email = preferences.getString('Email')!;
+  }
+
+  Future<void> addScore() async {
+    String urladdScore = '${MyConstant().domain}/application/post_score.php';
+    FormData addscore = FormData.fromMap(
+      {
+        "score_id": landmarkModel.landmarkId,
+        "User_id": landmarkModel.landmarkId,
+        "Landmark_id": landmarkModel.landmarkId,
+        "score": score.toString(),
+      },
+    );
+    try {
+      await Dio().post(urladdScore, data: addscore).then((value) {
+        var result = json.decode(value.data);
+        String success = result['success'];
+        landmark_score = result['Landmark_score'];
+        debugPrint('landmarkScore == $landmark_score');
+        debugPrint('data == $result');
+        if (success == '1') {
+          setState(
+            () {
+              landmarkScore = landmark_score;
+              score = 0;
+            },
+          );
+        } else {
+          setState(() {
+            score = 0;
+          });
+          MyAlertDialog().showcupertinoDialog(
+              Icons.error, context, 'ล้มเหลว', 'ให้คะแนนไม่สำเร็จ');
+          debugPrint('data == $result');
+        }
+      });
+    } catch (error) {
+      setState(() {
+        score = 0;
+      });
+      debugPrint("ดาวน์โหลดไม่สำเร็จ: $error");
+      MyAlertDialog().showcupertinoDialog(Icons.error, context, 'ล้มเหลว',
+          'ไม่พบการเชื่อมต่อเครือข่ายอินเตอร์เน็ต');
+    }
   }
 
   Future<void> logLandmarkview() async {
@@ -248,20 +292,60 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                 color: Colors.grey.shade200,
                 thickness: 10,
               ),
-              Container(
-                margin: const EdgeInsets.only(
-                    top: 10, left: 10, right: 10, bottom: 5),
-                child: Text(
-                  commentModel.userFirstName == null
-                      ? 'ความคิดเห็น (0)'
-                      : 'ความคิดเห็น (${commentModels.length})',
-                  style: const TextStyle(
-                    color: Colors.black54,
-                    fontSize: 18.0,
-                    fontFamily: 'FC-Minimal-Regular',
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(
+                        top: 10, left: 10, right: 10, bottom: 5),
+                    child: Text(
+                      commentModel.userFirstName == null
+                          ? 'ความคิดเห็นทั้งหมด (0)'
+                          : 'ความคิดเห็นทั้งหมด (${commentModels.length})',
+                      style: const TextStyle(
+                        color: Colors.black54,
+                        fontSize: 18.0,
+                        fontFamily: 'FC-Minimal-Regular',
+                      ),
+                      textAlign: TextAlign.start,
+                    ),
                   ),
-                  textAlign: TextAlign.start,
-                ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      right: 10,
+                    ),
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        fixedSize: const Size(130, 15),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      onPressed: () {
+                        _showAlertDialog(
+                          Icons.star_border_outlined,
+                          context,
+                          'ให้คะแนน',
+                        );
+                        // MyAlertDialog().showcupertinoDialog(
+                        //   Icons.star,
+                        //   context,
+                        //   'ให้คะแนน',
+                        //   'คะแนน $score/5',
+                        //   starScore(),
+                        // );
+                      },
+                      child: const Text(
+                        'ให้คะแนน',
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          color: Colors.black54,
+                          fontFamily: 'FC-Minimal-Regular',
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
               const Divider(
                 // indent: 10,
@@ -772,5 +856,164 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
       MyStyle().showdialog(
           context, 'ล้มเหลว', 'ไม่พบการเชื่อมต่อเครือข่ายอินเตอร์เน็ต');
     }
+  }
+
+  _showAlertDialog(
+    IconData icon,
+    BuildContext context,
+    String textTitle,
+  ) async {
+    showCupertinoModalPopup(
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(builder: (context, setState) {
+            return CupertinoAlertDialog(
+              title: Column(
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        icon,
+                        color: Colors.amber.shade800,
+                      ),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      Text(
+                        textTitle,
+                        style: const TextStyle(
+                          overflow: TextOverflow.clip,
+                          fontSize: 20.0,
+                          color: Colors.black45,
+                          fontFamily: 'FC-Minimal-Regular',
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Divider(
+                    thickness: 1,
+                    height: 5,
+                    color: Colors.black54,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                ],
+              ),
+              content: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    'คะแนน $score/5',
+                    style: const TextStyle(
+                      overflow: TextOverflow.clip,
+                      fontSize: 20.0,
+                      color: Colors.black45,
+                      fontFamily: 'FC-Minimal-Regular',
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: () {
+                            setState(() {
+                              score = 1;
+                              debugPrint('Score ====== $score');
+                            });
+                          },
+                          child: Icon(Icons.star,
+                              size: 30,
+                              color: score >= 1 ? Colors.orange : Colors.grey),
+                        ),
+                      ),
+                      Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: () {
+                            setState(() {
+                              score = 2;
+                              debugPrint('Score ====== $score');
+                            });
+                          },
+                          child: Icon(Icons.star,
+                              size: 30,
+                              color: score >= 2 ? Colors.orange : Colors.grey),
+                        ),
+                      ),
+                      Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: () {
+                            setState(() {
+                              score = 3;
+                              debugPrint('Score ====== $score');
+                            });
+                          },
+                          child: Icon(Icons.star,
+                              size: 30,
+                              color: score >= 3 ? Colors.orange : Colors.grey),
+                        ),
+                      ),
+                      Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: () {
+                            setState(() {
+                              score = 4;
+                              debugPrint('Score ====== $score');
+                            });
+                          },
+                          child: Icon(Icons.star,
+                              size: 30,
+                              color: score >= 4 ? Colors.orange : Colors.grey),
+                        ),
+                      ),
+                      Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: () {
+                            setState(() {
+                              score = 5;
+                              debugPrint('Score ====== $score');
+                            });
+                          },
+                          child: Icon(Icons.star,
+                              size: 30,
+                              color: score >= 5 ? Colors.orange : Colors.grey),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              actions: <CupertinoDialogAction>[
+                CupertinoDialogAction(
+                  isDefaultAction: false,
+                  onPressed: () {
+                    Navigator.pop(context);
+                    addScore();
+                  },
+                  child: const Text(
+                    'ให้คะแนน',
+                    style: TextStyle(color: Colors.red),
+                  ),
+                ),
+                CupertinoDialogAction(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text(
+                    'ยกเลิก',
+                    style: TextStyle(color: Colors.red),
+                  ),
+                )
+              ],
+            );
+          });
+        });
   }
 }

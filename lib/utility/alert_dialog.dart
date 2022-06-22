@@ -2,6 +2,71 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class MyAlertDialog {
+  Future<void> showcupertinoDialog(
+    IconData icon,
+    BuildContext context,
+    String textTitle,
+    String textContent,
+  ) async {
+    return showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext context) => CupertinoAlertDialog(
+        title: Column(
+          children: [
+            Row(
+              children: [
+                Icon(icon,color: Colors.red,),
+                const SizedBox(
+                  width: 5,
+                ),
+                Text(
+                  textTitle,
+                  style: const TextStyle(
+                    overflow: TextOverflow.clip,
+                    fontSize: 20.0,
+                    color: Colors.red,
+                    fontFamily: 'FC-Minimal-Regular',
+                  ),
+                ),
+              ],
+            ),
+            const Divider(
+              thickness: 1,
+              height: 5,
+              color: Colors.black54,
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+          ],
+        ),
+        content: 
+            Text(
+              textContent,
+              style: const TextStyle(
+                overflow: TextOverflow.clip,
+                fontSize: 20.0,
+                color: Colors.black45,
+                fontFamily: 'FC-Minimal-Regular',
+              ),
+              textAlign: TextAlign.center,
+            ),
+          
+        actions: <CupertinoDialogAction>[
+          CupertinoDialogAction(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text(
+              'OK',
+              style: TextStyle(color: Colors.red),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   showAlertDialog(
     IconData icon,
     BuildContext context,
