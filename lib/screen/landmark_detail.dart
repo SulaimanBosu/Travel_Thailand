@@ -57,7 +57,6 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
       gender = '',
       email = '';
   int score = 0;
-  int landmark_score = 0;
   @override
   void initState() {
     SystemChrome.setPreferredOrientations([
@@ -128,23 +127,27 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
       await Dio().post(urladdScore, data: addscore).then((value) {
         var result = json.decode(value.data);
         String success = result['success'];
-        landmark_score = result['Landmark_score'];
-        debugPrint('landmarkScore == $landmark_score');
+        int currentcore = result['Landmark_score'];
+        debugPrint('landmarkScore == $currentcore');
         debugPrint('data == $result');
+        debugPrint('success == $success');
         if (success == '1') {
           setState(
             () {
-              landmarkScore = landmark_score;
+              landmarkScore = currentcore;
               score = 0;
             },
           );
+        } else if (success == 'error') {
+          MyAlertDialog().showcupertinoDialog(context, 'คุณไม่ได้ให้คะแนน');
+          setState(() {
+            score = 0;
+          });
         } else {
           setState(() {
             score = 0;
           });
-          MyAlertDialog().showcupertinoDialog(
-              Icons.error, context, 'ล้มเหลว', 'ให้คะแนนไม่สำเร็จ');
-          debugPrint('data == $result');
+          MyAlertDialog().showcupertinoDialog(context, 'ให้คะแนนไม่สำเร็จ');
         }
       });
     } catch (error) {
@@ -152,7 +155,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
         score = 0;
       });
       debugPrint("ดาวน์โหลดไม่สำเร็จ: $error");
-      MyAlertDialog().showcupertinoDialog(Icons.error, context, 'ล้มเหลว',
+      MyAlertDialog().showtDialog(context, Icons.error_outline, 'ล้มเหลว',
           'ไม่พบการเชื่อมต่อเครือข่ายอินเตอร์เน็ต');
     }
   }
@@ -322,18 +325,33 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                         ),
                       ),
                       onPressed: () {
-                        _showAlertDialog(
-                          Icons.star_border_outlined,
-                          context,
-                          'ให้คะแนน',
-                        );
-                        // MyAlertDialog().showcupertinoDialog(
-                        //   Icons.star,
-                        //   context,
-                        //   'ให้คะแนน',
-                        //   'คะแนน $score/5',
-                        //   starScore(),
-                        // );
+                        if (userid!.isEmpty) {
+                          MyAlertDialog().showAlertDialog(
+                            Icons.error_outline_outlined,
+                            context,
+                            'กรุณาเข้าสู่ระบบ',
+                            'กรุณาเข้าสู่ระบบก่อนที่จะให้คะแนนแหล่งเที่ยว',
+                            'ตกลง',
+                            () {
+                              Navigator.pop(context);
+                              MaterialPageRoute route = MaterialPageRoute(
+                                builder: (context) => const Login(),
+                              );
+                              Navigator.push(context, route).then((value) {
+                                setState(() {
+                                  getPreferences();
+                                });
+                              });
+                              
+                            },
+                          );
+                        } else {
+                          _showAlertDialog(
+                            Icons.star_border_outlined,
+                            context,
+                            'ให้คะแนน',
+                          );
+                        }
                       },
                       child: const Text(
                         'ให้คะแนน',

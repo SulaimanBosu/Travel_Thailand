@@ -286,8 +286,8 @@ class _LoginState extends State<Login> {
           debugPrint('success == $success');
           debugPrint('message == $message');
           debugPrint('Image_profile == $imageProfile');
-
-          routeToHome(usermodel);
+          Navigator.pop(context);
+          //routeToHome(usermodel);
           // dialog(context, usermodel);
         } else if (success == '2') {
           debugPrint('message == $message');
@@ -305,54 +305,54 @@ class _LoginState extends State<Login> {
     }
   }
 
-  Future<void> dialog(BuildContext context, UserModel userModel) async {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Column(
-            children: [
-              Row(children: [
-                const Icon(
-                  Icons.notifications_active,
-                  color: Colors.black54,
-                ),
-                MyStyle().mySizebox(),
-                MyStyle().showTitle_2('การแจ้งเตือน'),
-              ]),
-              const Divider(
-                color: Colors.black54,
-              ),
-              showImage(context),
-            ],
-          ),
-          content: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                '${userModel.name}\n${userModel.lastname}\n${userModel.phone}\n${userModel.userId}\n',
-                overflow: TextOverflow.ellipsis,
-                style: MyStyle().text2,
-              ),
-            ],
-          ),
-          actions: <Widget>[
-            // ignore: deprecated_member_use
-            FlatButton(
-              child: const Text("ตกลง"),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-            // ignore: deprecated_member_use
-          ],
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20.0),
-          ),
-        );
-      },
-    );
-  }
+  // Future<void> dialog(BuildContext context, UserModel userModel) async {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: Column(
+  //           children: [
+  //             Row(children: [
+  //               const Icon(
+  //                 Icons.notifications_active,
+  //                 color: Colors.black54,
+  //               ),
+  //               MyStyle().mySizebox(),
+  //               MyStyle().showTitle_2('การแจ้งเตือน'),
+  //             ]),
+  //             const Divider(
+  //               color: Colors.black54,
+  //             ),
+  //             showImage(context),
+  //           ],
+  //         ),
+  //         content: Row(
+  //           mainAxisAlignment: MainAxisAlignment.center,
+  //           children: [
+  //             Text(
+  //               '${userModel.name}\n${userModel.lastname}\n${userModel.phone}\n${userModel.userId}\n',
+  //               overflow: TextOverflow.ellipsis,
+  //               style: MyStyle().text2,
+  //             ),
+  //           ],
+  //         ),
+  //         actions: <Widget>[
+  //           // ignore: deprecated_member_use
+  //           FlatButton(
+  //             child: const Text("ตกลง"),
+  //             onPressed: () {
+  //               Navigator.pop(context);
+  //             },
+  //           ),
+  //           // ignore: deprecated_member_use
+  //         ],
+  //         shape: RoundedRectangleBorder(
+  //           borderRadius: BorderRadius.circular(20.0),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   //โชว์ภาพตัวอย่างก่อนเลือกรูปและหลังเลือกรูป
   Container showImage(context) {

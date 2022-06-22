@@ -97,6 +97,11 @@ class _RecommendState extends State<Recommend> {
               landmarkModel: landmark,
               index: index,
               readlandmark: () {},
+              getPreferences: () {
+                setState(() {
+                  getPreferences();
+                });
+              },
               // isFavorites: false,
             ));
             index++;

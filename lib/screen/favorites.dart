@@ -87,6 +87,11 @@ class _FavoritesState extends State<Favorites> {
                 readlandmark: () {
                   _refreshData();
                 },
+                getPreferences: () {
+                  setState(() {
+                    getPreferences();
+                  });
+                },
                 // isFavorites: true,
               ));
               index++;
