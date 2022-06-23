@@ -1025,6 +1025,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                 ),
                 CupertinoDialogAction(
                   onPressed: () {
+                    score = 0;
                     Navigator.pop(context);
                   },
                   child: const Text(

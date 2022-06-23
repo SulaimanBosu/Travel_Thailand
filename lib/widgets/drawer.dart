@@ -196,134 +196,184 @@ class MyDrawer {
                                     ),
                                   ),
                                   children: [
-                                    itemList(context),
+                                    itemListregian(context),
                                   ],
                                 ),
                               ),
-                              ListTile(
-                                leading: const Icon(
-                                  Icons.thumb_up_alt_outlined,
-                                  color: Colors.black54,
-                                ),
-                                title: const Text(
-                                  'แหล่งท่องเที่ยวแนะนำ',
-                                  style: TextStyle(
-                                    color: Colors.black54,
-                                    fontSize: 20.0,
-                                    fontFamily: 'FC-Minimal-Regular',
+                              Theme(
+                                data: Theme.of(context)
+                                    .copyWith(dividerColor: Colors.transparent),
+                                child: ExpansionTile(
+                                  leading: const CircleAvatar(
+                                    foregroundImage:
+                                        AssetImage('images/icon-regian.png'),
+                                    backgroundColor: Colors.transparent,
                                   ),
-                                ),
-                                onTap: () {
-                                  MaterialPageRoute route = MaterialPageRoute(
-                                      builder: (value) => const HomeScreen(
-                                            index: 0,
-                                          ));
-                                  Navigator.push(context, route);
-                                },
-                              ),
-                              ListTile(
-                                leading: const Icon(
-                                  Icons.star_outline_outlined,
-                                  color: Colors.black54,
-                                ),
-                                title: const Text(
-                                  'แหล่งท่องเที่ยวยอดฮิต',
-                                  style: TextStyle(
-                                    color: Colors.black54,
-                                    fontSize: 20.0,
-                                    fontFamily: 'FC-Minimal-Regular',
+                                  title: const Text(
+                                    'หมวดหมู่',
+                                    style: TextStyle(
+                                      color: Colors.black54,
+                                      fontSize: 20.0,
+                                      fontFamily: 'FC-Minimal-Regular',
+                                    ),
                                   ),
+                                  children: [
+                                    itemListCategory(context),
+                                  ],
                                 ),
-                                onTap: () {
-                                  MaterialPageRoute route = MaterialPageRoute(
-                                      builder: (value) => const HomeScreen(
-                                            index: 1,
-                                          ));
-                                  Navigator.push(context, route);
-                                },
                               ),
-                              ListTile(
-                                leading: const Icon(
-                                  Icons.favorite_outline_outlined,
-                                  color: Colors.black54,
-                                ),
-                                title: const Text(
-                                  'รายการโปรด',
-                                  style: TextStyle(
-                                    color: Colors.black54,
-                                    fontSize: 20.0,
-                                    fontFamily: 'FC-Minimal-Regular',
+                              Card(
+                                margin: const EdgeInsets.only(
+                                    left: 10, right: 10, bottom: 10, top: 10),
+                                // shadowColor: Colors.red,
+                                shape: RoundedRectangleBorder(
+                                  side: const BorderSide(
+                                    color: Colors.red,
                                   ),
+                                  borderRadius: BorderRadius.circular(8.0),
                                 ),
-                                onTap: () {
-                                  MaterialPageRoute route = MaterialPageRoute(
-                                      builder: (value) => const HomeScreen(
-                                            index: 2,
-                                          ));
-                                  Navigator.push(context, route);
-                                },
-                              ),
-                              ListTile(
-                                leading: const Icon(
-                                  Icons.add_location_alt_outlined,
-                                  color: Colors.black54,
+                                elevation: 0,
+                                child: Column(
+                                  children: [
+                                    ListTile(
+                                      leading: const Icon(
+                                        Icons.thumb_up_alt_outlined,
+                                        color: Colors.black54,
+                                      ),
+                                      title: const Text(
+                                        'แหล่งท่องเที่ยวแนะนำ',
+                                        style: TextStyle(
+                                          color: Colors.black54,
+                                          fontSize: 20.0,
+                                          fontFamily: 'FC-Minimal-Regular',
+                                        ),
+                                      ),
+                                      onTap: () {
+                                        MaterialPageRoute route =
+                                            MaterialPageRoute(
+                                                builder: (value) =>
+                                                    const HomeScreen(
+                                                      index: 0,
+                                                    ));
+                                        Navigator.push(context, route);
+                                      },
+                                    ),
+                                    ListTile(
+                                      leading: const Icon(
+                                        Icons.star_outline_outlined,
+                                        color: Colors.black54,
+                                      ),
+                                      title: const Text(
+                                        'แหล่งท่องเที่ยวยอดฮิต',
+                                        style: TextStyle(
+                                          color: Colors.black54,
+                                          fontSize: 20.0,
+                                          fontFamily: 'FC-Minimal-Regular',
+                                        ),
+                                      ),
+                                      onTap: () {
+                                        MaterialPageRoute route =
+                                            MaterialPageRoute(
+                                                builder: (value) =>
+                                                    const HomeScreen(
+                                                      index: 1,
+                                                    ));
+                                        Navigator.push(context, route);
+                                      },
+                                    ),
+                                    ListTile(
+                                      leading: const Icon(
+                                        Icons.favorite_outline_outlined,
+                                        color: Colors.black54,
+                                      ),
+                                      title: const Text(
+                                        'รายการโปรด',
+                                        style: TextStyle(
+                                          color: Colors.black54,
+                                          fontSize: 20.0,
+                                          fontFamily: 'FC-Minimal-Regular',
+                                        ),
+                                      ),
+                                      onTap: () {
+                                        MaterialPageRoute route =
+                                            MaterialPageRoute(
+                                                builder: (value) =>
+                                                    const HomeScreen(
+                                                      index: 2,
+                                                    ));
+                                        Navigator.push(context, route);
+                                      },
+                                    ),
+                                    ListTile(
+                                      leading: const Icon(
+                                        Icons.add_location_alt_outlined,
+                                        color: Colors.black54,
+                                      ),
+                                      title: const Text(
+                                        'แหล่งท่องเที่ยวทั้งหมด',
+                                        style: TextStyle(
+                                          color: Colors.black54,
+                                          fontSize: 20.0,
+                                          fontFamily: 'FC-Minimal-Regular',
+                                        ),
+                                      ),
+                                      onTap: () {
+                                        MaterialPageRoute route =
+                                            MaterialPageRoute(
+                                                builder: (value) =>
+                                                    const HomeScreen(
+                                                      index: 3,
+                                                    ));
+                                        Navigator.push(context, route);
+                                      },
+                                    ),
+                                    ListTile(
+                                      leading: const Icon(
+                                        MdiIcons.accountDetails,
+                                      ),
+                                      title: const Text(
+                                        'โปรไฟล์',
+                                        style: TextStyle(
+                                          color: Colors.black54,
+                                          fontSize: 20.0,
+                                          fontFamily: 'FC-Minimal-Regular',
+                                        ),
+                                      ),
+                                      onTap: () {
+                                        MaterialPageRoute route =
+                                            MaterialPageRoute(
+                                                builder: (value) =>
+                                                    const HomeScreen(
+                                                      index: 4,
+                                                    ));
+                                        Navigator.push(context, route);
+                                      },
+                                    ),
+                                    ListTile(
+                                      leading: const Icon(
+                                        MdiIcons.facebookMessenger,
+                                      ),
+                                      title: const Text(
+                                        'ติดต่อเรา',
+                                        style: TextStyle(
+                                          color: Colors.black54,
+                                          fontSize: 20.0,
+                                          fontFamily: 'FC-Minimal-Regular',
+                                        ),
+                                      ),
+                                      onTap: () {
+                                        MaterialPageRoute route =
+                                            MaterialPageRoute(
+                                                builder: (value) =>
+                                                    const HomeScreen(
+                                                      index: 4,
+                                                    ));
+                                        Navigator.push(context, route);
+                                      },
+                                    ),
+                                  ],
                                 ),
-                                title: const Text(
-                                  'แหล่งท่องเที่ยวทั้งหมด',
-                                  style: TextStyle(
-                                    color: Colors.black54,
-                                    fontSize: 20.0,
-                                    fontFamily: 'FC-Minimal-Regular',
-                                  ),
-                                ),
-                                onTap: () {
-                                  MaterialPageRoute route = MaterialPageRoute(
-                                      builder: (value) => const HomeScreen(
-                                            index: 3,
-                                          ));
-                                  Navigator.push(context, route);
-                                },
-                              ),
-                              ListTile(
-                                leading: const Icon(
-                                  MdiIcons.accountDetails,
-                                ),
-                                title: const Text(
-                                  'โปรไฟล์',
-                                  style: TextStyle(
-                                    color: Colors.black54,
-                                    fontSize: 20.0,
-                                    fontFamily: 'FC-Minimal-Regular',
-                                  ),
-                                ),
-                                onTap: () {
-                                  MaterialPageRoute route = MaterialPageRoute(
-                                      builder: (value) => const HomeScreen(
-                                            index: 4,
-                                          ));
-                                  Navigator.push(context, route);
-                                },
-                              ),
-                              ListTile(
-                                leading: const Icon(
-                                  MdiIcons.facebookMessenger,
-                                ),
-                                title: const Text(
-                                  'ติดต่อเรา',
-                                  style: TextStyle(
-                                    color: Colors.black54,
-                                    fontSize: 20.0,
-                                    fontFamily: 'FC-Minimal-Regular',
-                                  ),
-                                ),
-                                onTap: () {
-                                  MaterialPageRoute route = MaterialPageRoute(
-                                      builder: (value) => const HomeScreen(
-                                            index: 4,
-                                          ));
-                                  Navigator.push(context, route);
-                                },
-                              ),
+                              )
                             ],
                           ),
                         ),
@@ -343,12 +393,195 @@ class MyDrawer {
         ),
       );
 
-  Widget itemList(BuildContext context) {
+  Widget itemListCategory(BuildContext context) {
     return Card(
+      margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
+      // shadowColor: Colors.red,
       shape: RoundedRectangleBorder(
+        side: const BorderSide(
+          color: Colors.red,
+        ),
         borderRadius: BorderRadius.circular(8.0),
       ),
-      elevation: 5,
+      elevation: 0,
+      child: Column(
+        children: [
+          ListTile(
+            leading: const CircleAvatar(
+              foregroundImage: AssetImage('images/icon-north.png'),
+              backgroundColor: Colors.transparent,
+            ),
+            title: const Text(
+              'ทะเล',
+              style: TextStyle(
+                color: Colors.black54,
+                fontSize: 20.0,
+                fontFamily: 'FC-Minimal-Regular',
+              ),
+            ),
+            onTap: () {
+              selectProvince(context);
+            },
+          ),
+          ListTile(
+            leading: const CircleAvatar(
+              foregroundImage: AssetImage('images/icon-south.png'),
+              backgroundColor: Colors.transparent,
+            ),
+            title: const Text(
+              'ภูเขา',
+              style: TextStyle(
+                color: Colors.black54,
+                fontSize: 20.0,
+                fontFamily: 'FC-Minimal-Regular',
+              ),
+            ),
+            onTap: () {
+              buildBottomPicker(context);
+            },
+          ),
+          ListTile(
+            leading: const CircleAvatar(
+              foregroundImage: AssetImage('images/icon-central.png'),
+              backgroundColor: Colors.transparent,
+            ),
+            title: const Text(
+              'น้ำตก',
+              style: TextStyle(
+                color: Colors.black54,
+                fontSize: 20.0,
+                fontFamily: 'FC-Minimal-Regular',
+              ),
+            ),
+            onTap: () {
+              MaterialPageRoute route = MaterialPageRoute(
+                  builder: (value) => const HomeScreen(
+                        index: 0,
+                      ));
+              Navigator.push(context, route);
+            },
+          ),
+          ListTile(
+            leading: const CircleAvatar(
+              foregroundImage: AssetImage('images/icon-eastern.png'),
+              backgroundColor: Colors.transparent,
+            ),
+            title: const Text(
+              'อ่างเก็บน้ำ/เขื่อน',
+              style: TextStyle(
+                color: Colors.black54,
+                fontSize: 20.0,
+                fontFamily: 'FC-Minimal-Regular',
+              ),
+            ),
+            onTap: () {
+              MaterialPageRoute route = MaterialPageRoute(
+                  builder: (value) => const HomeScreen(
+                        index: 0,
+                      ));
+              Navigator.push(context, route);
+            },
+          ),
+          ListTile(
+            leading: const CircleAvatar(
+              foregroundImage: AssetImage('images/icon-western.jpg'),
+              radius: 15,
+              backgroundColor: Colors.transparent,
+            ),
+            title: const Text(
+              'คาเฟ่',
+              style: TextStyle(
+                color: Colors.black54,
+                fontSize: 20.0,
+                fontFamily: 'FC-Minimal-Regular',
+              ),
+            ),
+            onTap: () {
+              MaterialPageRoute route = MaterialPageRoute(
+                  builder: (value) => const HomeScreen(
+                        index: 0,
+                      ));
+              Navigator.push(context, route);
+            },
+          ),
+          ListTile(
+            leading: const CircleAvatar(
+              foregroundImage: AssetImage('images/icon-north-east.png'),
+              backgroundColor: Colors.transparent,
+            ),
+            title: const Text(
+              'อุทยานแห่งชาติ',
+              style: TextStyle(
+                color: Colors.black54,
+                fontSize: 20.0,
+                fontFamily: 'FC-Minimal-Regular',
+              ),
+            ),
+            onTap: () {
+              MaterialPageRoute route = MaterialPageRoute(
+                  builder: (value) => const HomeScreen(
+                        index: 0,
+                      ));
+              Navigator.push(context, route);
+            },
+          ),          ListTile(
+            leading: const CircleAvatar(
+              foregroundImage: AssetImage('images/icon-north-east.png'),
+              backgroundColor: Colors.transparent,
+            ),
+            title: const Text(
+              'เดินป่า',
+              style: TextStyle(
+                color: Colors.black54,
+                fontSize: 20.0,
+                fontFamily: 'FC-Minimal-Regular',
+              ),
+            ),
+            onTap: () {
+              MaterialPageRoute route = MaterialPageRoute(
+                  builder: (value) => const HomeScreen(
+                        index: 0,
+                      ));
+              Navigator.push(context, route);
+            },
+          ),
+                    ListTile(
+            leading: const CircleAvatar(
+              foregroundImage: AssetImage('images/icon-north-east.png'),
+              backgroundColor: Colors.transparent,
+            ),
+            title: const Text(
+              'แคมป์ปิ้ง',
+              style: TextStyle(
+                color: Colors.black54,
+                fontSize: 20.0,
+                fontFamily: 'FC-Minimal-Regular',
+              ),
+            ),
+            onTap: () {
+              MaterialPageRoute route = MaterialPageRoute(
+                  builder: (value) => const HomeScreen(
+                        index: 0,
+                      ));
+              Navigator.push(context, route);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget itemListregian(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
+      // shadowColor: Colors.red,
+      shape: RoundedRectangleBorder(
+        side: const BorderSide(
+          color: Colors.red,
+        ),
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      elevation: 0,
       child: Column(
         children: [
           ListTile(
@@ -497,7 +730,7 @@ class MyDrawer {
               height: 70,
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
-                child: headBottomPicker(),
+                child: headBottomPicker(context),
               ),
             ),
             _buildBottomPicker(),
@@ -507,13 +740,15 @@ class MyDrawer {
     );
   }
 
-  Row headBottomPicker() {
+  Row headBottomPicker(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        const TextButton(
-          onPressed: null,
-          child: Text(
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text(
             'ยกเลิก',
             style: TextStyle(
               color: Colors.black54,
@@ -536,9 +771,11 @@ class MyDrawer {
             Icon(Icons.arrow_drop_down),
           ],
         ),
-        const TextButton(
-          onPressed: null,
-          child: Text(
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text(
             'เลือก',
             style: TextStyle(
               color: Colors.black54,
