@@ -10,13 +10,8 @@ class MyAlertDialog {
         context: context,
         builder: (BuildContext context) {
           return Theme(
-            data: ThemeData.from(
-              textTheme: const TextTheme(
-                bodyLarge: TextStyle(backgroundColor: Colors.white),
-              ),
-              colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
-            ),
-            child: CupertinoAlertDialog(
+            data: Theme.of(context).copyWith(backgroundColor: Colors.amber),
+                  child: CupertinoAlertDialog(
               content: Text(
                 textContent,
                 style: const TextStyle(

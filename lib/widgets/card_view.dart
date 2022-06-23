@@ -1,4 +1,6 @@
 //CardViewเดิม
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -184,7 +186,7 @@ class _CardViewState extends State<CardView> {
         clipBehavior: Clip.antiAliasWithSaveLayer,
         child: CachedNetworkImage(
           width: screenwidth,
-          height: screenhight * 0.14,
+          height: Platform.isIOS ? screenhight * 0.14 : screenhight * 0.17,
           imageUrl: imageURL,
           progressIndicatorBuilder: (context, url, downloadProgress) =>
               MyStyle().showProgress(),

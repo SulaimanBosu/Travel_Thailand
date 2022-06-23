@@ -287,7 +287,7 @@ class _LoginState extends State<Login> {
           debugPrint('message == $message');
           debugPrint('Image_profile == $imageProfile');
           Navigator.pop(context);
-          //routeToHome(usermodel);
+          routeToHome(usermodel);
           // dialog(context, usermodel);
         } else if (success == '2') {
           debugPrint('message == $message');

@@ -5,6 +5,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:project/model/user_model.dart';
 import 'package:project/screen/favorites.dart';
 import 'package:project/screen/landmark.dart';
+import 'package:project/screen/main_page.dart';
 import 'package:project/screen/popular.dart';
 import 'package:project/ProfilePage/profile.dart';
 import 'package:project/screen/recommend.dart';
@@ -69,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Icons.recommend_outlined,
         size: 30,
       ),
-      label: 'แนะนำ',
+      label: 'หน้าหลัก',
     );
   }
 
@@ -156,7 +157,9 @@ class _HomeScreenState extends State<HomeScreen> {
         // backgroundColor: Colors.blue,
         selectedItemColor: Colors.redAccent,
         unselectedItemColor: Colors.black54,
-        // selectedFontSize: 16,
+         selectedFontSize: 12,
+         unselectedLabelStyle:const TextStyle(fontSize: 10),
+         showUnselectedLabels:true,
         // selectedFontSize: 24,
 
         currentIndex: indexPage,

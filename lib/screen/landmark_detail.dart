@@ -342,7 +342,6 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                                   getPreferences();
                                 });
                               });
-                              
                             },
                           );
                         } else {
@@ -673,12 +672,16 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                                   'กรุณาเข้าสู่ระบบก่อนที่จะเพิ่มรายการโปรด',
                                   'ตกลง',
                                   () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => const Login(),
-                                      ),
+                                    Navigator.pop(context);
+                                    MaterialPageRoute route = MaterialPageRoute(
+                                      builder: (context) => const Login(),
                                     );
+                                    Navigator.push(context, route)
+                                        .then((value) {
+                                      setState(() {
+                                        getPreferences();
+                                      });
+                                    });
                                   },
                                 );
                               } else {
