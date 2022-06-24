@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:project/model/province_model.dart';
 import 'package:project/model/user_model.dart';
 import 'package:project/screen/favorites.dart';
 import 'package:project/screen/landmark.dart';
@@ -31,6 +35,8 @@ class _HomeScreenState extends State<HomeScreen> {
   late UserModel userModel;
   late int indexPage;
   bool isDelay = false;
+  late ProvinceModel model;
+  List<ProvinceModel> provinceModel = [];
 
   @override
   void initState() {
@@ -39,6 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
     ]);
     indexPage = widget.index;
     delaydialog();
+    province();
     listwidgets.add(const Recommend());
     listwidgets.add(const Popular());
     listwidgets.add(const Favorites());
@@ -46,6 +53,27 @@ class _HomeScreenState extends State<HomeScreen> {
     listwidgets.add(const Profile());
     checkUser();
     super.initState();
+  }
+
+  Future<void> province() async {
+    String urlprovince = '${MyConstant().domain}/application/get_province.php';
+    FormData formData = FormData.fromMap(
+      {
+        "id": "id",
+      },
+    );
+    await Dio().post(urlprovince, data: formData).then((value) {
+      var result = json.decode(value.data);
+      debugPrint('Province == $result');
+      for (var map in result) {
+        model = ProvinceModel.fromJson(map);
+        setState(() {
+          provinceModel.add(model);
+          isDelay = true;
+        });
+      }
+      debugPrint('Province == ${provinceModel.length}');
+    });
   }
 
   void delaydialog() {
@@ -157,9 +185,9 @@ class _HomeScreenState extends State<HomeScreen> {
         // backgroundColor: Colors.blue,
         selectedItemColor: Colors.redAccent,
         unselectedItemColor: Colors.black54,
-         selectedFontSize: 12,
-         unselectedLabelStyle:const TextStyle(fontSize: 10),
-         showUnselectedLabels:true,
+        selectedFontSize: 12,
+        unselectedLabelStyle: const TextStyle(fontSize: 10),
+        showUnselectedLabels: true,
         // selectedFontSize: 24,
 
         currentIndex: indexPage,

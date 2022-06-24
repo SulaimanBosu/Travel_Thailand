@@ -89,7 +89,7 @@ class _RecommendState extends State<Recommend> {
     try {
       await Dio().get(url).then((value) {
         var result = json.decode(value.data);
-        debugPrint('Value == $result');
+       // debugPrint('Value == $result');
         for (var map in result) {
           landmark = LandmarkModel.fromJson(map);
           setState(() {

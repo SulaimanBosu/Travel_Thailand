@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project/model/user_model.dart';
 import 'package:project/screen/home_screen.dart';
+import 'package:project/widgets/splash_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
 
         primarySwatch: Colors.blue,
       ),
-      home:  const HomeScreen(index: 0,),
+      home:  SplashPage(),
     );
   }
 }

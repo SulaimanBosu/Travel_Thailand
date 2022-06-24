@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:project/model/landmark_model.dart';
 import 'package:project/screen/recommend.dart';
 import 'package:project/widgets/drawer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MainPage extends StatefulWidget {
-  const MainPage({ Key? key }) : super(key: key);
+  const MainPage({Key? key, required this.landmarkModel, required this.index})
+      : super(key: key);
+  final List<LandmarkModel> landmarkModel;
+  final int index;
 
   @override
   State<MainPage> createState() => _MainPageState();
 }
 
 class _MainPageState extends State<MainPage> {
-
-    bool isLoading = true;
+  bool isLoading = true;
   String? userid = '',
       name = '',
       lastname = '',
@@ -25,8 +28,7 @@ class _MainPageState extends State<MainPage> {
   late double screenwidth;
   late double screenhight;
 
-
-    @override
+  @override
   void initState() {
     getPreferences();
     super.initState();
@@ -41,14 +43,14 @@ class _MainPageState extends State<MainPage> {
     phone = preferences.getString('Phone')!;
     gender = preferences.getString('Gender')!;
     email = preferences.getString('Email')!;
+    debugPrint('LandmarkModel ============== ${widget.landmarkModel.length}');
   }
-
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-          body: Recommend(),
-      
-    );
+    return Scaffold(
+        body: Center(
+      child: Text(''),
+    ));
   }
 }

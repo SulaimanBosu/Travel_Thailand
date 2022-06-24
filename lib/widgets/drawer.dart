@@ -60,13 +60,13 @@ class MyDrawer {
                                   children: [
                                     InkWell(
                                       onTap: () {
-                                        MaterialPageRoute route =
-                                            MaterialPageRoute(
-                                                builder: (value) =>
-                                                    const HomeScreen(
-                                                      index: 4,
-                                                    ));
-                                        Navigator.push(context, route);
+                                        // MaterialPageRoute route =
+                                        //     MaterialPageRoute(
+                                        //         builder: (value) =>
+                                        //             const HomeScreen(
+                                        //               index: 4,
+                                        //             ));
+                                        // Navigator.push(context, route);
                                       },
                                       child: CircleAvatar(
                                         radius: 24,
@@ -249,13 +249,13 @@ class MyDrawer {
                                         ),
                                       ),
                                       onTap: () {
-                                        MaterialPageRoute route =
-                                            MaterialPageRoute(
-                                                builder: (value) =>
-                                                    const HomeScreen(
-                                                      index: 0,
-                                                    ));
-                                        Navigator.push(context, route);
+                                        // MaterialPageRoute route =
+                                        //     MaterialPageRoute(
+                                        //         builder: (value) =>
+                                        //             const HomeScreen(
+                                        //               index: 0,
+                                        //             ));
+                                        // Navigator.push(context, route);
                                       },
                                     ),
                                     ListTile(
@@ -272,13 +272,13 @@ class MyDrawer {
                                         ),
                                       ),
                                       onTap: () {
-                                        MaterialPageRoute route =
-                                            MaterialPageRoute(
-                                                builder: (value) =>
-                                                    const HomeScreen(
-                                                      index: 1,
-                                                    ));
-                                        Navigator.push(context, route);
+                                        // MaterialPageRoute route =
+                                        //     MaterialPageRoute(
+                                        //         builder: (value) =>
+                                        //             const HomeScreen(
+                                        //               index: 1,
+                                        //             ));
+                                        // Navigator.push(context, route);
                                       },
                                     ),
                                     ListTile(
@@ -295,13 +295,13 @@ class MyDrawer {
                                         ),
                                       ),
                                       onTap: () {
-                                        MaterialPageRoute route =
-                                            MaterialPageRoute(
-                                                builder: (value) =>
-                                                    const HomeScreen(
-                                                      index: 2,
-                                                    ));
-                                        Navigator.push(context, route);
+                                        // MaterialPageRoute route =
+                                        //     MaterialPageRoute(
+                                        //         builder: (value) =>
+                                        //             const HomeScreen(
+                                        //               index: 2,
+                                        //             ));
+                                        // Navigator.push(context, route);
                                       },
                                     ),
                                     ListTile(
@@ -318,13 +318,13 @@ class MyDrawer {
                                         ),
                                       ),
                                       onTap: () {
-                                        MaterialPageRoute route =
-                                            MaterialPageRoute(
-                                                builder: (value) =>
-                                                    const HomeScreen(
-                                                      index: 3,
-                                                    ));
-                                        Navigator.push(context, route);
+                                        // MaterialPageRoute route =
+                                        //     MaterialPageRoute(
+                                        //         builder: (value) =>
+                                        //             const HomeScreen(
+                                        //               index: 3,
+                                        //             ));
+                                        // Navigator.push(context, route);
                                       },
                                     ),
                                     ListTile(
@@ -340,13 +340,13 @@ class MyDrawer {
                                         ),
                                       ),
                                       onTap: () {
-                                        MaterialPageRoute route =
-                                            MaterialPageRoute(
-                                                builder: (value) =>
-                                                    const HomeScreen(
-                                                      index: 4,
-                                                    ));
-                                        Navigator.push(context, route);
+                                        // MaterialPageRoute route =
+                                        //     MaterialPageRoute(
+                                        //         builder: (value) =>
+                                        //             const HomeScreen(
+                                        //               index: 4,
+                                        //             ));
+                                        // Navigator.push(context, route);
                                       },
                                     ),
                                     ListTile(
@@ -362,13 +362,13 @@ class MyDrawer {
                                         ),
                                       ),
                                       onTap: () {
-                                        MaterialPageRoute route =
-                                            MaterialPageRoute(
-                                                builder: (value) =>
-                                                    const HomeScreen(
-                                                      index: 4,
-                                                    ));
-                                        Navigator.push(context, route);
+                                        // MaterialPageRoute route =
+                                        //     MaterialPageRoute(
+                                        //         builder: (value) =>
+                                        //             const HomeScreen(
+                                        //               index: 4,
+                                        //             ));
+                                        // Navigator.push(context, route);
                                       },
                                     ),
                                   ],
@@ -454,11 +454,11 @@ class MyDrawer {
               ),
             ),
             onTap: () {
-              MaterialPageRoute route = MaterialPageRoute(
-                  builder: (value) => const HomeScreen(
-                        index: 0,
-                      ));
-              Navigator.push(context, route);
+              // MaterialPageRoute route = MaterialPageRoute(
+              //     builder: (value) => const HomeScreen(
+              //           index: 0,
+              //         ));
+              // Navigator.push(context, route);
             },
           ),
           ListTile(
@@ -475,11 +475,11 @@ class MyDrawer {
               ),
             ),
             onTap: () {
-              MaterialPageRoute route = MaterialPageRoute(
-                  builder: (value) => const HomeScreen(
-                        index: 0,
-                      ));
-              Navigator.push(context, route);
+              // MaterialPageRoute route = MaterialPageRoute(
+              //     builder: (value) => const HomeScreen(
+              //           index: 0,
+              //         ));
+              // Navigator.push(context, route);
             },
           ),
           ListTile(
@@ -497,11 +497,11 @@ class MyDrawer {
               ),
             ),
             onTap: () {
-              MaterialPageRoute route = MaterialPageRoute(
-                  builder: (value) => const HomeScreen(
-                        index: 0,
-                      ));
-              Navigator.push(context, route);
+              // MaterialPageRoute route = MaterialPageRoute(
+              //     builder: (value) => const HomeScreen(
+              //           index: 0,
+              //         ));
+              // Navigator.push(context, route);
             },
           ),
           ListTile(
@@ -518,11 +518,11 @@ class MyDrawer {
               ),
             ),
             onTap: () {
-              MaterialPageRoute route = MaterialPageRoute(
-                  builder: (value) => const HomeScreen(
-                        index: 0,
-                      ));
-              Navigator.push(context, route);
+              // MaterialPageRoute route = MaterialPageRoute(
+              //     builder: (value) => const HomeScreen(
+              //           index: 0,
+              //         ));
+              // Navigator.push(context, route);
             },
           ),          ListTile(
             leading: const CircleAvatar(
@@ -538,11 +538,11 @@ class MyDrawer {
               ),
             ),
             onTap: () {
-              MaterialPageRoute route = MaterialPageRoute(
-                  builder: (value) => const HomeScreen(
-                        index: 0,
-                      ));
-              Navigator.push(context, route);
+              // MaterialPageRoute route = MaterialPageRoute(
+              //     builder: (value) => const HomeScreen(
+              //           index: 0,
+              //         ));
+              // Navigator.push(context, route);
             },
           ),
                     ListTile(
@@ -559,11 +559,11 @@ class MyDrawer {
               ),
             ),
             onTap: () {
-              MaterialPageRoute route = MaterialPageRoute(
-                  builder: (value) => const HomeScreen(
-                        index: 0,
-                      ));
-              Navigator.push(context, route);
+              // MaterialPageRoute route = MaterialPageRoute(
+              //     builder: (value) => const HomeScreen(
+              //           index: 0,
+              //         ));
+              // Navigator.push(context, route);
             },
           ),
         ],
@@ -632,11 +632,11 @@ class MyDrawer {
               ),
             ),
             onTap: () {
-              MaterialPageRoute route = MaterialPageRoute(
-                  builder: (value) => const HomeScreen(
-                        index: 0,
-                      ));
-              Navigator.push(context, route);
+              // MaterialPageRoute route = MaterialPageRoute(
+              //     builder: (value) => const HomeScreen(
+              //           index: 0,
+              //         ));
+            // Navigator.push(context, route);
             },
           ),
           ListTile(
@@ -653,11 +653,11 @@ class MyDrawer {
               ),
             ),
             onTap: () {
-              MaterialPageRoute route = MaterialPageRoute(
-                  builder: (value) => const HomeScreen(
-                        index: 0,
-                      ));
-              Navigator.push(context, route);
+              // MaterialPageRoute route = MaterialPageRoute(
+              //     builder: (value) => const HomeScreen(
+              //           index: 0,
+              //         ));
+              // Navigator.push(context, route);
             },
           ),
           ListTile(
@@ -675,11 +675,11 @@ class MyDrawer {
               ),
             ),
             onTap: () {
-              MaterialPageRoute route = MaterialPageRoute(
-                  builder: (value) => const HomeScreen(
-                        index: 0,
-                      ));
-              Navigator.push(context, route);
+              // MaterialPageRoute route = MaterialPageRoute(
+              //     builder: (value) => const HomeScreen(
+              //           index: 0,
+              //         ));
+              // Navigator.push(context, route);
             },
           ),
           ListTile(
@@ -696,11 +696,11 @@ class MyDrawer {
               ),
             ),
             onTap: () {
-              MaterialPageRoute route = MaterialPageRoute(
-                  builder: (value) => const HomeScreen(
-                        index: 0,
-                      ));
-              Navigator.push(context, route);
+              // MaterialPageRoute route = MaterialPageRoute(
+              //     builder: (value) => const HomeScreen(
+              //           index: 0,
+              //         ));
+              // Navigator.push(context, route);
             },
           ),
         ],
