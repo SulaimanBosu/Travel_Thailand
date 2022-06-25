@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:project/model/landmark_model.dart';
+import 'package:project/model/province_model.dart';
 import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_api.dart';
 import 'package:project/utility/my_style.dart';
@@ -14,8 +15,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:location/location.dart';
 
 class Landmark extends StatefulWidget {
-  const Landmark({Key? key}) : super(key: key);
-
+  const Landmark({Key? key, required this.provinceModel}) : super(key: key);
+ final List<ProvinceModel> provinceModel;
   @override
   State<Landmark> createState() => _LandmarkState();
 }
@@ -158,9 +159,9 @@ class _LandmarkState extends State<Landmark> {
     screenhight = MediaQuery.of(context).size.height;
     return Scaffold(
       key: scaffoldKey,
-      endDrawer: isLoading
-          ? null
-          : MyDrawer().showDrawer(context, profile!, name!, lastname!, email!),
+     endDrawer: isLoading
+         ? null
+         : MyDrawer().showDrawer(context, profile!, name!, lastname!, email!,widget.provinceModel),
       body: SafeArea(
         child: CustomScrollView(
           shrinkWrap: true,

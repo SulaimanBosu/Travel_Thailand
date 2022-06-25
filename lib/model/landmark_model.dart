@@ -8,7 +8,7 @@ class LandmarkModel {
   String? provinceName;
   String? latitude;
   String? longitude;
-   String? imagePath;
+  String? imagePath;
   String? imageid;
   int? landmarkScore;
 

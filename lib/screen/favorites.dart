@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:project/model/landmark_model.dart';
+import 'package:project/model/province_model.dart';
 import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
 import 'package:project/widgets/card_view.dart';
@@ -12,9 +13,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class Favorites extends StatefulWidget {
   const Favorites({
-    Key? key,
+    Key? key, required this.provinceModel,
   }) : super(key: key);
-
+ final List<ProvinceModel> provinceModel;
   @override
   State<Favorites> createState() => _FavoritesState();
 }
@@ -127,9 +128,9 @@ class _FavoritesState extends State<Favorites> {
     screenhight = MediaQuery.of(context).size.height;
     return Scaffold(
       key: scaffoldKey,
-      endDrawer: isLoading
-          ? null
-          : MyDrawer().showDrawer(context, profile!, name!, lastname!, email!),
+     endDrawer: isLoading
+         ? null
+         : MyDrawer().showDrawer(context, profile!, name!, lastname!, email!,widget.provinceModel),
       body: SafeArea(
         child: CustomScrollView(
           shrinkWrap: true,

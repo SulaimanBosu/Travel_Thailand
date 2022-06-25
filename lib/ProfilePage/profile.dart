@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:project/ProfilePage/edit_profile.dart';
+import 'package:project/model/province_model.dart';
 import 'package:project/model/user_model.dart';
 import 'package:project/screen/login.dart';
 import 'package:project/utility/myConstant.dart';
@@ -18,9 +19,9 @@ import 'package:user_profile_avatar/user_profile_avatar.dart';
 
 class Profile extends StatefulWidget {
   const Profile({
-    Key? key,
+    Key? key, required this.provinceModel,
   }) : super(key: key);
-
+ final List<ProvinceModel> provinceModel;
   @override
   State<Profile> createState() => _ProfileState();
 }
@@ -100,9 +101,9 @@ class _ProfileState extends State<Profile> {
         Scaffold(
       backgroundColor: Colors.white,
       key: scaffoldKey,
-      endDrawer: isLoading
-          ? null
-          : MyDrawer().showDrawer(context, file, name, lastname, email),
+     endDrawer: isLoading
+         ? null
+         : MyDrawer().showDrawer(context, file, name, lastname, email,widget.provinceModel),
       body: SafeArea(
         child: CustomScrollView(
           slivers: [

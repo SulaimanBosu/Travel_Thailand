@@ -8,15 +8,18 @@ import 'package:flutter/painting.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:project/ProfilePage/edit_profile.dart';
+import 'package:project/model/province_model.dart';
 import 'package:project/screen/home_screen.dart';
+import 'package:project/screen/landmark_search.dart';
 import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
 import 'package:project/utility/signout_process.dart';
 import 'package:project/widgets/icon_button.dart';
 
 class MyDrawer {
+  int indexValue = 0;
   Drawer showDrawer(BuildContext context, String profile, String name,
-          String lastname, String email) =>
+          String lastname, String email, List<ProvinceModel> province) =>
       Drawer(
         // shape: const RoundedRectangleBorder(
         //   borderRadius: BorderRadius.only(
@@ -178,48 +181,38 @@ class MyDrawer {
                                     left: 20.0, right: 20, top: 10, bottom: 10),
                                 child: Divider(color: Colors.black54),
                               ),
-                              Theme(
-                                data: Theme.of(context)
-                                    .copyWith(dividerColor: Colors.transparent),
-                                child: ExpansionTile(
-                                  leading: const CircleAvatar(
-                                    foregroundImage:
-                                        AssetImage('images/icon-regian.png'),
-                                    backgroundColor: Colors.transparent,
+                              Card(
+                                margin: const EdgeInsets.only(
+                                    left: 10, right: 10, bottom: 10, top: 10),
+                                shadowColor: Colors.red,
+                                shape: RoundedRectangleBorder(
+                                  side: const BorderSide(
+                                    color: Colors.red,
                                   ),
-                                  title: const Text(
-                                    'เลือกภูมิภาค',
-                                    style: TextStyle(
-                                      color: Colors.black54,
-                                      fontSize: 20.0,
-                                      fontFamily: 'FC-Minimal-Regular',
-                                    ),
-                                  ),
-                                  children: [
-                                    itemListregian(context),
-                                  ],
+                                  borderRadius: BorderRadius.circular(8.0),
                                 ),
-                              ),
-                              Theme(
-                                data: Theme.of(context)
-                                    .copyWith(dividerColor: Colors.transparent),
-                                child: ExpansionTile(
-                                  leading: const CircleAvatar(
-                                    foregroundImage:
-                                        AssetImage('images/icon-regian.png'),
-                                    backgroundColor: Colors.transparent,
-                                  ),
-                                  title: const Text(
-                                    'หมวดหมู่',
-                                    style: TextStyle(
-                                      color: Colors.black54,
-                                      fontSize: 20.0,
-                                      fontFamily: 'FC-Minimal-Regular',
+                                elevation: 0,
+                                child: Theme(
+                                  data: Theme.of(context).copyWith(
+                                      dividerColor: Colors.transparent),
+                                  child: ExpansionTile(
+                                    leading: const CircleAvatar(
+                                      foregroundImage:
+                                          AssetImage('images/icon-regian.png'),
+                                      backgroundColor: Colors.transparent,
                                     ),
+                                    title: const Text(
+                                      'เลือกภูมิภาค',
+                                      style: TextStyle(
+                                        color: Colors.black54,
+                                        fontSize: 20.0,
+                                        fontFamily: 'FC-Minimal-Regular',
+                                      ),
+                                    ),
+                                    children: [
+                                      itemListregian(context, province),
+                                    ],
                                   ),
-                                  children: [
-                                    itemListCategory(context),
-                                  ],
                                 ),
                               ),
                               Card(
@@ -233,15 +226,50 @@ class MyDrawer {
                                   borderRadius: BorderRadius.circular(8.0),
                                 ),
                                 elevation: 0,
+                                child: Theme(
+                                  data: Theme.of(context).copyWith(
+                                      dividerColor: Colors.transparent),
+                                  child: ExpansionTile(
+                                    leading: const CircleAvatar(
+                                      radius: 15,
+                                      foregroundImage: AssetImage(
+                                          'images/category-icon.png'),
+                                      backgroundColor: Colors.transparent,
+                                    ),
+                                    title: const Text(
+                                      'หมวดหมู่',
+                                      style: TextStyle(
+                                        color: Colors.black54,
+                                        fontSize: 20.0,
+                                        fontFamily: 'FC-Minimal-Regular',
+                                      ),
+                                    ),
+                                    children: [
+                                      itemListCategory(context, province),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Card(
+                                margin: const EdgeInsets.only(
+                                    left: 10, right: 10, bottom: 10, top: 10),
+                                // shadowColor: Colors.red,
+                                // shape: RoundedRectangleBorder(
+                                //   side: const BorderSide(
+                                //     color: Colors.red,
+                                //   ),
+                                //   borderRadius: BorderRadius.circular(8.0),
+                                // ),
+                                elevation: 0,
                                 child: Column(
                                   children: [
                                     ListTile(
                                       leading: const Icon(
-                                        Icons.thumb_up_alt_outlined,
+                                        Icons.add_location_alt_outlined,
                                         color: Colors.black54,
                                       ),
                                       title: const Text(
-                                        'แหล่งท่องเที่ยวแนะนำ',
+                                        'แหล่งท่องเที่ยวประจำจังหวัด',
                                         style: TextStyle(
                                           color: Colors.black54,
                                           fontSize: 20.0,
@@ -249,13 +277,7 @@ class MyDrawer {
                                         ),
                                       ),
                                       onTap: () {
-                                        // MaterialPageRoute route =
-                                        //     MaterialPageRoute(
-                                        //         builder: (value) =>
-                                        //             const HomeScreen(
-                                        //               index: 0,
-                                        //             ));
-                                        // Navigator.push(context, route);
+                                        buildBottomPicker(context, province);
                                       },
                                     ),
                                     ListTile(
@@ -272,13 +294,13 @@ class MyDrawer {
                                         ),
                                       ),
                                       onTap: () {
-                                        // MaterialPageRoute route =
-                                        //     MaterialPageRoute(
-                                        //         builder: (value) =>
-                                        //             const HomeScreen(
-                                        //               index: 1,
-                                        //             ));
-                                        // Navigator.push(context, route);
+                                        MaterialPageRoute route =
+                                            MaterialPageRoute(
+                                                builder: (value) =>
+                                                    const HomeScreen(
+                                                      index: 1,
+                                                    ));
+                                        Navigator.push(context, route);
                                       },
                                     ),
                                     ListTile(
@@ -295,13 +317,13 @@ class MyDrawer {
                                         ),
                                       ),
                                       onTap: () {
-                                        // MaterialPageRoute route =
-                                        //     MaterialPageRoute(
-                                        //         builder: (value) =>
-                                        //             const HomeScreen(
-                                        //               index: 2,
-                                        //             ));
-                                        // Navigator.push(context, route);
+                                        MaterialPageRoute route =
+                                            MaterialPageRoute(
+                                                builder: (value) =>
+                                                    const HomeScreen(
+                                                      index: 2,
+                                                    ));
+                                        Navigator.push(context, route);
                                       },
                                     ),
                                     ListTile(
@@ -318,13 +340,13 @@ class MyDrawer {
                                         ),
                                       ),
                                       onTap: () {
-                                        // MaterialPageRoute route =
-                                        //     MaterialPageRoute(
-                                        //         builder: (value) =>
-                                        //             const HomeScreen(
-                                        //               index: 3,
-                                        //             ));
-                                        // Navigator.push(context, route);
+                                        MaterialPageRoute route =
+                                            MaterialPageRoute(
+                                                builder: (value) =>
+                                                    const HomeScreen(
+                                                      index: 3,
+                                                    ));
+                                        Navigator.push(context, route);
                                       },
                                     ),
                                     ListTile(
@@ -340,13 +362,13 @@ class MyDrawer {
                                         ),
                                       ),
                                       onTap: () {
-                                        // MaterialPageRoute route =
-                                        //     MaterialPageRoute(
-                                        //         builder: (value) =>
-                                        //             const HomeScreen(
-                                        //               index: 4,
-                                        //             ));
-                                        // Navigator.push(context, route);
+                                        MaterialPageRoute route =
+                                            MaterialPageRoute(
+                                                builder: (value) =>
+                                                    const HomeScreen(
+                                                      index: 4,
+                                                    ));
+                                        Navigator.push(context, route);
                                       },
                                     ),
                                     ListTile(
@@ -362,13 +384,13 @@ class MyDrawer {
                                         ),
                                       ),
                                       onTap: () {
-                                        // MaterialPageRoute route =
-                                        //     MaterialPageRoute(
-                                        //         builder: (value) =>
-                                        //             const HomeScreen(
-                                        //               index: 4,
-                                        //             ));
-                                        // Navigator.push(context, route);
+                                        MaterialPageRoute route =
+                                            MaterialPageRoute(
+                                                builder: (value) =>
+                                                    const HomeScreen(
+                                                      index: 4,
+                                                    ));
+                                        Navigator.push(context, route);
                                       },
                                     ),
                                   ],
@@ -393,22 +415,22 @@ class MyDrawer {
         ),
       );
 
-  Widget itemListCategory(BuildContext context) {
+  Widget itemListCategory(BuildContext context, List<ProvinceModel> province) {
     return Card(
       margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
       // shadowColor: Colors.red,
-      shape: RoundedRectangleBorder(
-        side: const BorderSide(
-          color: Colors.red,
-        ),
-        borderRadius: BorderRadius.circular(8.0),
-      ),
+      // shape: RoundedRectangleBorder(
+      //   side: const BorderSide(
+      //     color: Colors.red,
+      //   ),
+      //   borderRadius: BorderRadius.circular(8.0),
+      // ),
       elevation: 0,
       child: Column(
         children: [
           ListTile(
             leading: const CircleAvatar(
-              foregroundImage: AssetImage('images/icon-north.png'),
+              foregroundImage: AssetImage('images/beach-icon.png'),
               backgroundColor: Colors.transparent,
             ),
             title: const Text(
@@ -419,13 +441,11 @@ class MyDrawer {
                 fontFamily: 'FC-Minimal-Regular',
               ),
             ),
-            onTap: () {
-              selectProvince(context);
-            },
+            onTap: () {},
           ),
           ListTile(
             leading: const CircleAvatar(
-              foregroundImage: AssetImage('images/icon-south.png'),
+              foregroundImage: AssetImage('images/mountain-icon.png'),
               backgroundColor: Colors.transparent,
             ),
             title: const Text(
@@ -437,12 +457,12 @@ class MyDrawer {
               ),
             ),
             onTap: () {
-              buildBottomPicker(context);
+              buildBottomPicker(context, province);
             },
           ),
           ListTile(
             leading: const CircleAvatar(
-              foregroundImage: AssetImage('images/icon-central.png'),
+              foregroundImage: AssetImage('images/waterfall-icon.png'),
               backgroundColor: Colors.transparent,
             ),
             title: const Text(
@@ -463,7 +483,7 @@ class MyDrawer {
           ),
           ListTile(
             leading: const CircleAvatar(
-              foregroundImage: AssetImage('images/icon-eastern.png'),
+              foregroundImage: AssetImage('images/dam-icon.png'),
               backgroundColor: Colors.transparent,
             ),
             title: const Text(
@@ -484,7 +504,7 @@ class MyDrawer {
           ),
           ListTile(
             leading: const CircleAvatar(
-              foregroundImage: AssetImage('images/icon-western.jpg'),
+              foregroundImage: AssetImage('images/cafe-icon.png'),
               radius: 15,
               backgroundColor: Colors.transparent,
             ),
@@ -506,7 +526,7 @@ class MyDrawer {
           ),
           ListTile(
             leading: const CircleAvatar(
-              foregroundImage: AssetImage('images/icon-north-east.png'),
+              foregroundImage: AssetImage('images/national-park-icon.png'),
               backgroundColor: Colors.transparent,
             ),
             title: const Text(
@@ -524,9 +544,10 @@ class MyDrawer {
               //         ));
               // Navigator.push(context, route);
             },
-          ),          ListTile(
+          ),
+          ListTile(
             leading: const CircleAvatar(
-              foregroundImage: AssetImage('images/icon-north-east.png'),
+              foregroundImage: AssetImage('images/trekking-icon.png'),
               backgroundColor: Colors.transparent,
             ),
             title: const Text(
@@ -545,9 +566,9 @@ class MyDrawer {
               // Navigator.push(context, route);
             },
           ),
-                    ListTile(
+          ListTile(
             leading: const CircleAvatar(
-              foregroundImage: AssetImage('images/icon-north-east.png'),
+              foregroundImage: AssetImage('images/camping-icon.png'),
               backgroundColor: Colors.transparent,
             ),
             title: const Text(
@@ -571,16 +592,16 @@ class MyDrawer {
     );
   }
 
-  Widget itemListregian(BuildContext context) {
+  Widget itemListregian(BuildContext context, List<ProvinceModel> province) {
     return Card(
       margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
       // shadowColor: Colors.red,
-      shape: RoundedRectangleBorder(
-        side: const BorderSide(
-          color: Colors.red,
-        ),
-        borderRadius: BorderRadius.circular(8.0),
-      ),
+      // shape: RoundedRectangleBorder(
+      //   side: const BorderSide(
+      //     color: Colors.red,
+      //   ),
+      //   borderRadius: BorderRadius.circular(8.0),
+      // ),
       elevation: 0,
       child: Column(
         children: [
@@ -598,7 +619,15 @@ class MyDrawer {
               ),
             ),
             onTap: () {
-              selectProvince(context);
+              Navigator.pop(context);
+              Route route = MaterialPageRoute(
+                builder: (context) => LandmarkSearch(
+                  provinceModel: province,
+                  search: 'ภาคเหนือ',
+                  type: 'region',
+                ),
+              );
+              Navigator.pushAndRemoveUntil(context, route, (route) => true);
             },
           ),
           ListTile(
@@ -615,7 +644,15 @@ class MyDrawer {
               ),
             ),
             onTap: () {
-              buildBottomPicker(context);
+                            Navigator.pop(context);
+              Route route = MaterialPageRoute(
+                builder: (context) => LandmarkSearch(
+                  provinceModel: province,
+                  search: 'ภาคใต้',
+                  type: 'region',
+                ),
+              );
+              Navigator.pushAndRemoveUntil(context, route, (route) => true);
             },
           ),
           ListTile(
@@ -632,11 +669,15 @@ class MyDrawer {
               ),
             ),
             onTap: () {
-              // MaterialPageRoute route = MaterialPageRoute(
-              //     builder: (value) => const HomeScreen(
-              //           index: 0,
-              //         ));
-            // Navigator.push(context, route);
+              Navigator.pop(context);
+              Route route = MaterialPageRoute(
+                builder: (context) => LandmarkSearch(
+                  provinceModel: province,
+                  search: 'ภาคกลาง',
+                  type: 'region',
+                ),
+              );
+              Navigator.pushAndRemoveUntil(context, route, (route) => true);
             },
           ),
           ListTile(
@@ -653,11 +694,15 @@ class MyDrawer {
               ),
             ),
             onTap: () {
-              // MaterialPageRoute route = MaterialPageRoute(
-              //     builder: (value) => const HomeScreen(
-              //           index: 0,
-              //         ));
-              // Navigator.push(context, route);
+              Navigator.pop(context);
+              Route route = MaterialPageRoute(
+                builder: (context) => LandmarkSearch(
+                  provinceModel: province,
+                  search: 'ภาคตะวันออก',
+                  type: 'region',
+                ),
+              );
+              Navigator.pushAndRemoveUntil(context, route, (route) => true);
             },
           ),
           ListTile(
@@ -675,11 +720,15 @@ class MyDrawer {
               ),
             ),
             onTap: () {
-              // MaterialPageRoute route = MaterialPageRoute(
-              //     builder: (value) => const HomeScreen(
-              //           index: 0,
-              //         ));
-              // Navigator.push(context, route);
+              Navigator.pop(context);
+              Route route = MaterialPageRoute(
+                builder: (context) => LandmarkSearch(
+                  provinceModel: province,
+                  search: 'ภาคตะวันตก',
+                  type: 'region',
+                ),
+              );
+              Navigator.pushAndRemoveUntil(context, route, (route) => true);
             },
           ),
           ListTile(
@@ -696,11 +745,15 @@ class MyDrawer {
               ),
             ),
             onTap: () {
-              // MaterialPageRoute route = MaterialPageRoute(
-              //     builder: (value) => const HomeScreen(
-              //           index: 0,
-              //         ));
-              // Navigator.push(context, route);
+              Navigator.pop(context);
+              Route route = MaterialPageRoute(
+                builder: (context) => LandmarkSearch(
+                  provinceModel: province,
+                  search: 'ภาคตะวันออกเฉียงเหนือ',
+                  type: 'region',
+                ),
+              );
+              Navigator.pushAndRemoveUntil(context, route, (route) => true);
             },
           ),
         ],
@@ -708,7 +761,7 @@ class MyDrawer {
     );
   }
 
-  Future buildBottomPicker(BuildContext context) {
+  Future buildBottomPicker(BuildContext context, List<ProvinceModel> province) {
     return showCupertinoModalPopup<void>(
       barrierDismissible: true,
       useRootNavigator: true,
@@ -730,17 +783,17 @@ class MyDrawer {
               height: 70,
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
-                child: headBottomPicker(context),
+                child: head(context, province),
               ),
             ),
-            _buildBottomPicker(),
+            _buildBottomPicker(province),
           ],
         );
       },
     );
   }
 
-  Row headBottomPicker(BuildContext context) {
+  Widget head(BuildContext context, List<ProvinceModel> province) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -774,6 +827,22 @@ class MyDrawer {
         TextButton(
           onPressed: () {
             Navigator.pop(context);
+            Route route = MaterialPageRoute(
+                builder: (context) => LandmarkSearch(
+                      provinceModel: province,
+                      search: '${province[indexValue].provinceName}',
+                      type: 'province',
+                    ));
+            Navigator.pushAndRemoveUntil(context, route, (route) => true);
+
+            // MaterialPageRoute route = MaterialPageRoute(
+            //     builder: (value) => LandmarkProvince(
+            //           provinceModel: province,
+            //           provinceName: '${province[indexValue].provinceName}',
+            //         ));
+            // Navigator.push(context, route);
+            debugPrint('Index ===== $indexValue');
+            debugPrint('จังหวัด ===== ${province[indexValue].provinceName}');
           },
           child: const Text(
             'เลือก',
@@ -788,7 +857,7 @@ class MyDrawer {
     );
   }
 
-  Widget _buildBottomPicker() {
+  Widget _buildBottomPicker(List<ProvinceModel> province) {
     return Container(
       height: 216.0,
       padding: const EdgeInsets.only(top: 6.0),
@@ -805,22 +874,30 @@ class MyDrawer {
             top: false,
             child: CupertinoPicker.builder(
               useMagnifier: true,
-              childCount: 20,
+              childCount: province.length,
               itemBuilder: (BuildContext context, int index) {
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Text('data'),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Icon(Icons.access_time),
+                  children: [
+                    Text(province[index].provinceName!),
+                    // const SizedBox(
+                    //   width: 10,
+                    // ),
+                    // CircleAvatar(
+                    //   radius: 15,
+                    //   backgroundImage:
+                    //       const AssetImage('images/iconprofile.png'),
+                    //   foregroundImage: NetworkImage(
+                    //     province[index].provinceLogo!,
+                    //   ),
+                    // ),
                   ],
                 );
               },
               itemExtent: 35,
               onSelectedItemChanged: (int value) {
-                debugPrint('value ==== $value');
+                indexValue = value;
+                // debugPrint('value ==== $value');
               },
             ),
           ),
@@ -829,81 +906,6 @@ class MyDrawer {
     );
   }
 
-  void selectProvince(BuildContext context) {
-    BottomPicker(
-            items: bottomPickerItem,
-            itemExtent: 35,
-            title: 'เลือกจังหวัด',
-            titleStyle: const TextStyle(
-              color: Colors.black54,
-              fontSize: 26.0,
-              fontFamily: 'FC-Minimal-Regular',
-            ),
-            pickerTextStyle: const TextStyle(
-              color: Colors.red,
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-            ),
-            displaySubmitButton: true,
-            buttonText: 'เลือก',
-            buttonTextStyle: const TextStyle(
-              color: Colors.white,
-              fontSize: 26.0,
-              fontFamily: 'FC-Minimal-Regular',
-            ),
-            selectedItemIndex: 1,
-            onSubmit: (index) {
-              Navigator.of(context);
-
-              print('index ==== $index');
-            },
-            buttonSingleColor: Colors.red,
-            closeIconColor: Colors.black54)
-        .show(context);
-  }
-
-  List<Text> bottomPickerItem = [
-    const Text(
-      'Leonardo DiCaprio',
-      style: TextStyle(
-        color: Colors.black54,
-        fontSize: 20.0,
-        fontFamily: 'FC-Minimal-Regular',
-      ),
-    ),
-    const Text(
-      'Johnny Depp',
-      style: TextStyle(
-        color: Colors.black54,
-        fontSize: 20.0,
-        fontFamily: 'FC-Minimal-Regular',
-      ),
-    ),
-    const Text(
-      'Robert De Niro',
-      style: TextStyle(
-        color: Colors.black54,
-        fontSize: 20.0,
-        fontFamily: 'FC-Minimal-Regular',
-      ),
-    ),
-    const Text(
-      'Tom Hardy',
-      style: TextStyle(
-        color: Colors.black54,
-        fontSize: 20.0,
-        fontFamily: 'FC-Minimal-Regular',
-      ),
-    ),
-    const Text(
-      'Ben Affleck',
-      style: TextStyle(
-        color: Colors.black54,
-        fontSize: 20.0,
-        fontFamily: 'FC-Minimal-Regular',
-      ),
-    ),
-  ];
   Widget signOutMenu(BuildContext context) {
     return
         // Container(

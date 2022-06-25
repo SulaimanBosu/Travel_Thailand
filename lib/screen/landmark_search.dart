@@ -1,29 +1,34 @@
-// ignore_for_file: sized_box_for_whitespace, avoid_unnecessary_containers
-
 import 'dart:convert';
-import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:location/location.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:project/model/landmark_model.dart';
 import 'package:project/model/province_model.dart';
+import 'package:project/screen/login.dart';
 import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
 import 'package:project/widgets/card_view.dart';
 import 'package:project/widgets/drawer.dart';
+import 'package:project/widgets/icon_button.dart';
 import 'package:project/widgets/sliverAppBar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Recommend extends StatefulWidget {
-  const Recommend({Key? key, required this.provinceModel}) : super(key: key);
+class LandmarkSearch extends StatefulWidget {
+  const LandmarkSearch({
+    Key? key,
+    required this.provinceModel,
+    required this.type,
+    required this.search,
+  }) : super(key: key);
   final List<ProvinceModel> provinceModel;
+  final String type;
+  final String search;
   @override
-  State<Recommend> createState() => _RecommendState();
+  State<LandmarkSearch> createState() => _LandmarkSearchState();
 }
 
-class _RecommendState extends State<Recommend> {
+class _LandmarkSearchState extends State<LandmarkSearch> {
   late LandmarkModel landmark = LandmarkModel();
   List<Widget> landmarkCards = [];
   int index = 0;
@@ -39,38 +44,31 @@ class _RecommendState extends State<Recommend> {
   var scaffoldKey = GlobalKey<ScaffoldState>();
   late double screenwidth;
   late double screenhight;
-  double lat1 = 0, lng1 = 0;
+  bool type = false;
 
   @override
   void initState() {
-    readlandmark();
     getPreferences();
-    // getLocation();
+    delaydialog();
+    if (widget.type == 'province') {
+      setState(() {
+        type = true;
+      });
+    } else {
+      setState(() {
+        type = false;
+      });
+    }
     super.initState();
   }
 
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-  }
-
   void delaydialog() {
-    Future.delayed(const Duration(milliseconds: 10000), () {
+    Future.delayed(const Duration(milliseconds: 10), () {
       setState(() {
-        readlandmark();
+        isLoading = true;
+        searchlandmark();
       });
     });
-  }
-
-  Future<void> getLocation() async {
-    Location location = Location();
-    LocationData locationData = await location.getLocation();
-    location.enableBackgroundMode(enable: true);
-    lat1 = locationData.latitude!;
-    lng1 = locationData.longitude!;
-    debugPrint('latitude ============ ${lat1.toString()}');
-    debugPrint('longitude ============ ${lng1.toString()}');
   }
 
   Future<void> getPreferences() async {
@@ -84,51 +82,60 @@ class _RecommendState extends State<Recommend> {
     email = preferences.getString('Email')!;
   }
 
-  Future<void> readlandmark() async {
-    String url =
-        '${MyConstant().domain}/application/get_landmarkRecommended.php';
+  Future<void> searchlandmark() async {
+    String url = type
+        ? '${MyConstant().domain}/application/getProvince_landmark.php'
+        : '${MyConstant().domain}/application/search.php';
+
+    FormData formDataProvince = FormData.fromMap(
+      {
+        "Province_name": widget.search,
+      },
+    );
+    FormData formDataRegion = FormData.fromMap(
+      {
+        "searchQuery": widget.search,
+      },
+    );
     try {
-      await Dio().get(url).then((value) {
+      await Dio()
+          .post(url, data: type ? formDataProvince : formDataRegion)
+          .then((value) {
         var result = json.decode(value.data);
-        // debugPrint('Value == $result');
+        debugPrint('data == $result');
         for (var map in result) {
           landmark = LandmarkModel.fromJson(map);
-          setState(() {
-            landmarkCards.add(CardView(
-              landmarkModel: landmark,
-              index: index,
-              readlandmark: () {},
-              getPreferences: () {
-                setState(() {
-                  getPreferences();
-                });
-              },
-              // isFavorites: false,
-            ));
-            index++;
-            isLoading = false;
-          });
+          setState(
+            () {
+              landmarkCards.add(CardView(
+                landmarkModel: landmark,
+                index: index,
+                readlandmark: () {
+                  //  _refreshData();
+                },
+                getPreferences: () {
+                  setState(() {
+                    getPreferences();
+                  });
+                },
+                // isFavorites: true,
+              ));
+              index++;
+              isLoading = false;
+            },
+          );
         }
       });
     } catch (error) {
       debugPrint("ดาวน์โหลดไม่สำเร็จ: $error");
       MyStyle().showdialog(
           context, 'ล้มเหลว', 'ไม่พบการเชื่อมต่อเครือข่ายอินเตอร์เน็ต');
-
-      setState(() {
-        isLoading = false;
-        // delaydialog();
-      });
+      setState(
+        () {
+          isLoading = false;
+        },
+      );
     }
-  }
-
-  Future _refreshData() async {
-    setState(() {
-      isLoading = true;
-      landmarkCards.clear();
-      index = 0;
-      readlandmark();
-    });
   }
 
   @override
@@ -147,16 +154,49 @@ class _RecommendState extends State<Recommend> {
           primary: false,
           physics: const BouncingScrollPhysics(),
           slivers: [
-            isLoading
-                ? SliverappBar()
-                    .appbar(context, screenwidth, userid!, scaffoldKey, true)
-                : SliverappBar()
-                    .appbar(context, screenwidth, userid!, scaffoldKey, false),
-            CupertinoSliverRefreshControl(
-              builder: (context, refreshState, pulledExtent,
-                      refreshTriggerPullDistance, refreshIndicatorExtent) =>
-                  const CupertinoActivityIndicator(radius: 10,),
-              onRefresh: _refreshData,
+            SliverToBoxAdapter(
+              child: Container(
+                color: Colors.white,
+                width: MediaQuery.of(context).size.width,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back_ios),
+                      color: Colors.black54,
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                    Text(
+                      type
+                          ? 'แหล่งท่องเที่ยวจังหวัด ${widget.search}'
+                          : 'แหล่งท่องเที่ยว${widget.search}',
+                      style: const TextStyle(
+                        color: Colors.black54,
+                        fontSize: 20.0,
+                        fontFamily: 'FC-Minimal-Regular',
+                      ),
+                    ),
+                    CircleButton(
+                      icon: MdiIcons.accountDetails,
+                      iconSize: 30,
+                      onPressed: () {
+                        if (!isLoading) {
+                          if (userid == '') {
+                            MyStyle()
+                                .routeToWidget(context, const Login(), true);
+                          } else {
+                            scaffoldKey.currentState!.openEndDrawer();
+                          }
+                        } else {
+                          debugPrint('Account');
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              ),
             ),
             isLoading
                 ? SliverToBoxAdapter(
@@ -172,7 +212,7 @@ class _RecommendState extends State<Recommend> {
                           height: MediaQuery.of(context).size.height * 0.7,
                           child: const Center(
                             child: Text(
-                              'ไม่พบรายการแนะนำ',
+                              'ไม่พบแหล่งท่องเที่ยว',
                               style: TextStyle(
                                 color: Colors.black54,
                                 fontSize: 24.0,

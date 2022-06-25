@@ -46,11 +46,21 @@ class _HomeScreenState extends State<HomeScreen> {
     indexPage = widget.index;
     delaydialog();
     province();
-    listwidgets.add(const Recommend());
-    listwidgets.add(const Popular());
-    listwidgets.add(const Favorites());
-    listwidgets.add(const Landmark());
-    listwidgets.add(const Profile());
+    listwidgets.add(Recommend(
+      provinceModel: provinceModel,
+    ));
+    listwidgets.add(Popular(
+      provinceModel: provinceModel,
+    ));
+    listwidgets.add(Favorites(
+      provinceModel: provinceModel,
+    ));
+    listwidgets.add(Landmark(
+      provinceModel: provinceModel,
+    ));
+    listwidgets.add(Profile(
+      provinceModel: provinceModel,
+    ));
     checkUser();
     super.initState();
   }
@@ -59,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
     String urlprovince = '${MyConstant().domain}/application/get_province.php';
     FormData formData = FormData.fromMap(
       {
-        "id": "id",
+        "Groupby": "p.Province_id",
       },
     );
     await Dio().post(urlprovince, data: formData).then((value) {
