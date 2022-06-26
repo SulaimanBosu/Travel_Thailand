@@ -44,22 +44,60 @@ class _LandmarkSearchState extends State<LandmarkSearch> {
   var scaffoldKey = GlobalKey<ScaffoldState>();
   late double screenwidth;
   late double screenhight;
-  bool type = false;
+  bool typeprovince = false;
+  bool typeregion = false;
+  String regionName = '';
 
   @override
   void initState() {
     getPreferences();
     delaydialog();
+    setRegionName();
     if (widget.type == 'province') {
       setState(() {
-        type = true;
+        typeprovince = true;
       });
     } else {
-      setState(() {
-        type = false;
-      });
+      if (widget.type == 'region') {
+        setState(() {
+          typeregion = true;
+        });
+      } else {
+        setState(() {
+          typeprovince = false;
+          typeregion = false;
+        });
+      }
     }
     super.initState();
+  }
+
+  void setRegionName() {
+    if (widget.search == '1' && widget.type == 'region') {
+      setState(() {
+        regionName = 'ภาคเหนือ';
+      });
+    } else if (widget.search == '2' && widget.type == 'region') {
+      setState(() {
+        regionName = 'ภาคใต้';
+      });
+    } else if (widget.search == '3' && widget.type == 'region') {
+      setState(() {
+        regionName = 'ภาคกลาง';
+      });
+    } else if (widget.search == '4' && widget.type == 'region') {
+      setState(() {
+        regionName = 'ภาคตะวันออก';
+      });
+    } else if (widget.search == '5' && widget.type == 'region') {
+      setState(() {
+        regionName = 'ภาคตะวันตก';
+      });
+    } else if (widget.search == '6' && widget.type == 'region') {
+      setState(() {
+        regionName = 'ภาคตะวันออกเฉียงเหนือ';
+      });
+    }
   }
 
   void delaydialog() {
@@ -83,23 +121,35 @@ class _LandmarkSearchState extends State<LandmarkSearch> {
   }
 
   Future<void> searchlandmark() async {
-    String url = type
-        ? '${MyConstant().domain}/application/getProvince_landmark.php'
-        : '${MyConstant().domain}/application/search.php';
+    String url = '${MyConstant().domain}/application/get_type.php';
 
     FormData formDataProvince = FormData.fromMap(
       {
+        "id": widget.type,
         "Province_name": widget.search,
       },
     );
     FormData formDataRegion = FormData.fromMap(
       {
-        "searchQuery": widget.search,
+        "id": widget.type,
+        "Region_id": widget.search,
+      },
+    );
+
+    FormData formDatatype = FormData.fromMap(
+      {
+        "id": widget.type,
+        "Type": widget.search,
       },
     );
     try {
       await Dio()
-          .post(url, data: type ? formDataProvince : formDataRegion)
+          .post(url,
+              data: typeprovince
+                  ? formDataProvince
+                  : typeregion
+                      ? formDataRegion
+                      : formDatatype)
           .then((value) {
         var result = json.decode(value.data);
         debugPrint('data == $result');
@@ -110,15 +160,12 @@ class _LandmarkSearchState extends State<LandmarkSearch> {
               landmarkCards.add(CardView(
                 landmarkModel: landmark,
                 index: index,
-                readlandmark: () {
-                  //  _refreshData();
-                },
+                readlandmark: () {},
                 getPreferences: () {
                   setState(() {
                     getPreferences();
                   });
                 },
-                // isFavorites: true,
               ));
               index++;
               isLoading = false;
@@ -161,38 +208,52 @@ class _LandmarkSearchState extends State<LandmarkSearch> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    IconButton(
-                      icon: const Icon(Icons.arrow_back_ios),
-                      color: Colors.black54,
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                    Text(
-                      type
-                          ? 'แหล่งท่องเที่ยวจังหวัด ${widget.search}'
-                          : 'แหล่งท่องเที่ยว${widget.search}',
-                      style: const TextStyle(
+                    Expanded(
+                      flex: 1,
+                      child: IconButton(
+                        icon: const Icon(Icons.arrow_back_ios),
                         color: Colors.black54,
-                        fontSize: 20.0,
-                        fontFamily: 'FC-Minimal-Regular',
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
                       ),
                     ),
-                    CircleButton(
-                      icon: MdiIcons.accountDetails,
-                      iconSize: 30,
-                      onPressed: () {
-                        if (!isLoading) {
-                          if (userid == '') {
-                            MyStyle()
-                                .routeToWidget(context, const Login(), true);
+                    Expanded(
+                      flex: 5,
+                      child: Text(
+                        typeprovince
+                            ? 'แหล่งท่องเที่ยวจังหวัด ${widget.search}'
+                            : typeregion
+                                ? 'แหล่งท่องเที่ยว$regionName'
+                                : 'แหล่งท่องเที่ยวประเภท${widget.search}',
+                        style: const TextStyle(
+                          color: Colors.black54,
+                          fontSize: 20.0,
+                          fontFamily: 'FC-Minimal-Regular',
+                          // overflow:TextOverflow.fade,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: CircleButton(
+                        icon: MdiIcons.accountDetails,
+                        iconSize: 30,
+                        onPressed: () {
+                          if (!isLoading) {
+                            if (userid == '') {
+                              MyStyle()
+                                  .routeToWidget(context, const Login(), true);
+                            } else {
+                              scaffoldKey.currentState!.openEndDrawer();
+                            }
                           } else {
-                            scaffoldKey.currentState!.openEndDrawer();
+                            debugPrint('Account');
                           }
-                        } else {
-                          debugPrint('Account');
-                        }
-                      },
+                        },
+                      ),
                     ),
                   ],
                 ),

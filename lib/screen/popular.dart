@@ -219,7 +219,7 @@ class _PopularState extends State<Popular> {
                         times: times,
                         index: index,
                         lat1: lat1,
-                        lng1: lng1,
+                        lng1: lng1, userId: userid!,
                       )
             // SliverToBoxAdapter(
             //   child: popularlandmarks.isEmpty

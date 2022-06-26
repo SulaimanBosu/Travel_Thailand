@@ -1,11 +1,6 @@
-import 'dart:ui';
-
-import 'package:bottom_picker/bottom_picker.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:project/ProfilePage/edit_profile.dart';
 import 'package:project/model/province_model.dart';
@@ -441,7 +436,17 @@ class MyDrawer {
                 fontFamily: 'FC-Minimal-Regular',
               ),
             ),
-            onTap: () {},
+            onTap: () {
+              Navigator.pop(context);
+              Route route = MaterialPageRoute(
+                builder: (context) => LandmarkSearch(
+                  provinceModel: province,
+                  search: 'ทะเล',
+                  type: 'type',
+                ),
+              );
+              Navigator.pushAndRemoveUntil(context, route, (route) => true);
+            },
           ),
           ListTile(
             leading: const CircleAvatar(
@@ -457,7 +462,15 @@ class MyDrawer {
               ),
             ),
             onTap: () {
-              buildBottomPicker(context, province);
+              Navigator.pop(context);
+              Route route = MaterialPageRoute(
+                builder: (context) => LandmarkSearch(
+                  provinceModel: province,
+                  search: 'ภูเขา',
+                  type: 'type',
+                ),
+              );
+              Navigator.pushAndRemoveUntil(context, route, (route) => true);
             },
           ),
           ListTile(
@@ -474,11 +487,15 @@ class MyDrawer {
               ),
             ),
             onTap: () {
-              // MaterialPageRoute route = MaterialPageRoute(
-              //     builder: (value) => const HomeScreen(
-              //           index: 0,
-              //         ));
-              // Navigator.push(context, route);
+              Navigator.pop(context);
+              Route route = MaterialPageRoute(
+                builder: (context) => LandmarkSearch(
+                  provinceModel: province,
+                  search: 'น้ำตก',
+                  type: 'type',
+                ),
+              );
+              Navigator.pushAndRemoveUntil(context, route, (route) => true);
             },
           ),
           ListTile(
@@ -495,11 +512,15 @@ class MyDrawer {
               ),
             ),
             onTap: () {
-              // MaterialPageRoute route = MaterialPageRoute(
-              //     builder: (value) => const HomeScreen(
-              //           index: 0,
-              //         ));
-              // Navigator.push(context, route);
+              Navigator.pop(context);
+              Route route = MaterialPageRoute(
+                builder: (context) => LandmarkSearch(
+                  provinceModel: province,
+                  search: 'อ่างเก็บน้ำ/เขื่อน',
+                  type: 'type',
+                ),
+              );
+              Navigator.pushAndRemoveUntil(context, route, (route) => true);
             },
           ),
           ListTile(
@@ -517,11 +538,15 @@ class MyDrawer {
               ),
             ),
             onTap: () {
-              // MaterialPageRoute route = MaterialPageRoute(
-              //     builder: (value) => const HomeScreen(
-              //           index: 0,
-              //         ));
-              // Navigator.push(context, route);
+              Navigator.pop(context);
+              Route route = MaterialPageRoute(
+                builder: (context) => LandmarkSearch(
+                  provinceModel: province,
+                  search: 'คาเฟ่',
+                  type: 'type',
+                ),
+              );
+              Navigator.pushAndRemoveUntil(context, route, (route) => true);
             },
           ),
           ListTile(
@@ -538,11 +563,15 @@ class MyDrawer {
               ),
             ),
             onTap: () {
-              // MaterialPageRoute route = MaterialPageRoute(
-              //     builder: (value) => const HomeScreen(
-              //           index: 0,
-              //         ));
-              // Navigator.push(context, route);
+              Navigator.pop(context);
+              Route route = MaterialPageRoute(
+                builder: (context) => LandmarkSearch(
+                  provinceModel: province,
+                  search: 'อุทยานแห่งชาติ',
+                  type: 'type',
+                ),
+              );
+              Navigator.pushAndRemoveUntil(context, route, (route) => true);
             },
           ),
           ListTile(
@@ -559,11 +588,15 @@ class MyDrawer {
               ),
             ),
             onTap: () {
-              // MaterialPageRoute route = MaterialPageRoute(
-              //     builder: (value) => const HomeScreen(
-              //           index: 0,
-              //         ));
-              // Navigator.push(context, route);
+              Navigator.pop(context);
+              Route route = MaterialPageRoute(
+                builder: (context) => LandmarkSearch(
+                  provinceModel: province,
+                  search: 'เดินป่า',
+                  type: 'type',
+                ),
+              );
+              Navigator.pushAndRemoveUntil(context, route, (route) => true);
             },
           ),
           ListTile(
@@ -580,11 +613,65 @@ class MyDrawer {
               ),
             ),
             onTap: () {
-              // MaterialPageRoute route = MaterialPageRoute(
-              //     builder: (value) => const HomeScreen(
-              //           index: 0,
-              //         ));
-              // Navigator.push(context, route);
+              Navigator.pop(context);
+              Route route = MaterialPageRoute(
+                builder: (context) => LandmarkSearch(
+                  provinceModel: province,
+                  search: 'แคมป์ปิ้ง',
+                  type: 'type',
+                ),
+              );
+              Navigator.pushAndRemoveUntil(context, route, (route) => true);
+            },
+          ),
+          ListTile(
+            leading: const CircleAvatar(
+              foregroundImage: AssetImage('images/history-icon.png'),
+              backgroundColor: Colors.transparent,
+            ),
+            title: const Text(
+              'ประวัติศาสตร์/เมืองโบราณ',
+              style: TextStyle(
+                color: Colors.black54,
+                fontSize: 20.0,
+                fontFamily: 'FC-Minimal-Regular',
+              ),
+            ),
+            onTap: () {
+              Navigator.pop(context);
+              Route route = MaterialPageRoute(
+                builder: (context) => LandmarkSearch(
+                  provinceModel: province,
+                  search: 'ประวัติศาสตร์/เมืองโบราณ',
+                  type: 'type',
+                ),
+              );
+              Navigator.pushAndRemoveUntil(context, route, (route) => true);
+            },
+          ),
+          ListTile(
+            leading: const CircleAvatar(
+              foregroundImage: AssetImage('images/masjid-icon.png'),
+              backgroundColor: Colors.transparent,
+            ),
+            title: const Text(
+              'มัสยิด/วัด',
+              style: TextStyle(
+                color: Colors.black54,
+                fontSize: 20.0,
+                fontFamily: 'FC-Minimal-Regular',
+              ),
+            ),
+            onTap: () {
+              Navigator.pop(context);
+              Route route = MaterialPageRoute(
+                builder: (context) => LandmarkSearch(
+                  provinceModel: province,
+                  search: 'มัสยิด/วัด',
+                  type: 'type',
+                ),
+              );
+              Navigator.pushAndRemoveUntil(context, route, (route) => true);
             },
           ),
         ],
@@ -623,7 +710,7 @@ class MyDrawer {
               Route route = MaterialPageRoute(
                 builder: (context) => LandmarkSearch(
                   provinceModel: province,
-                  search: 'ภาคเหนือ',
+                  search: '1',
                   type: 'region',
                 ),
               );
@@ -644,11 +731,11 @@ class MyDrawer {
               ),
             ),
             onTap: () {
-                            Navigator.pop(context);
+              Navigator.pop(context);
               Route route = MaterialPageRoute(
                 builder: (context) => LandmarkSearch(
                   provinceModel: province,
-                  search: 'ภาคใต้',
+                  search: '2',
                   type: 'region',
                 ),
               );
@@ -673,7 +760,7 @@ class MyDrawer {
               Route route = MaterialPageRoute(
                 builder: (context) => LandmarkSearch(
                   provinceModel: province,
-                  search: 'ภาคกลาง',
+                  search: '3',
                   type: 'region',
                 ),
               );
@@ -698,7 +785,7 @@ class MyDrawer {
               Route route = MaterialPageRoute(
                 builder: (context) => LandmarkSearch(
                   provinceModel: province,
-                  search: 'ภาคตะวันออก',
+                  search: '4',
                   type: 'region',
                 ),
               );
@@ -724,7 +811,7 @@ class MyDrawer {
               Route route = MaterialPageRoute(
                 builder: (context) => LandmarkSearch(
                   provinceModel: province,
-                  search: 'ภาคตะวันตก',
+                  search: '5',
                   type: 'region',
                 ),
               );
@@ -749,7 +836,7 @@ class MyDrawer {
               Route route = MaterialPageRoute(
                 builder: (context) => LandmarkSearch(
                   provinceModel: province,
-                  search: 'ภาคตะวันออกเฉียงเหนือ',
+                  search: '6',
                   type: 'region',
                 ),
               );

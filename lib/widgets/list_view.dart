@@ -1,9 +1,11 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_share/flutter_share.dart';
@@ -11,6 +13,9 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:project/model/landmark_model.dart';
 import 'package:project/screen/landmark_detail.dart';
+import 'package:project/screen/login.dart';
+import 'package:project/utility/alert_dialog.dart';
+import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
 import 'package:project/widgets/popover.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -21,6 +26,7 @@ class Listview extends StatefulWidget {
   final List<double> times;
   final int index;
   final double lat1, lng1;
+  final String userId;
 
   const Listview({
     Key? key,
@@ -30,6 +36,7 @@ class Listview extends StatefulWidget {
     required this.times,
     required this.lat1,
     required this.lng1,
+    required this.userId,
   }) : super(key: key);
 
   @override
@@ -355,12 +362,37 @@ class _ListviewState extends State<Listview> {
                                               screenhight / 10),
                                         ),
                                         onPressed: () {
-                                          debugPrint('คุณคลิก นำทาง = $index');
-                                          launchMapUrl(
-                                              widget.landmarkModel[index]
-                                                  .latitude!,
-                                              widget.landmarkModel[index]
-                                                  .longitude!);
+                                          if (widget.userId.isEmpty) {
+                                            MyAlertDialog().showAlertDialog(
+                                              Icons.error_outline_outlined,
+                                              context,
+                                              'กรุณาเข้าสู่ระบบ',
+                                              'กรุณาเข้าสู่ระบบก่อนที่จะให้ Appนำทางไปยังแหล่งท่องเที่ยว',
+                                              'ตกลง',
+                                              () {
+                                                Navigator.pop(context);
+                                                MaterialPageRoute route =
+                                                    MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const Login(),
+                                                );
+                                                Navigator.push(context, route)
+                                                    .then((value) {});
+                                              },
+                                            );
+                                          } else {
+                                            navigaterLog(
+                                                widget.landmarkModel[index]
+                                                    .landmarkId!,
+                                                widget.userId);
+                                            debugPrint(
+                                                'คุณคลิก นำทาง = $index');
+                                            launchMapUrl(
+                                                widget.landmarkModel[index]
+                                                    .latitude!,
+                                                widget.landmarkModel[index]
+                                                    .longitude!);
+                                          }
                                         },
                                         icon: const Icon(
                                           Icons.navigation_outlined,
@@ -404,6 +436,33 @@ class _ListviewState extends State<Listview> {
         ),
       ),
     );
+  }
+
+  Future<void> navigaterLog(String landmarkID, String userId) async {
+    String url = '${MyConstant().domain}/application/navigate_post.php';
+
+    FormData formData = FormData.fromMap(
+      {
+        "Landmark_id": landmarkID,
+        "User_id": userId,
+      },
+    );
+    try {
+      await Dio().post(url, data: formData).then((value) {
+        var result = json.decode(value.data);
+        debugPrint('data == $result');
+        String success = result['success'];
+        if (success == '1') {
+          debugPrint('บันทึกการนำทางเรียบร้อย');
+        } else {
+          debugPrint('ล้มเหลว');
+        }
+      });
+    } catch (error) {
+      debugPrint("ดาวน์โหลดไม่สำเร็จ: $error");
+      MyStyle().showdialog(
+          context, 'ล้มเหลว', 'ไม่พบการเชื่อมต่อเครือข่ายอินเตอร์เน็ต');
+    }
   }
 
   Future<void> launchMapUrl(String latitude, String longitude) async {
