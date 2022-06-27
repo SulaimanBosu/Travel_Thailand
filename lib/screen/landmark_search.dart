@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:project/model/landmark_model.dart';
@@ -11,7 +10,6 @@ import 'package:project/utility/my_style.dart';
 import 'package:project/widgets/card_view.dart';
 import 'package:project/widgets/drawer.dart';
 import 'package:project/widgets/icon_button.dart';
-import 'package:project/widgets/sliverAppBar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LandmarkSearch extends StatefulWidget {

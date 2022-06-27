@@ -74,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
     await Dio().post(urlprovince, data: formData).then((value) {
       var result = json.decode(value.data);
-      debugPrint('Province == $result');
+      //debugPrint('Province == $result');
       for (var map in result) {
         model = ProvinceModel.fromJson(map);
         setState(() {

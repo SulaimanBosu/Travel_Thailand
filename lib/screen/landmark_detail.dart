@@ -13,6 +13,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:project/model/comment_model.dart';
 import 'package:project/model/landmark_model.dart';
 import 'package:project/screen/full_image.dart';
+import 'package:project/screen/google_map.dart';
 import 'package:project/screen/login.dart';
 import 'package:project/utility/alert_dialog.dart';
 import 'package:project/utility/myConstant.dart';
@@ -66,7 +67,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
     landmarkScore = landmarkModel.landmarkScore!;
     debugPrint('latitude ============ ${landmarkModel.latitude.toString()}');
     getPreferences();
-    //  getLocation();
+    // getLocation();
     readComment();
     delaydialog();
 
@@ -96,7 +97,24 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
     lat = locationData.latitude!;
     lng = locationData.longitude!;
     if (lat != 0 && lng != 0) {
-      isLocation = true;
+      setState(() {
+        isLocation = false;
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => GoogleMapScreen(
+              landmarkModel: landmarkModel,
+              lat: lat,
+              lng: lng,
+              userId: userid!,
+            ),
+          ),
+        ).then((value) {
+          SystemChrome.setPreferredOrientations([
+            DeviceOrientation.portraitUp,
+          ]);
+        });
+      });
     }
     debugPrint('latitude ============ ${lat.toString()}');
     debugPrint('longitude ============ ${lng.toString()}');
@@ -256,7 +274,20 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
     screenwidth = MediaQuery.of(context).size.width;
     screenhight = MediaQuery.of(context).size.height;
     return Scaffold(
-      body: bodywidget(context),
+      backgroundColor: Colors.white,
+      body: isLocation
+          ? Stack(
+              children: [
+                bodywidget(context),
+                const Center(
+                  child: CupertinoActivityIndicator(
+                    animating: true,
+                    radius: 15,
+                  ),
+                ),
+              ],
+            )
+          : bodywidget(context),
     );
   }
 
@@ -281,10 +312,63 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
           ),
           information(),
           SliverToBoxAdapter(
-            child: GoogleMapWidget(
-              // lat: widget.lat,
-              // lng: widget.lng,
-              landmarkModel: landmarkModel,
+            child: Column(
+              children: [
+                GoogleMapWidget(
+                  // lat: widget.lat,
+                  // lng: widget.lng,
+                  landmarkModel: landmarkModel,
+                ),
+                InkWell(
+                  onTap: () {
+                    if (lat == 0 && lng == 0) {
+                      setState(() {
+                        isLocation = true;
+                        getLocation();
+                      });
+                    } else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => GoogleMapScreen(
+                            landmarkModel: landmarkModel,
+                            lat: lat,
+                            lng: lng,
+                            userId: userid!,
+                          ),
+                        ),
+                      ).then((value) {
+                        SystemChrome.setPreferredOrientations([
+                          DeviceOrientation.portraitUp,
+                        ]);
+                      });
+                    }
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 10.0, right: 10, bottom: 10),
+                    child: Card(
+                      semanticContainer: true,
+                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                        side: const BorderSide(
+                          color: Colors.red,
+                        ),
+                      ),
+                      elevation: 5,
+                      child: Container(
+                        width: screenwidth,
+                        padding: const EdgeInsets.all(15.0),
+                        child: const Text(
+                          'เปิดแผนที่',
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+              ],
             ),
           ),
           SliverToBoxAdapter(

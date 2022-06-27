@@ -107,7 +107,7 @@ class _ListviewState extends State<Listview> {
                       },
                       backgroundColor: const Color(0xFF0392CF),
                       foregroundColor: Colors.white,
-                      icon: Icons.save,
+                      icon: Icons.open_with,
                       label: 'เปิด',
                     ),
                     SlidableAction(
@@ -116,7 +116,7 @@ class _ListviewState extends State<Listview> {
                       onPressed: (context) {
                         share(widget.landmarkModel[index]);
                       },
-                      backgroundColor: Color.fromARGB(255, 224, 2, 2),
+                      backgroundColor: const Color.fromARGB(255, 224, 2, 2),
                       foregroundColor: Colors.white,
                       icon: Icons.share,
                       label: 'share',
@@ -249,22 +249,6 @@ class _ListviewState extends State<Listview> {
                                             : Colors.grey),
                                   ],
                                 ),
-                                // Row(
-                                //   mainAxisAlignment: MainAxisAlignment.start,
-                                //   children: [
-                                //     Expanded(
-                                //       child: Text(
-                                //         'คะแนน ${widget.landmarkModel[index].landmarkScore.toString()}/5',
-                                //         //overflow: TextOverflow.ellipsis,
-                                //         style: const TextStyle(
-                                //           color: Colors.red,
-                                //           fontSize: 12.0,
-                                //           fontFamily: 'FC-Minimal-Regular',
-                                //         ),
-                                //       ),
-                                //     ),
-                                //   ],
-                                // ),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   // ignore: prefer_const_literals_to_create_immutables

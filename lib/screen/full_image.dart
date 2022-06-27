@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dio/dio.dart';
@@ -8,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:project/model/image_model.dart';
 import 'package:project/utility/myConstant.dart';
-import 'package:project/utility/my_style.dart';
 
 class FullImage extends StatefulWidget {
   const FullImage({
@@ -25,8 +23,6 @@ class _FullImageState extends State<FullImage>
     with SingleTickerProviderStateMixin {
   int _current = 0;
   final CarouselController _controller = CarouselController();
-  // late AnimationController _animationController;
-  // Animation<Matrix4>? _animation;
   bool isLoading = true;
   double minScele = 1.0;
   double maxScele = 4.0;
@@ -293,15 +289,4 @@ class _FullImageState extends State<FullImage>
       });
     });
   }
-
-  // void resetAnimation() {
-  //   _animation = Matrix4Tween(
-  //     begin: _transformationController.value,
-  //     end: Matrix4.identity(),
-  //   ).animate(CurvedAnimation(
-  //     parent: _animationController,
-  //     curve: Curves.easeInOut,
-  //   ));
-  //   _animationController.forward(from: 0);
-  // }
 }
