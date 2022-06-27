@@ -76,7 +76,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
       child: Stack(
         children: [
           //showmap2(),
-           showMap(),
+          showMap(),
           Stack(
             alignment: Alignment.topLeft,
             children: [
@@ -135,7 +135,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
                 child: Material(
                   color: Colors.transparent,
                   child: Padding(
-                    padding: const EdgeInsets.all(10.0),
+                    padding: const EdgeInsets.only(right: 10),
                     child: Container(
                       margin: const EdgeInsets.all(3.0),
                       decoration: const BoxDecoration(
@@ -158,7 +158,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
               ),
               Container(
                 alignment: Alignment.bottomRight,
-                margin: const EdgeInsets.only(bottom: 120),
+                margin: EdgeInsets.only(bottom: Platform.isAndroid ? 120 : 20),
                 child: Material(
                   color: Colors.transparent,
                   child: Padding(
@@ -206,7 +206,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
           ),
           Container(
             alignment: Alignment.bottomLeft,
-            margin: const EdgeInsets.all(20),
+            margin: const EdgeInsets.only(bottom: 20),
             child: Material(
               color: Colors.transparent,
               child: Padding(
@@ -298,7 +298,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
       sourceMarkerIconInfo: const MarkerIconInfo(
         assetPath: "images/iconprofile.png",
         assetMarkerSize: Size.square(125),
-         rotation: 90,
+        rotation: 90,
       ),
       destinationMarkerIconInfo: const MarkerIconInfo(
         assetPath: "images/dam-icon.png",
