@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:label_marker/label_marker.dart';
 import 'package:project/model/landmark_model.dart';
 import 'package:project/utility/my_style.dart';
 
@@ -24,9 +25,15 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
   late double lat2, lng2;
   late CameraPosition position;
   late GoogleMapController _controller;
+  final Set<Marker> _markers = <Marker>{};
 
   @override
   void initState() {
+    Future.delayed(const Duration(milliseconds: 150), () {
+      setState(() {
+        addMarker();
+      });
+    });
     lat2 = double.parse(widget.landmarkModel.latitude!);
     lng2 = double.parse(widget.landmarkModel.longitude!);
     // TODO: implement initState
@@ -40,6 +47,21 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
     return Container(
       child: showMap(),
     );
+  }
+
+  void addMarker() async {
+    _markers.addLabelMarker(LabelMarker(
+      // onTap: () => _bottomSheet(),
+      //  icon: BitmapDescriptor.fromBytes(byteData),
+      visible: true,
+      consumeTapEvents: false,
+      draggable: false,
+      flat: false,
+      label: widget.landmarkModel.landmarkName!,
+      markerId: const MarkerId("idLandmark"),
+      position: LatLng(lat2, lng2),
+      backgroundColor: Colors.red,
+    ));
   }
 
   //   Marker userMarker() {
@@ -102,7 +124,6 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
         target: latLng,
         zoom: 6.0,
       );
-      
     }
     return Container(
       margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
@@ -113,31 +134,33 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
               semanticContainer: true,
               clipBehavior: Clip.antiAliasWithSaveLayer,
               child: GoogleMap(
-                mapType: MapType.normal,
-                compassEnabled: true,
-                mapToolbarEnabled: true,
-                indoorViewEnabled: true,
-                trafficEnabled: true,
-                buildingsEnabled: true,
-                //    circles:  <Circle>{ Circle(
-                // circleId: const CircleId('circle'),
-                // center: LatLng(lat2, lng2),
-                // radius: 10,fillColor: Colors.red)},
-                rotateGesturesEnabled: true,
-                scrollGesturesEnabled: true,
-                zoomControlsEnabled: true,
-                zoomGesturesEnabled: true,
-                // liteModeEnabled: false,
-                tiltGesturesEnabled: true,
-                myLocationButtonEnabled: true,
-                myLocationEnabled: true,
-                initialCameraPosition:position,
-                minMaxZoomPreference: const MinMaxZoomPreference(6, 19),
-
-                // onMapCreated: (controller) {},
-                markers: mySet(),
-                //polylines: polyline(),
-              ),
+                  mapType: MapType.normal,
+                  compassEnabled: true,
+                  mapToolbarEnabled: true,
+                  indoorViewEnabled: true,
+                  trafficEnabled: true,
+                  buildingsEnabled: true,
+                  //    circles:  <Circle>{ Circle(
+                  // circleId: const CircleId('circle'),
+                  // center: LatLng(lat2, lng2),
+                  // radius: 10,fillColor: Colors.red)},
+                  rotateGesturesEnabled: true,
+                  scrollGesturesEnabled: true,
+                  zoomControlsEnabled: true,
+                  zoomGesturesEnabled: true,
+                  // liteModeEnabled: false,
+                  tiltGesturesEnabled: true,
+                  myLocationButtonEnabled: true,
+                  myLocationEnabled: true,
+                  initialCameraPosition: position,
+                  minMaxZoomPreference: const MinMaxZoomPreference(6, 19),
+                  onMapCreated: (controller) {
+                    _controller = controller;
+                  },
+                  markers: _markers
+                  // mySet(),
+                  //polylines: polyline(),
+                  ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.0),
               ),

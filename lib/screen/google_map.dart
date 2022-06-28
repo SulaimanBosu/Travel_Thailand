@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:google_maps_widget/google_maps_widget.dart';
+import 'package:label_marker/label_marker.dart';
 import 'package:location/location.dart';
 import 'package:project/model/landmark_model.dart';
 import 'package:project/screen/login.dart';
@@ -38,24 +38,51 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
   late GoogleMapController _controller;
   MapType _defaultMapType = MapType.normal;
   double zoom = 6.0;
+  final Set<Marker> _markers = <Marker>{};
 
   @override
-  void initState() {
+  initState() {
     lat2 = double.parse(widget.landmarkModel.latitude!);
     lng2 = double.parse(widget.landmarkModel.longitude!);
     lat = widget.lat;
     lng = widget.lng;
-    // Timer.periodic(
-    //   const Duration(milliseconds: 2000),
-    //   (Timer t) => setState(
-    //     () {
-    //       getLocation();
-    //     },
-    //   ),
-    // );
-
+    addMarker();
+    delay();
     // TODO: implement initState
     super.initState();
+  }
+
+  void delay() {
+    Future.delayed(const Duration(milliseconds: 150), () {
+      setState(() {
+        addMarker();
+      });
+    });
+  }
+
+  void addMarker() async {
+    _markers.addLabelMarker(LabelMarker(
+      onTap: () => _bottomSheet(),
+      //  icon: BitmapDescriptor.fromBytes(byteData),
+      visible: true,
+      consumeTapEvents: false,
+      draggable: false,
+      flat: false,
+      label: widget.landmarkModel.landmarkName!,
+      markerId: const MarkerId("idLandmark"),
+      position: LatLng(lat2, lng2),
+      backgroundColor: Colors.red,
+    ));
+    _markers.addLabelMarker(LabelMarker(
+      visible: true,
+      consumeTapEvents: false,
+      draggable: false,
+      flat: false,
+      label: 'ตำแหน่งของคุณ',
+      markerId: const MarkerId("idUser"),
+      position: LatLng(lat, lng),
+      backgroundColor: Colors.blue.shade900,
+    ));
   }
 
   void _changeMapType() {
@@ -75,7 +102,6 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
     return SafeArea(
       child: Stack(
         children: [
-          //showmap2(),
           showMap(),
           Stack(
             alignment: Alignment.topLeft,
@@ -257,10 +283,6 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
         lng2,
       ),
       icon: BitmapDescriptor.defaultMarker,
-      infoWindow: InfoWindow(
-        title: widget.landmarkModel.landmarkName!,
-        snippet: widget.landmarkModel.provinceName!,
-      ),
     );
   }
 
@@ -281,50 +303,6 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
         color: Colors.red,
       ),
     };
-  }
-
-  Widget showmap2() {
-    return GoogleMapsWidget(
-      apiKey: "YOUR KEY HERE",
-      sourceLatLng: LatLng(widget.lat, widget.lng),
-      destinationLatLng: LatLng(lat2, lng2),
-      defaultCameraLocation: LatLng(lat2, lng2),
-
-      ///////////////////////////////////////////////////////
-      //////////////    OPTIONAL PARAMETERS    //////////////
-      ///////////////////////////////////////////////////////
-
-      routeWidth: 2,
-      sourceMarkerIconInfo: const MarkerIconInfo(
-        assetPath: "images/iconprofile.png",
-        assetMarkerSize: Size.square(125),
-        rotation: 90,
-      ),
-      destinationMarkerIconInfo: const MarkerIconInfo(
-        assetPath: "images/dam-icon.png",
-      ),
-      driverMarkerIconInfo: const MarkerIconInfo(
-        assetPath: "images/cafe-icon.png",
-        // assetMarkerSize: Size.square(125),
-        // rotation: 90,
-      ),
-      updatePolylinesOnDriverLocUpdate: true,
-      // mock stream
-      driverCoordinatesStream: Stream.periodic(
-        const Duration(milliseconds: 1000),
-        (i) => LatLng(
-          lat,
-          lng,
-        ),
-      ),
-      sourceName: "This is source name",
-      driverName: "Alex",
-      onTapDriverMarker: (currentLocation) {
-        print("Driver is currently at $currentLocation");
-      },
-      totalTimeCallback: (time) => print(time),
-      totalDistanceCallback: (distance) => print(distance),
-    );
   }
 
   Future<void> getLocation() async {
@@ -357,34 +335,33 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
               semanticContainer: true,
               clipBehavior: Clip.antiAliasWithSaveLayer,
               child: GoogleMap(
-                mapType: _defaultMapType,
-                compassEnabled: true,
-                mapToolbarEnabled: true,
-                indoorViewEnabled: true,
-                trafficEnabled: false,
-                buildingsEnabled: true,
-                //    circles:  <Circle>{ Circle(
-                // circleId: const CircleId('circle'),
-                // center: LatLng(lat2, lng2),
-                // radius: 10,fillColor: Colors.red)},
-                rotateGesturesEnabled: true,
-                scrollGesturesEnabled: true,
-                zoomControlsEnabled: true,
-                zoomGesturesEnabled: true,
-                // liteModeEnabled: false,
-                tiltGesturesEnabled: true,
-                myLocationButtonEnabled: false,
-                myLocationEnabled: true,
-                initialCameraPosition: position,
-                minMaxZoomPreference: const MinMaxZoomPreference(6, 19),
-
-                onMapCreated: (controller) {
-                  _controller = controller;
-                },
-
-                markers: mySet(),
-                //polylines: polyline(),
-              ),
+                  mapType: _defaultMapType,
+                  compassEnabled: true,
+                  mapToolbarEnabled: true,
+                  indoorViewEnabled: true,
+                  trafficEnabled: false,
+                  buildingsEnabled: true,
+                  //    circles:  <Circle>{ Circle(
+                  // circleId: const CircleId('circle'),
+                  // center: LatLng(lat2, lng2),
+                  // radius: 10,fillColor: Colors.red)},
+                  rotateGesturesEnabled: true,
+                  scrollGesturesEnabled: true,
+                  zoomControlsEnabled: true,
+                  zoomGesturesEnabled: true,
+                  // liteModeEnabled: false,
+                  tiltGesturesEnabled: true,
+                  myLocationButtonEnabled: false,
+                  myLocationEnabled: true,
+                  initialCameraPosition: position,
+                  minMaxZoomPreference: const MinMaxZoomPreference(6, 19),
+                  onMapCreated: (controller) {
+                    _controller = controller;
+                  },
+                  markers: _markers
+                  //mySet(),
+                  //polylines: polyline(),
+                  ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.0),
               ),
