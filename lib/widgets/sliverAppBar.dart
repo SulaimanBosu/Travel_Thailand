@@ -16,6 +16,7 @@ class SliverappBar {
       VoidCallback onPressed,
       bool search,
       VoidCallback onTap) {
+        TextEditingController controller = TextEditingController();
     return SliverAppBar(
       backgroundColor: Colors.white,
       flexibleSpace: !search
@@ -29,6 +30,10 @@ class SliverappBar {
                       height: 36.0,
                       width: double.infinity,
                       child: CupertinoTextField(
+                        controller: controller,
+                        onChanged: ((value) {
+                          debugPrint('controller ===== ${controller.text}');
+                        }),
                         autofocus: true,
                         keyboardType: TextInputType.text,
                         placeholder: 'ค้นหาแหล่งท่องเที่ยว',

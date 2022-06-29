@@ -35,6 +35,7 @@ class _SearchWidgetState extends State<SearchWidget> {
   void initState() {
     readlandmark();
     readlandmarkPopular();
+    debugPrint('textControllor == ${textControllor.value.text}');
     super.initState();
   }
 
@@ -94,7 +95,13 @@ class _SearchWidgetState extends State<SearchWidget> {
             child: Column(
               children: [
                 CupertinoTextField(
+                  toolbarOptions: const ToolbarOptions(copy: true,cut: true,paste: true,selectAll: true),
+                  onSubmitted:(value) => _landmarkList,
                   controller: textControllor,
+                  onChanged: ((value) {
+                    textControllor.text = value;
+                    debugPrint('controller ===== ${textControllor.text}');
+                  }),
                   autofocus: true,
                   keyboardType: TextInputType.text,
                   placeholder: 'ค้นหาแหล่งท่องเที่ยว',
