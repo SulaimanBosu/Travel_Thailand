@@ -19,9 +19,10 @@ import 'package:user_profile_avatar/user_profile_avatar.dart';
 
 class Profile extends StatefulWidget {
   const Profile({
-    Key? key, required this.provinceModel,
+    Key? key,
+    required this.provinceModel,
   }) : super(key: key);
- final List<ProvinceModel> provinceModel;
+  final List<ProvinceModel> provinceModel;
   @override
   State<Profile> createState() => _ProfileState();
 }
@@ -43,6 +44,7 @@ class _ProfileState extends State<Profile> {
   late double screenwidth;
   late double screenhight;
   var scaffoldKey = GlobalKey<ScaffoldState>();
+  bool search = false;
 
   @override
   // ignore: must_call_super
@@ -101,21 +103,42 @@ class _ProfileState extends State<Profile> {
         Scaffold(
       backgroundColor: Colors.white,
       key: scaffoldKey,
-     endDrawer: isLoading
-         ? null
-         : MyDrawer().showDrawer(context, file, name, lastname, email,widget.provinceModel),
+      endDrawer: search
+          ? null
+          : isLoading
+              ? null
+              : MyDrawer().showDrawer(
+                  context, file, name, lastname, email, widget.provinceModel),
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
             isLoading
-                ? SliverappBar()
-                    .appbar(context, screenwidth, userId, scaffoldKey, true)
-                : onData == false
-                    ? SliverToBoxAdapter(
-                        child: Container(),
-                      )
-                    : SliverappBar().appbar(
-                        context, screenwidth, userId, scaffoldKey, false),
+                ? SliverappBar().appbar(
+                    context,
+                    screenwidth,
+                    userId,
+                    scaffoldKey,
+                    true,
+                    (() => setState(() {
+                          search = true;
+                        })),
+                    search,
+                    (() => setState(() {
+                          search = false;
+                        })))
+                : SliverappBar().appbar(
+                    context,
+                    screenwidth,
+                    userId,
+                    scaffoldKey,
+                    false,
+                    (() => setState(() {
+                          search = true;
+                        })),
+                    search,
+                    (() => setState(() {
+                          search = false;
+                        }))),
             isLoading
                 ? SliverToBoxAdapter(
                     child: Container(

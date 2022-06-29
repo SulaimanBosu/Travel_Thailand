@@ -38,6 +38,7 @@ class _RecommendState extends State<Recommend> {
   late double screenwidth;
   late double screenhight;
   double lat1 = 0, lng1 = 0;
+  bool search = false;
 
   @override
   void initState() {
@@ -135,10 +136,12 @@ class _RecommendState extends State<Recommend> {
     screenhight = MediaQuery.of(context).size.height;
     return Scaffold(
       key: scaffoldKey,
-      endDrawer: isLoading
+      endDrawer: search
           ? null
-          : MyDrawer().showDrawer(context, profile!, name!, lastname!, email!,
-              widget.provinceModel),
+          : isLoading
+              ? null
+              : MyDrawer().showDrawer(context, profile!, name!, lastname!,
+                  email!, widget.provinceModel),
       body: SafeArea(
         child: CustomScrollView(
           shrinkWrap: true,
@@ -146,14 +149,38 @@ class _RecommendState extends State<Recommend> {
           physics: const BouncingScrollPhysics(),
           slivers: [
             isLoading
-                ? SliverappBar()
-                    .appbar(context, screenwidth, userid!, scaffoldKey, true)
-                : SliverappBar()
-                    .appbar(context, screenwidth, userid!, scaffoldKey, false),
+                ? SliverappBar().appbar(
+                    context,
+                    screenwidth,
+                    userid!,
+                    scaffoldKey,
+                    true,
+                    (() => setState(() {
+                          search = true;
+                        })),
+                    search,
+                    (() => setState(() {
+                          search = false;
+                        })))
+                : SliverappBar().appbar(
+                    context,
+                    screenwidth,
+                    userid!,
+                    scaffoldKey,
+                    false,
+                    (() => setState(() {
+                          search = true;
+                        })),
+                    search,
+                    (() => setState(() {
+                          search = false;
+                        }))),
             CupertinoSliverRefreshControl(
               builder: (context, refreshState, pulledExtent,
                       refreshTriggerPullDistance, refreshIndicatorExtent) =>
-                  const CupertinoActivityIndicator(radius: 10,),
+                  const CupertinoActivityIndicator(
+                radius: 10,
+              ),
               onRefresh: _refreshData,
             ),
             isLoading

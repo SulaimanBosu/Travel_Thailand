@@ -13,9 +13,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class Favorites extends StatefulWidget {
   const Favorites({
-    Key? key, required this.provinceModel,
+    Key? key,
+    required this.provinceModel,
   }) : super(key: key);
- final List<ProvinceModel> provinceModel;
+  final List<ProvinceModel> provinceModel;
   @override
   State<Favorites> createState() => _FavoritesState();
 }
@@ -36,6 +37,7 @@ class _FavoritesState extends State<Favorites> {
   var scaffoldKey = GlobalKey<ScaffoldState>();
   late double screenwidth;
   late double screenhight;
+  bool search = false;
 
   @override
   void initState() {
@@ -128,9 +130,12 @@ class _FavoritesState extends State<Favorites> {
     screenhight = MediaQuery.of(context).size.height;
     return Scaffold(
       key: scaffoldKey,
-     endDrawer: isLoading
-         ? null
-         : MyDrawer().showDrawer(context, profile!, name!, lastname!, email!,widget.provinceModel),
+      endDrawer: search
+          ? null
+          : isLoading
+              ? null
+              : MyDrawer().showDrawer(context, profile!, name!, lastname!,
+                  email!, widget.provinceModel),
       body: SafeArea(
         child: CustomScrollView(
           shrinkWrap: true,
@@ -138,10 +143,32 @@ class _FavoritesState extends State<Favorites> {
           physics: const BouncingScrollPhysics(),
           slivers: [
             isLoading
-                ? SliverappBar()
-                    .appbar(context, screenwidth, userid!, scaffoldKey, true)
-                : SliverappBar()
-                    .appbar(context, screenwidth, userid!, scaffoldKey, false),
+                ? SliverappBar().appbar(
+                    context,
+                    screenwidth,
+                    userid!,
+                    scaffoldKey,
+                    true,
+                    (() => setState(() {
+                          search = true;
+                        })),
+                    search,
+                    (() => setState(() {
+                          search = false;
+                        })))
+                : SliverappBar().appbar(
+                    context,
+                    screenwidth,
+                    userid!,
+                    scaffoldKey,
+                    false,
+                    (() => setState(() {
+                          search = true;
+                        })),
+                    search,
+                    (() => setState(() {
+                          search = false;
+                        }))),
             CupertinoSliverRefreshControl(
               onRefresh: _refreshData,
             ),
