@@ -457,6 +457,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.27.3"
+  search_bar_animated:
+    dependency: "direct main"
+    description:
+      name: search_bar_animated
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.2"
   searchable_listview:
     dependency: "direct main"
     description:

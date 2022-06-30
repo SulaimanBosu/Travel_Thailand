@@ -1,17 +1,22 @@
 // ignore_for_file: sized_box_for_whitespace, avoid_unnecessary_containers
 
 import 'dart:convert';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:project/model/landmark_model.dart';
 import 'package:project/model/province_model.dart';
+import 'package:project/screen/landmark_detail.dart';
 import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
 import 'package:project/widgets/card_view.dart';
 import 'package:project/widgets/drawer.dart';
+import 'package:project/widgets/search.dart';
+import 'package:project/widgets/search_widget.dart';
 import 'package:project/widgets/sliverAppBar.dart';
+import 'package:search_bar_animated/search_bar_animated.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Recommend extends StatefulWidget {
@@ -23,6 +28,7 @@ class Recommend extends StatefulWidget {
 
 class _RecommendState extends State<Recommend> {
   late LandmarkModel landmark = LandmarkModel();
+  List<LandmarkModel> landmarkModels = [];
   List<Widget> landmarkCards = [];
   int index = 0;
   bool isLoading = true;
@@ -39,11 +45,18 @@ class _RecommendState extends State<Recommend> {
   late double screenhight;
   double lat1 = 0, lng1 = 0;
   bool search = false;
+  String searchValue = '';
+
+  void doSomething(String i) {
+    Navigator.pop(context);
+    setState(() {});
+  }
 
   @override
   void initState() {
     readlandmark();
     getPreferences();
+    readlandmarkSearch();
     // getLocation();
     super.initState();
   }
@@ -81,6 +94,24 @@ class _RecommendState extends State<Recommend> {
     phone = preferences.getString('Phone')!;
     gender = preferences.getString('Gender')!;
     email = preferences.getString('Email')!;
+  }
+
+  Future<void> readlandmarkSearch() async {
+    String url = '${MyConstant().domain}/application/get_landmark.php';
+    try {
+      await Dio().get(url).then((value) {
+        var result = json.decode(value.data);
+        // debugPrint('Value == $result');
+        for (var map in result) {
+          landmark = LandmarkModel.fromJson(map);
+          landmarkModels.add(landmark);
+        }
+      });
+    } catch (error) {
+      debugPrint("ดาวน์โหลดไม่สำเร็จ: $error");
+      MyStyle().showdialog(
+          context, 'ล้มเหลว', 'ไม่พบการเชื่อมต่อเครือข่ายอินเตอร์เน็ต');
+    }
   }
 
   Future<void> readlandmark() async {
@@ -156,12 +187,24 @@ class _RecommendState extends State<Recommend> {
                     scaffoldKey,
                     true,
                     (() => setState(() {
+                          readlandmarkSearch();
                           search = true;
                         })),
                     search,
-                    (() => setState(() {
-                          search = false;
-                        })))
+                    () {
+                      setState(() {
+                        search = false;
+                      });
+                    },
+                    (value) {
+                      setState(() {
+                        searchValue = value;
+                        searchLandmark(value);
+                        landmarkModels.clear();
+                        //   print('searchValue ===== $searchValue');
+                      });
+                    },
+                  )
                 : SliverappBar().appbar(
                     context,
                     screenwidth,
@@ -169,12 +212,29 @@ class _RecommendState extends State<Recommend> {
                     scaffoldKey,
                     false,
                     (() => setState(() {
+                          readlandmarkSearch();
                           search = true;
                         })),
                     search,
-                    (() => setState(() {
+                    () {
+                      setState(() {
+                        if (searchValue.isEmpty) {
                           search = false;
-                        }))),
+                          landmarkModels.clear();
+                        } else {
+                          searchValue = '';
+                        }
+                      });
+                    },
+                    (value) {
+                      setState(() {
+                        searchValue = value;
+                        searchLandmark(searchValue);
+                        print('searchValue ===== $searchValue');
+                      });
+                      if (value.isEmpty) setState(() => readlandmarkSearch());
+                    },
+                  ),
             CupertinoSliverRefreshControl(
               builder: (context, refreshState, pulledExtent,
                       refreshTriggerPullDistance, refreshIndicatorExtent) =>
@@ -207,15 +267,100 @@ class _RecommendState extends State<Recommend> {
                           ),
                         ),
                       )
-                    : SliverGrid.extent(
-                        maxCrossAxisExtent: 265,
-                        mainAxisSpacing: 20,
-                        crossAxisSpacing: 10,
-                        children: landmarkCards,
-                      ),
+                    : search
+                        // ? SliverToBoxAdapter(
+                        //     child: Container(
+                        //         alignment: Alignment.topCenter,
+                        //         color: Colors.amber,
+                        //         width: MediaQuery.of(context).size.width,
+                        //         height: MediaQuery.of(context).size.height,
+                        //         child: searchBar()),
+                        //   )
+
+                        // ? SliverToBoxAdapter(
+                        //     child: Container(
+                        //         alignment: Alignment.topCenter,
+                        //         color: Colors.amber,
+                        //         width: MediaQuery.of(context).size.width,
+                        //         height: MediaQuery.of(context).size.height,
+                        //         child: SearchWidget(
+                        //           onClose: () {
+                        //             setState(() {
+                        //               search = false;
+                        //             });
+                        //           },
+                        //         )),
+                        //   )
+
+                        ? SliverToBoxAdapter(
+                            child: Container(
+                                alignment: Alignment.topCenter,
+                                color: Colors.amber,
+                                width: MediaQuery.of(context).size.width,
+                                height: MediaQuery.of(context).size.height,
+                                child: Search(
+                                  onClose: () {
+                                    setState(() {
+                                      search = false;
+                                    });
+                                  },
+                                )),
+                          )
+                        : SliverGrid.extent(
+                            maxCrossAxisExtent: 265,
+                            mainAxisSpacing: 20,
+                            crossAxisSpacing: 10,
+                            children: landmarkCards,
+                          ),
           ],
         ),
       ),
     );
+  }
+
+  Widget searchBar() {
+    return Scaffold(
+      body: landmarkModels.isEmpty
+          ? MyStyle().showProgress()
+          : ListView.builder(
+              itemCount: landmarkModels.length,
+              itemBuilder: (context, index) {
+                // final landmarkItem = landmarkModels[index];
+                return Card(
+                  // elevation: 2,
+                  child: ListTile(
+                    onTap: () {
+                      MyStyle().routeToWidget(
+                          context,
+                          LandmarkDetail(landmarkModel: landmarkModels[index]),
+                          true);
+                    },
+                    leading: CachedNetworkImage(
+                      imageUrl: landmarkModels[index].imagePath!,
+                      progressIndicatorBuilder:
+                          (context, url, downloadProgress) =>
+                              MyStyle().showProgress(),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
+                      fit: BoxFit.cover,
+                      width: 50,
+                      height: 50,
+                    ),
+                    title: Text(landmarkModels[index].landmarkName!),
+                  ),
+                );
+              }),
+    );
+  }
+
+  void searchLandmark(String query) {
+    final search = landmarkModels.where((landmark) {
+      assert(landmark != null);
+      final landmarkName = landmark.landmarkName!.toLowerCase();
+      final input = query.toLowerCase();
+
+      return landmarkName.contains(input);
+    }).toList();
+    setState(() => landmarkModels = search);
   }
 }

@@ -185,33 +185,33 @@ class _PopularState extends State<Popular> {
           primary: false,
           physics: const BouncingScrollPhysics(),
           slivers: [
-            isLoading
-                ? SliverappBar().appbar(
-                    context,
-                    screenwidth,
-                    userid!,
-                    scaffoldKey,
-                    true,
-                    (() => setState(() {
-                          search = true;
-                        })),
-                    search,
-                    (() => setState(() {
-                          search = false;
-                        })))
-                : SliverappBar().appbar(
-                    context,
-                    screenwidth,
-                    userid!,
-                    scaffoldKey,
-                    false,
-                    (() => setState(() {
-                          search = true;
-                        })),
-                    search,
-                    (() => setState(() {
-                          search = false;
-                        }))),
+            // isLoading
+            //     ? SliverappBar().appbar(
+            //         context,
+            //         screenwidth,
+            //         userid!,
+            //         scaffoldKey,
+            //         true,
+            //         (() => setState(() {
+            //               search = true;
+            //             })),
+            //         search,
+            //         (() => setState(() {
+            //               search = false;
+            //             })))
+            //     : SliverappBar().appbar(
+            //         context,
+            //         screenwidth,
+            //         userid!,
+            //         scaffoldKey,
+            //         false,
+            //         (() => setState(() {
+            //               search = true;
+            //             })),
+            //         search,
+            //         (() => setState(() {
+            //               search = false;
+            //             }))),
             CupertinoSliverRefreshControl(
               onRefresh: _refreshData,
             ),

@@ -17,8 +17,12 @@ import 'package:project/widgets/card_view.dart';
 import 'package:searchable_listview/searchable_listview.dart';
 
 class SearchWidget extends StatefulWidget {
-  const SearchWidget({Key? key}) : super(key: key);
-
+  const SearchWidget({
+    Key? key,
+    required this.onClose,
+  }) : super(key: key);
+  final VoidCallback onClose;
+  // final void Function(List) callback;
   @override
   State<SearchWidget> createState() => _SearchWidgetState();
 }
@@ -35,7 +39,6 @@ class _SearchWidgetState extends State<SearchWidget> {
   void initState() {
     readlandmark();
     readlandmarkPopular();
-    debugPrint('textControllor == ${textControllor.value.text}');
     super.initState();
   }
 
@@ -85,124 +88,101 @@ class _SearchWidgetState extends State<SearchWidget> {
   Widget build(BuildContext context) {
     screenwidth = MediaQuery.of(context).size.width;
     screenhight = MediaQuery.of(context).size.height;
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Container(
-          //   margin: EdgeInsets.only(top: 40),
-          child: SizedBox(
-            width: double.infinity,
-            child: Column(
-              children: [
-                CupertinoTextField(
-                  toolbarOptions: const ToolbarOptions(copy: true,cut: true,paste: true,selectAll: true),
-                  onSubmitted:(value) => _landmarkList,
-                  controller: textControllor,
-                  onChanged: ((value) {
-                    textControllor.text = value;
-                    debugPrint('controller ===== ${textControllor.text}');
-                  }),
-                  autofocus: true,
-                  keyboardType: TextInputType.text,
-                  placeholder: 'ค้นหาแหล่งท่องเที่ยว',
-                  placeholderStyle: const TextStyle(
-                    color: Color(0xffC4C6CC),
-                    fontSize: 14.0,
-                    fontFamily: 'Brutal',
-                  ),
-                  prefix: const Padding(
-                    padding: EdgeInsets.fromLTRB(9.0, 6.0, 9.0, 6.0),
-                    child: Icon(
-                      Icons.search,
-                      color: Color(0xffC4C6CC),
-                    ),
-                  ),
-                  suffix: InkWell(
-                    onTap: () {},
-                    child: const Padding(
-                      padding: EdgeInsets.only(right: 9),
-                      child: Icon(
-                        Icons.close,
-                        color: Colors.black54,
-                      ),
-                    ),
-                  ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8.0),
-                    color: const Color(0xffF0F1F5),
-                  ),
-                ),
-                // const SizedBox(height: 20,),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(15),
-                    child: SearchableList<LandmarkModel>.sliver(
-                      initialList: textControllor.text.isEmpty
-                          ? landmarksPopular
-                          : landmarks,
-                      builder: (LandmarkModel landmarkModel) => LandmarkItem(
-                        landmarkModel: landmarkModel,
-                      ),
-                      displayClearIcon: false,
-                      searchFieldEnabled: true,
-                      searchTextController: textControllor,
-                      filter: _landmarkList,
-                      emptyWidget: isLoadding
-                          ? MyStyle().showProgress()
-                          : Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
-                                Icon(Icons.error_outline),
-                                SizedBox(
-                                  width: 5,
+    return WillPopScope(
+      onWillPop: _onBackPressed,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          child: Container(
+            //   margin: EdgeInsets.only(top: 40),
+            child: SizedBox(
+              width: double.infinity,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 15, right: 15),
+                      child: SearchableList<LandmarkModel>.sliver(
+                        initialList: textControllor.text.isEmpty
+                            ? landmarksPopular
+                            : landmarks,
+                        builder: (LandmarkModel landmarkModel) => LandmarkItem(
+                          landmarkModel: landmarkModel,
+                        ),
+                        searchFieldEnabled: true,
+                        displayClearIcon: false,
+                        searchTextController: textControllor,
+                        filter: _landmarkList,
+                        emptyWidget: isLoadding
+                            ? MyStyle().showProgress()
+                            : Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: const [
+                                    Icon(Icons.error_outline),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text('ไม่พบแหล่งท่องเที่ยว')
+                                  ],
                                 ),
-                                Text('ไม่พบแหล่งท่องเที่ยว')
-                              ],
                             ),
-                      onItemSelected: (LandmarkModel item) {
-                        MaterialPageRoute route = MaterialPageRoute(
-                          builder: (context) =>
-                              LandmarkDetail(landmarkModel: item),
-                        );
-                        Navigator.pushAndRemoveUntil(
-                            context, route, (route) => true);
-                      },
-                      inputDecoration: InputDecoration(
-                        suffixIcon: InkWell(
-                          onTap: () {
-                            MaterialPageRoute route = MaterialPageRoute(
-                                builder: (value) => const HomeScreen(
-                                      index: 0,
-                                    ));
-                            Navigator.pushAndRemoveUntil(
-                                context, route, (route) => false);
-                          },
-                          child: const Padding(
-                            padding: EdgeInsets.only(right: 9),
+                        onItemSelected: (LandmarkModel item) {
+                          MaterialPageRoute route = MaterialPageRoute(
+                            builder: (context) =>
+                                LandmarkDetail(landmarkModel: item),
+                          );
+                          Navigator.pushAndRemoveUntil(
+                              context, route, (route) => true);
+                        },
+                        inputDecoration: InputDecoration(
+                          prefixIcon: const Padding(
+                            padding: EdgeInsets.only(right: 5),
                             child: Icon(
-                              Icons.close,
+                              Icons.search_outlined,
                               color: Colors.black54,
                             ),
                           ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(color: Colors.black54),
-                        ),
-                        hintText: "Search landmark",
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                            color: Colors.blue,
-                            width: 1.0,
+                          suffixIcon: InkWell(
+                            onTap: () {
+                              if (textControllor.text.isEmpty) {
+                                widget.onClose();
+                              } else {
+                                setState(() {
+                                  textControllor.clear();
+                                });
+                              }
+
+                              //Navigator.of(context).pop();
+                            },
+                            child: const Padding(
+                              padding: EdgeInsets.only(right: 9),
+                              child: Icon(
+                                Icons.close,
+                                color: Colors.black54,
+                              ),
+                            ),
                           ),
-                          borderRadius: BorderRadius.circular(8.0),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: const BorderSide(color: Colors.black54),
+                          ),
+                          hintText: "ค้นหาแหล่งท่องเที่ยว",
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.red,
+                              width: 1.0,
+                            ),
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
                         ),
+                        scrollDirection: Axis.vertical,
                       ),
-                      scrollDirection: Axis.vertical,
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -210,16 +190,26 @@ class _SearchWidgetState extends State<SearchWidget> {
     );
   }
 
+  Future<bool> _onBackPressed() async {
+    bool onTab = false;
+    setState(() {
+      widget.onClose();
+    });
+    return onTab;
+  }
+
   List<LandmarkModel> _landmarkList(String searchTerm) {
-    return landmarks
-        .where(
-          (element) =>
-              element.landmarkName!.toLowerCase().contains(searchTerm) ||
-              element.districtName!.toLowerCase().contains(searchTerm) ||
-              element.amphurName!.toLowerCase().contains(searchTerm) ||
-              element.provinceName!.toLowerCase().contains(searchTerm),
-        )
-        .toList();
+    return textControllor.text.isEmpty
+        ? landmarksPopular.toList()
+        : landmarks
+            .where(
+              (element) =>
+                  element.landmarkName!.toLowerCase().contains(searchTerm) ||
+                  element.districtName!.toLowerCase().contains(searchTerm) ||
+                  element.amphurName!.toLowerCase().contains(searchTerm) ||
+                  element.provinceName!.toLowerCase().contains(searchTerm),
+            )
+            .toList();
   }
 }
 

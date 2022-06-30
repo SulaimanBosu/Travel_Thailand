@@ -112,33 +112,33 @@ class _ProfileState extends State<Profile> {
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
-            isLoading
-                ? SliverappBar().appbar(
-                    context,
-                    screenwidth,
-                    userId,
-                    scaffoldKey,
-                    true,
-                    (() => setState(() {
-                          search = true;
-                        })),
-                    search,
-                    (() => setState(() {
-                          search = false;
-                        })))
-                : SliverappBar().appbar(
-                    context,
-                    screenwidth,
-                    userId,
-                    scaffoldKey,
-                    false,
-                    (() => setState(() {
-                          search = true;
-                        })),
-                    search,
-                    (() => setState(() {
-                          search = false;
-                        }))),
+            // isLoading
+            //     ? SliverappBar().appbar(
+            //         context,
+            //         screenwidth,
+            //         userId,
+            //         scaffoldKey,
+            //         true,
+            //         (() => setState(() {
+            //               search = true;
+            //             })),
+            //         search,
+            //         (() => setState(() {
+            //               search = false;
+            //             })))
+            //     : SliverappBar().appbar(
+            //         context,
+            //         screenwidth,
+            //         userId,
+            //         scaffoldKey,
+            //         false,
+            //         (() => setState(() {
+            //               search = true;
+            //             })),
+            //         search,
+            //         (() => setState(() {
+            //               search = false;
+            //             }))),
             isLoading
                 ? SliverToBoxAdapter(
                     child: Container(
