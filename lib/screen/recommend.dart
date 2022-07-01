@@ -29,6 +29,7 @@ class Recommend extends StatefulWidget {
 class _RecommendState extends State<Recommend> {
   late LandmarkModel landmark = LandmarkModel();
   List<LandmarkModel> landmarkModels = [];
+  List<LandmarkModel> item = [];
   List<Widget> landmarkCards = [];
   int index = 0;
   bool isLoading = true;
@@ -57,6 +58,9 @@ class _RecommendState extends State<Recommend> {
     readlandmark();
     getPreferences();
     readlandmarkSearch();
+    setState(() {
+      item = landmarkModels;
+    });
     // getLocation();
     super.initState();
   }
@@ -111,6 +115,47 @@ class _RecommendState extends State<Recommend> {
       debugPrint("ดาวน์โหลดไม่สำเร็จ: $error");
       MyStyle().showdialog(
           context, 'ล้มเหลว', 'ไม่พบการเชื่อมต่อเครือข่ายอินเตอร์เน็ต');
+    }
+  }
+
+  Future<void> searchAll(String search) async {
+    String url = '${MyConstant().domain}/application/search.php';
+    FormData formData = FormData.fromMap(
+      {
+        "searchQuery": search,
+      },
+    );
+    try {
+      await Dio().post(url, data: formData).then((value) {
+        var result = json.decode(value.data);
+
+        for (var map in result) {
+          landmark = LandmarkModel.fromJson(map);
+
+          setState(() {
+            landmarkCards.add(CardView(
+              landmarkModel: landmark,
+              index: index,
+              readlandmark: () {},
+              getPreferences: () {
+                setState(() {
+                  getPreferences();
+                });
+              },
+            ));
+            index++;
+            isLoading = false;
+          });
+        }
+      });
+    } catch (error) {
+      debugPrint("ดาวน์โหลดไม่สำเร็จ: $error");
+      MyStyle().showdialog(
+          context, 'ล้มเหลว', 'ไม่พบการเชื่อมต่อเครือข่ายอินเตอร์เน็ต');
+      setState(() {
+        isLoading = false;
+        // delaydialog();
+      });
     }
   }
 
@@ -190,21 +235,18 @@ class _RecommendState extends State<Recommend> {
                           readlandmarkSearch();
                           search = true;
                         })),
-                    search,
-                    () {
-                      setState(() {
-                        search = false;
-                      });
-                    },
-                    (value) {
-                      setState(() {
-                        searchValue = value;
-                        searchLandmark(value);
-                        landmarkModels.clear();
-                        //   print('searchValue ===== $searchValue');
-                      });
-                    },
-                  )
+                    search, () {
+                    setState(() {
+                      search = false;
+                    });
+                  }, (value) {
+                    setState(() {
+                      searchValue = value;
+                      searchLandmark(searchValue);
+                      landmarkModels.clear();
+                      //   print('searchValue ===== $searchValue');
+                    });
+                  }, () {})
                 : SliverappBar().appbar(
                     context,
                     screenwidth,
@@ -215,26 +257,36 @@ class _RecommendState extends State<Recommend> {
                           readlandmarkSearch();
                           search = true;
                         })),
-                    search,
-                    () {
-                      setState(() {
-                        if (searchValue.isEmpty) {
-                          search = false;
-                          landmarkModels.clear();
-                        } else {
-                          searchValue = '';
-                        }
-                      });
-                    },
-                    (value) {
-                      setState(() {
-                        searchValue = value;
-                        searchLandmark(searchValue);
-                        print('searchValue ===== $searchValue');
-                      });
-                      if (value.isEmpty) setState(() => readlandmarkSearch());
-                    },
-                  ),
+                    search, () {
+                    setState(() {
+                      
+                      if (searchValue == '') {
+                        search = false;
+                        landmarkModels.clear();
+                        _refreshData();
+                      } else {
+                        searchValue = '';
+                      }
+                    });
+                  }, (value) {
+                    setState(() {
+                      searchValue = value;
+                      searchLandmark(searchValue);
+                        print('searchValue ===== $value');
+                    });
+                    // if (value.isEmpty) setState(() => readlandmarkSearch());
+                    // if (value.isEmpty) setState(() => item.clear());
+                  }, () {
+                    setState(() {
+                      print('onSubmit ===== $searchValue');
+                      // searchValue = value;
+                      isLoading = true;
+                      landmarkCards.clear();
+                      index = 0;
+                      searchAll(searchValue);
+                      search = false;
+                    });
+                  }),
             CupertinoSliverRefreshControl(
               builder: (context, refreshState, pulledExtent,
                       refreshTriggerPullDistance, refreshIndicatorExtent) =>
@@ -251,31 +303,40 @@ class _RecommendState extends State<Recommend> {
                         child: MyStyle().progress(context)),
                   )
                 : landmark.landmarkId == null
-                    ? SliverToBoxAdapter(
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height * 0.7,
-                          child: const Center(
-                            child: Text(
-                              'ไม่พบรายการแนะนำ',
-                              style: TextStyle(
-                                color: Colors.black54,
-                                fontSize: 24.0,
-                                fontFamily: 'FC-Minimal-Regular',
+                    ? !search
+                        ? SliverToBoxAdapter(
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).size.height * 0.7,
+                              child: const Center(
+                                child: Text(
+                                  'ไม่พบแหล่งท่องเที่ยว',
+                                  style: TextStyle(
+                                    color: Colors.black54,
+                                    fontSize: 24.0,
+                                    fontFamily: 'FC-Minimal-Regular',
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                        ),
-                      )
+                          )
+                        : SliverToBoxAdapter(
+                            child: Container(
+                                alignment: Alignment.topCenter,
+                                color: Colors.amber,
+                                width: MediaQuery.of(context).size.width,
+                                height: MediaQuery.of(context).size.height,
+                                child: searchBar()),
+                          )
                     : search
-                        // ? SliverToBoxAdapter(
-                        //     child: Container(
-                        //         alignment: Alignment.topCenter,
-                        //         color: Colors.amber,
-                        //         width: MediaQuery.of(context).size.width,
-                        //         height: MediaQuery.of(context).size.height,
-                        //         child: searchBar()),
-                        //   )
+                        ? SliverToBoxAdapter(
+                            child: Container(
+                                alignment: Alignment.topCenter,
+                                color: Colors.amber,
+                                width: MediaQuery.of(context).size.width,
+                                height: MediaQuery.of(context).size.height,
+                                child: searchBar()),
+                          )
 
                         // ? SliverToBoxAdapter(
                         //     child: Container(
@@ -292,26 +353,26 @@ class _RecommendState extends State<Recommend> {
                         //         )),
                         //   )
 
-                        ? SliverToBoxAdapter(
-                            child: Container(
-                                alignment: Alignment.topCenter,
-                                color: Colors.amber,
-                                width: MediaQuery.of(context).size.width,
-                                height: MediaQuery.of(context).size.height,
-                                child: Search(
-                                  onClose: () {
-                                    setState(() {
-                                      search = false;
-                                    });
-                                  },
-                                )),
-                          )
+                        // ? SliverToBoxAdapter(
+                        //     child: Container(
+                        //         alignment: Alignment.topCenter,
+                        //         color: Colors.amber,
+                        //         width: MediaQuery.of(context).size.width,
+                        //         height: MediaQuery.of(context).size.height,
+                        //         child: Search(
+                        //           onClose: () {
+                        //             setState(() {
+                        //               search = false;
+                        //             });
+                        //           },
+                        //         )),
+                        //   )
                         : SliverGrid.extent(
                             maxCrossAxisExtent: 265,
                             mainAxisSpacing: 20,
                             crossAxisSpacing: 10,
                             children: landmarkCards,
-                          ),
+                          )
           ],
         ),
       ),
@@ -323,44 +384,62 @@ class _RecommendState extends State<Recommend> {
       body: landmarkModels.isEmpty
           ? MyStyle().showProgress()
           : ListView.builder(
-              itemCount: landmarkModels.length,
+              itemCount: item.length,
               itemBuilder: (context, index) {
                 // final landmarkItem = landmarkModels[index];
-                return Card(
-                  // elevation: 2,
-                  child: ListTile(
-                    onTap: () {
-                      MyStyle().routeToWidget(
-                          context,
-                          LandmarkDetail(landmarkModel: landmarkModels[index]),
-                          true);
-                    },
-                    leading: CachedNetworkImage(
-                      imageUrl: landmarkModels[index].imagePath!,
-                      progressIndicatorBuilder:
-                          (context, url, downloadProgress) =>
-                              MyStyle().showProgress(),
-                      errorWidget: (context, url, error) =>
-                          const Icon(Icons.error),
-                      fit: BoxFit.cover,
-                      width: 50,
-                      height: 50,
-                    ),
-                    title: Text(landmarkModels[index].landmarkName!),
-                  ),
-                );
+                return item.isNotEmpty
+                    ? ListTile(
+                        onTap: () {
+                          MyStyle().routeToWidget(context,
+                              LandmarkDetail(landmarkModel: item[index]), true);
+                        },
+                        leading: CachedNetworkImage(
+                          imageUrl: item[index].imagePath!,
+                          progressIndicatorBuilder:
+                              (context, url, downloadProgress) =>
+                                  MyStyle().showProgress(),
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.error),
+                          fit: BoxFit.cover,
+                          width: 50,
+                          height: 50,
+                        ),
+                        title: Text(item[index].landmarkName!),
+                      )
+                    : Container(
+                        child: Center(
+                          child: Row(children: const [
+                            Icon(Icons.error_outline),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              'ไม่พบแหล่งท่องเที่ยว',
+                              style: TextStyle(
+                                color: Colors.black54,
+                                fontSize: 22.0,
+                                fontFamily: 'FC-Minimal-Regular',
+                              ),
+                            )
+                          ]),
+                        ),
+                      );
               }),
     );
   }
 
   void searchLandmark(String query) {
-    final search = landmarkModels.where((landmark) {
-      assert(landmark != null);
-      final landmarkName = landmark.landmarkName!.toLowerCase();
-      final input = query.toLowerCase();
-
-      return landmarkName.contains(input);
-    }).toList();
-    setState(() => landmarkModels = search);
+    setState(() {
+      item = landmarkModels
+          .where(
+            (landmark) =>
+                landmark.landmarkName!.toLowerCase().contains(query) ||
+                landmark.districtName!.toLowerCase().contains(query) ||
+                landmark.amphurName!.toLowerCase().contains(query) ||
+                landmark.provinceName!.toLowerCase().contains(query),
+          )
+          .toList();
+    });
+    setState(() => landmarkModels = item);
   }
 }

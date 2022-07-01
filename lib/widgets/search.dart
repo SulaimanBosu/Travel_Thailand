@@ -19,12 +19,17 @@ class Search extends StatefulWidget {
 
 class _SearchState extends State<Search> {
   List<LandmarkModel> landmarkModels = [];
+  List<LandmarkModel> item = [];
   LandmarkModel landmarkModel = LandmarkModel();
   TextEditingController textControllor = TextEditingController();
 
   @override
   void initState() {
     readlandmark();
+    setState(() {
+      item = landmarkModels;
+    });
+
     super.initState();
   }
 
@@ -53,18 +58,16 @@ class _SearchState extends State<Search> {
       body: landmarkModels.isEmpty
           ? MyStyle().showProgress()
           : ListView.builder(
-              itemCount: landmarkModels.length,
+              itemCount: item.length,
               itemBuilder: (context, index) {
                 // final landmarkItem = landmarkModels[index];
                 return ListTile(
                   onTap: () {
-                    MyStyle().routeToWidget(
-                        context,
-                        LandmarkDetail(landmarkModel: landmarkModels[index]),
-                        true);
+                    MyStyle().routeToWidget(context,
+                        LandmarkDetail(landmarkModel: item[index]), true);
                   },
                   leading: CachedNetworkImage(
-                    imageUrl: landmarkModels[index].imagePath!,
+                    imageUrl: item[index].imagePath!,
                     progressIndicatorBuilder:
                         (context, url, downloadProgress) =>
                             MyStyle().showProgress(),
@@ -74,21 +77,31 @@ class _SearchState extends State<Search> {
                     width: 50,
                     height: 50,
                   ),
-                  title: Text(landmarkModels[index].landmarkName!),
+                  title: Text(item[index].landmarkName!),
                 );
               }),
     );
   }
 
   void searchLandmark(String query) {
-    final search = landmarkModels.where((landmark) {
-      assert(landmark != null);
-      final landmarkName = landmark.landmarkName!.toLowerCase();
-      final input = query.toLowerCase();
+    setState(() {
+      item = landmarkModels
+          .where((landmark) =>
+              landmark.landmarkName!.toLowerCase().contains(query) ||
+              landmark.districtName!.toLowerCase().contains(query) ||
+              landmark.amphurName!.toLowerCase().contains(query) ||
+              landmark.provinceName!.toLowerCase().contains(query))
+          .toList();
+    });
 
-      return landmarkName.contains(input);
-    }).toList();
-    setState(() => landmarkModels = search);
+    // final search = landmarkModels.where((landmark) {
+    //   assert(landmark != null);
+    //   final landmarkName = landmark.landmarkName!.toLowerCase();
+    //   final input = query.toLowerCase();
+
+    //   return landmarkName.contains(input);
+    // }).toList();
+    // setState(() => landmarkModels = search);
   }
 
   AppBar buildAppbar() {
@@ -103,6 +116,8 @@ class _SearchState extends State<Search> {
                 height: 36.0,
                 width: double.infinity,
                 child: CupertinoTextField(
+                  toolbarOptions: const ToolbarOptions(
+                      copy: true, cut: true, paste: true, selectAll: true),
                   onChanged: ((value) {
                     searchLandmark(value);
                     if (value.isEmpty) setState(() => readlandmark());

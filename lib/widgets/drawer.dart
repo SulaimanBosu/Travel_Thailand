@@ -38,7 +38,7 @@ class MyDrawer {
                                 onPressed: () => Navigator.of(context).pop(),
                                 icon: const Icon(Icons.arrow_back_ios_new)),
                             CircleButton(
-                              icon: MdiIcons.facebookMessenger,
+                              icon: Icons.more_horiz_outlined,
                               iconSize: 30,
                               onPressed: () => debugPrint('facebookMessenger'),
                             ),
@@ -58,13 +58,13 @@ class MyDrawer {
                                   children: [
                                     InkWell(
                                       onTap: () {
-                                        // MaterialPageRoute route =
-                                        //     MaterialPageRoute(
-                                        //         builder: (value) =>
-                                        //             const HomeScreen(
-                                        //               index: 4,
-                                        //             ));
-                                        // Navigator.push(context, route);
+                                        MaterialPageRoute route =
+                                            MaterialPageRoute(
+                                                builder: (value) =>
+                                                    const HomeScreen(
+                                                      index: 4,
+                                                    ));
+                                        Navigator.push(context, route);
                                       },
                                       child: CircleAvatar(
                                         radius: 24,

@@ -109,7 +109,7 @@ class _PopularState extends State<Popular> {
   Future<void> readlandmark() async {
     Location location = Location();
     LocationData locationData = await location.getLocation();
-    //location.enableBackgroundMode(enable: true);
+    location.enableBackgroundMode(enable: true);
     lat1 = locationData.latitude!;
     lng1 = locationData.longitude!;
 
