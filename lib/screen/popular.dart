@@ -14,6 +14,7 @@ import 'package:project/utility/my_api.dart';
 import 'package:project/utility/my_style.dart';
 import 'package:project/widgets/drawer.dart';
 import 'package:project/widgets/list_view.dart';
+import 'package:project/widgets/search.dart';
 import 'package:project/widgets/sliverAppBar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -185,33 +186,31 @@ class _PopularState extends State<Popular> {
           primary: false,
           physics: const BouncingScrollPhysics(),
           slivers: [
-            // isLoading
-            //     ? SliverappBar().appbar(
-            //         context,
-            //         screenwidth,
-            //         userid!,
-            //         scaffoldKey,
-            //         true,
-            //         (() => setState(() {
-            //               search = true;
-            //             })),
-            //         search,
-            //         (() => setState(() {
-            //               search = false;
-            //             })))
-            //     : SliverappBar().appbar(
-            //         context,
-            //         screenwidth,
-            //         userid!,
-            //         scaffoldKey,
-            //         false,
-            //         (() => setState(() {
-            //               search = true;
-            //             })),
-            //         search,
-            //         (() => setState(() {
-            //               search = false;
-            //             }))),
+            search
+                ? SliverToBoxAdapter(child: Container())
+                : isLoading
+                    ? SliverappBar().appbar(
+                        context,
+                        screenwidth,
+                        userid!,
+                        scaffoldKey,
+                        true,
+                        (() => setState(() {
+                              search = true;
+                            })),
+                        search,
+                      )
+                    : SliverappBar().appbar(
+                        context,
+                        screenwidth,
+                        userid!,
+                        scaffoldKey,
+                        false,
+                        (() => setState(() {
+                              search = true;
+                            })),
+                        search,
+                      ),
             CupertinoSliverRefreshControl(
               onRefresh: _refreshData,
             ),
@@ -223,31 +222,61 @@ class _PopularState extends State<Popular> {
                         child: MyStyle().progress(context)),
                   )
                 : popularlandmarks.isEmpty
-                    ? SliverToBoxAdapter(
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height * 0.7,
-                          child: const Center(
-                            child: Text(
-                              'ไม่พบรายการ',
-                              style: TextStyle(
-                                color: Colors.black54,
-                                fontSize: 24.0,
-                                fontFamily: 'FC-Minimal-Regular',
+                    ? !search
+                        ? SliverToBoxAdapter(
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).size.height * 0.7,
+                              child: const Center(
+                                child: Text(
+                                  'ไม่พบแหล่งท่องเที่ยว',
+                                  style: TextStyle(
+                                    color: Colors.black54,
+                                    fontSize: 24.0,
+                                    fontFamily: 'FC-Minimal-Regular',
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                        ),
-                      )
-                    : Listview(
-                        landmarkModel: popularlandmarks,
-                        distances: distances,
-                        times: times,
-                        index: index,
-                        lat1: lat1,
-                        lng1: lng1,
-                        userId: userid!,
-                      )
+                          )
+                        : SliverToBoxAdapter(
+                            child: Container(
+                                alignment: Alignment.topCenter,
+                                color: Colors.amber,
+                                width: MediaQuery.of(context).size.width,
+                                height: MediaQuery.of(context).size.height,
+                                child: Search(
+                                  onClose: () {
+                                    setState(() {
+                                      search = false;
+                                    });
+                                  },
+                                )),
+                          )
+                    : search
+                        ? SliverToBoxAdapter(
+                            child: Container(
+                                alignment: Alignment.topCenter,
+                                color: Colors.amber,
+                                width: MediaQuery.of(context).size.width,
+                                height: MediaQuery.of(context).size.height,
+                                child: Search(
+                                  onClose: () {
+                                    setState(() {
+                                      search = false;
+                                    });
+                                  },
+                                )),
+                          )
+                        : Listview(
+                            landmarkModel: popularlandmarks,
+                            distances: distances,
+                            times: times,
+                            index: index,
+                            lat1: lat1,
+                            lng1: lng1,
+                            userId: userid!,
+                          )
             // SliverToBoxAdapter(
             //   child: popularlandmarks.isEmpty
             //     ? Container(

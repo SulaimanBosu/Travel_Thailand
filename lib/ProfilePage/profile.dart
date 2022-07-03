@@ -4,15 +4,18 @@ import 'package:blurry_modal_progress_hud/blurry_modal_progress_hud.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:project/ProfilePage/edit_profile.dart';
 import 'package:project/model/province_model.dart';
 import 'package:project/model/user_model.dart';
+import 'package:project/screen/home_screen.dart';
 import 'package:project/screen/login.dart';
 import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
 import 'package:project/utility/signout_process.dart';
 import 'package:project/widgets/drawer.dart';
 import 'package:project/widgets/popover.dart';
+import 'package:project/widgets/popup_menu.dart';
 import 'package:project/widgets/sliverAppBar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:user_profile_avatar/user_profile_avatar.dart';
@@ -44,7 +47,6 @@ class _ProfileState extends State<Profile> {
   late double screenwidth;
   late double screenhight;
   var scaffoldKey = GlobalKey<ScaffoldState>();
-  bool search = false;
 
   @override
   // ignore: must_call_super
@@ -103,42 +105,104 @@ class _ProfileState extends State<Profile> {
         Scaffold(
       backgroundColor: Colors.white,
       key: scaffoldKey,
-      endDrawer: search
+      endDrawer: isLoading
           ? null
-          : isLoading
-              ? null
-              : MyDrawer().showDrawer(
-                  context, file, name, lastname, email, widget.provinceModel),
+          : MyDrawer().showDrawer(
+              context, file, name, lastname, email, widget.provinceModel),
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
-            // isLoading
-            //     ? SliverappBar().appbar(
-            //         context,
-            //         screenwidth,
-            //         userId,
-            //         scaffoldKey,
-            //         true,
-            //         (() => setState(() {
-            //               search = true;
-            //             })),
-            //         search,
-            //         (() => setState(() {
-            //               search = false;
-            //             })))
-            //     : SliverappBar().appbar(
-            //         context,
-            //         screenwidth,
-            //         userId,
-            //         scaffoldKey,
-            //         false,
-            //         (() => setState(() {
-            //               search = true;
-            //             })),
-            //         search,
-            //         (() => setState(() {
-            //               search = false;
-            //             }))),
+            SliverAppBar(
+              backgroundColor: Colors.white,
+              actions: [
+                PopupMenu(
+                  onselect: (value) {
+                    setState(() {
+                      switch (value) {
+                        case 1:
+                          MyStyle().routeToWidget(
+                              context, const HomeScreen(index: 0), true);
+                          break;
+                        case 2:
+                          MyStyle().routeToWidget(
+                              context, const HomeScreen(index: 4), true);
+                          break;
+                        case 3:
+                          MyStyle().routeToWidget(
+                              context, const HomeScreen(index: 2), true);
+                          break;
+                        case 4:
+                          MyStyle().routeToWidget(context, const Login(), true);
+                          break;
+                        default:
+                          MyStyle().routeToWidget(
+                              context, const HomeScreen(index: 0), true);
+                      }
+
+                      debugPrint('ItemMenu ==== ${value.toString()}');
+                    });
+                  },
+                  item: [
+                    PopupMenuItem<int>(
+                      value: 1,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: const [
+                          Icon(Icons.home_outlined),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text('หน้าแรก'),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem<int>(
+                      value: 2,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: const [
+                          Icon(MdiIcons.accountDetails),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text('โปรไฟล์'),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem<int>(
+                      value: 3,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: const [
+                          Icon(Icons.settings),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text('การตั้งค่า'),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem<int>(
+                      value: 4,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Icon(name == '' || name.isEmpty
+                              ? Icons.login_outlined
+                              : Icons.logout_rounded),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          Text(name == '' || name.isEmpty
+                              ? 'เข้าสู่ระบบ'
+                              : 'ออกจากระบบ'),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
             isLoading
                 ? SliverToBoxAdapter(
                     child: Container(
@@ -172,7 +236,10 @@ class _ProfileState extends State<Profile> {
                                     },
                                     child: Stack(
                                       children: [
-                                        // showImage(context),
+                                        showImageCoverPage(
+                                          context,
+                                          file,
+                                        ),
                                         userprofile(),
                                       ],
                                     ),
@@ -219,11 +286,13 @@ class _ProfileState extends State<Profile> {
   }
 
   Widget userprofile() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 40),
+    return Positioned(
+      top: 140,
+      left: 40,
+      right: 40,
       child: CircleAvatar(
-        radius: 90,
-        backgroundColor: Colors.red,
+        radius: 93,
+        backgroundColor: Colors.white,
         child: Padding(
           padding: const EdgeInsets.all(2), // Border radius
           child: ClipOval(
@@ -247,28 +316,33 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  //โชว์ภาพตัวอย่างก่อนเลือกรูปและหลังเลือกรูป
-  Container showImage(context) {
-    return Container(
-      padding: const EdgeInsets.only(top: 40),
-      child: file.isNotEmpty
-          ? UserProfileAvatar(
-              avatarUrl: MyConstant().domain + file,
-              onAvatarTap: () {
-                navigateSecondPage(const EditProfile());
-              },
-              avatarSplashColor: Colors.red,
-              radius: 90,
-              isActivityIndicatorSmall: true,
-              avatarBorderData: AvatarBorderData(
-                borderColor: Colors.redAccent,
-                borderWidth: 2.0,
-              ),
-            )
-          : const CircleAvatar(
-              radius: 90,
-              backgroundImage: AssetImage('images/iconprofile.png'),
-            ),
+  Widget showImageCoverPage(BuildContext context, String imageURL) {
+    return InkWell(
+      onTap: () {
+        _bottomSheet();
+      },
+      child: Container(
+        margin: const EdgeInsetsDirectional.only(
+            start: 40.0, end: 40.0, bottom: 90),
+        width: MediaQuery.of(context).size.width * 1,
+        height: MediaQuery.of(context).size.height * 0.25,
+        child: Card(
+          semanticContainer: true,
+          clipBehavior: Clip.antiAliasWithSaveLayer,
+          child: CachedNetworkImage(
+            imageUrl: MyConstant().domain + imageURL,
+            progressIndicatorBuilder: (context, url, downloadProgress) =>
+                MyStyle().showProgress(),
+            errorWidget: (context, url, error) => const Icon(Icons.error),
+            fit: BoxFit.cover,
+          ),
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+          elevation: 5,
+          margin: const EdgeInsets.all(0),
+        ),
+      ),
     );
   }
 

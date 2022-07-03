@@ -6,15 +6,23 @@ import 'package:project/ProfilePage/edit_profile.dart';
 import 'package:project/model/province_model.dart';
 import 'package:project/screen/home_screen.dart';
 import 'package:project/screen/landmark_search.dart';
+import 'package:project/screen/login.dart';
 import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
 import 'package:project/utility/signout_process.dart';
 import 'package:project/widgets/icon_button.dart';
+import 'package:project/widgets/popup_menu.dart';
 
 class MyDrawer {
   int indexValue = 0;
-  Drawer showDrawer(BuildContext context, String profile, String name,
-          String lastname, String email, List<ProvinceModel> province) =>
+  Drawer showDrawer(
+    BuildContext context,
+    String profile,
+    String name,
+    String lastname,
+    String email,
+    List<ProvinceModel> province,
+  ) =>
       Drawer(
         // shape: const RoundedRectangleBorder(
         //   borderRadius: BorderRadius.only(
@@ -37,10 +45,90 @@ class MyDrawer {
                             IconButton(
                                 onPressed: () => Navigator.of(context).pop(),
                                 icon: const Icon(Icons.arrow_back_ios_new)),
-                            CircleButton(
-                              icon: Icons.more_horiz_outlined,
-                              iconSize: 30,
-                              onPressed: () => debugPrint('facebookMessenger'),
+                            PopupMenu(
+                              onselect: (value) {
+                                switch (value) {
+                                  case 1:
+                                    MyStyle().routeToWidget(context,
+                                        const HomeScreen(index: 0), true);
+                                    break;
+                                  case 2:
+                                    MyStyle().routeToWidget(context,
+                                        const HomeScreen(index: 4), true);
+                                    break;
+                                  case 3:
+                                    MyStyle().routeToWidget(context,
+                                        const HomeScreen(index: 2), true);
+                                    break;
+                                  case 4:
+                                    MyStyle().routeToWidget(
+                                        context, const Login(), true);
+                                    break;
+                                  default:
+                                    MyStyle().routeToWidget(context,
+                                        const HomeScreen(index: 0), true);
+                                }
+
+                                debugPrint('ItemMenu ==== ${value.toString()}');
+                              },
+                              item: [
+                                PopupMenuItem<int>(
+                                  value: 1,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: const [
+                                      Icon(Icons.home_outlined),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text('หน้าแรก'),
+                                    ],
+                                  ),
+                                ),
+                                PopupMenuItem<int>(
+                                  value: 2,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: const [
+                                      Icon(MdiIcons.accountDetails),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text('โปรไฟล์'),
+                                    ],
+                                  ),
+                                ),
+                                PopupMenuItem<int>(
+                                  value: 3,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: const [
+                                      Icon(Icons.settings),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text('การตั้งค่า'),
+                                    ],
+                                  ),
+                                ),
+                                PopupMenuItem<int>(
+                                  value: 4,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Icon(name == '' || name.isEmpty
+                                          ? Icons.login_outlined
+                                          : Icons.logout_rounded),
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text(name == '' || name.isEmpty
+                                          ? 'เข้าสู่ระบบ'
+                                          : 'ออกจากระบบ'),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),

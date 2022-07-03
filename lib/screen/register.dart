@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
+import 'dart:ui';
 import 'package:blurry_modal_progress_hud/blurry_modal_progress_hud.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
@@ -490,6 +491,7 @@ class _RegisterState extends State<Register> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),
+            primary:Colors.red,
           ),
           icon: const Icon(Icons.cloud_upload_outlined),
           label: const Text('Create Accound'),
@@ -725,6 +727,7 @@ class _RegisterState extends State<Register> {
                 child: Row(
                   children: <Widget>[
                     Radio(
+                      activeColor: Colors.red,
                       value: 'ชาย',
                       groupValue: gender,
                       onChanged: (value) {
@@ -761,6 +764,7 @@ class _RegisterState extends State<Register> {
                 child: Row(
                   children: <Widget>[
                     Radio(
+                      activeColor: Colors.red,
                       value: 'หญิง',
                       groupValue: gender,
                       onChanged: (value) {

@@ -3,15 +3,19 @@ import 'dart:io';
 import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:path/path.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:project/ProfilePage/profile.dart';
 import 'package:project/model/user_model.dart';
 import 'package:project/screen/home_screen.dart';
+import 'package:project/screen/login.dart';
 import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
 import 'package:project/widgets/popover.dart';
+import 'package:project/widgets/popup_menu.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class EditProfile extends StatefulWidget {
@@ -49,6 +53,7 @@ class _EditProfileState extends State<EditProfile> {
   bool onData = false;
   bool onUpdate = true;
   late String urlImage;
+  int menuItem = 0;
 
   @override
   void initState() {
@@ -123,13 +128,128 @@ class _EditProfileState extends State<EditProfile> {
         title: const Text(
           'Edit Account',
           style: TextStyle(
-            fontSize: 24,
-            color: Colors.redAccent,
-            fontFamily: 'FC-Minimal-Regular',
-          ),
+              fontSize: 24,
+              color: Colors.redAccent,
+              fontFamily: 'FC-Minimal-Regular',
+              fontWeight: FontWeight.bold),
         ),
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.info_outline))
+          PopupMenu(
+            onselect: (value) {
+              setState(() {
+                menuItem = value;
+                switch (value) {
+                  case 1:
+                    routeToSignIn(context, const HomeScreen(index: 0));
+                    break;
+                  case 2:
+                    routeToSignIn(context, const HomeScreen(index: 4));
+                    break;
+                  case 3:
+                    routeToSignIn(context, const HomeScreen(index: 2));
+                    break;
+                  case 4:
+                    routeToSignIn(context, const Login());
+                    break;
+                  default:
+                    routeToSignIn(context, const HomeScreen(index: 0));
+                }
+
+                debugPrint('ItemMenu ==== ${menuItem.toString()}');
+              });
+            },
+            item: [
+              PopupMenuItem<int>(
+                value: 1,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: const [
+                    Icon(Icons.home_outlined),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Text('หน้าแรก'),
+                  ],
+                ),
+              ),
+              PopupMenuItem<int>(
+                value: 2,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: const [
+                    Icon(MdiIcons.accountDetails),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Text('โปรไฟล์'),
+                  ],
+                ),
+              ),
+              PopupMenuItem<int>(
+                value: 3,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: const [
+                    Icon(Icons.settings),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Text('การตั้งค่า'),
+                  ],
+                ),
+              ),
+              PopupMenuItem<int>(
+                value: 4,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Icon(name == '' || name!.isEmpty
+                        ? Icons.login_outlined
+                        : Icons.logout_rounded),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    Text(name == '' || name!.isEmpty
+                        ? 'เข้าสู่ระบบ'
+                        : 'ออกจากระบบ'),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          // IconButton(
+          //   onPressed: () {
+          // PopupMenuButton<int>(
+          //  //color: Colors.black54,
+          //   shape: RoundedRectangleBorder(
+          //     borderRadius: BorderRadius.circular(10),
+          //   //  side: BorderSide.none
+          //   ),
+          //   elevation: 0,
+          //   icon: const Icon(
+          //     Icons.more_vert_outlined,
+          //     color: Colors.red,
+          //   ),
+          //   itemBuilder: (BuildContext context) => <PopupMenuItem<int>>[
+
+          //      const PopupMenuItem<int>(value: 1, child: Text('Item One')),
+          //      const PopupMenuItem<int>(value: 2, child: Text('Item Two')),
+          //      const PopupMenuItem<int>(value: 3, child: Text('Item Three')),
+          //      const PopupMenuItem<int>(value: 4, child: Text('I am Item Four'))
+          //   ],
+          //   onSelected: (int value) {
+          //     setState(() {
+          //       menuItem = value;
+          //       debugPrint('ItemMenu ==== ${menuItem.toString()}');
+          //     });
+          //   },
+          // )
+          // },
+          //   icon: const Icon(
+          //     Icons.more_horiz_outlined,
+          //     color: Colors.red,
+          //   ),
+          // )
         ],
       ),
       body: !onUpdate
@@ -156,77 +276,35 @@ class _EditProfileState extends State<EditProfile> {
                         const SizedBox(
                           height: 20,
                         ),
-                        InkWell(
-                          onTap: () => _bottomSheet(context),
-                          child: Stack(
-                            children: [
-                              showImage(context),
-                              Positioned(
+                        Stack(
+                          children: [
+                            showImageCoverPage(context, profile!),
+                            showImage(context),
+                            Positioned(
+                              child: InkWell(
+                                onTap: () {
+                                  MyStyle().bottomSheet(
+                                      context, 'ดูรูปหน้าปก', profile, () {
+                                    getImage(ImageSource.gallery);
+                                  }, 'หน้าปก');
+                                },
                                 child: ClipOval(
                                     child: Container(
                                   padding: const EdgeInsets.all(8),
-                                  color: Colors.grey[200],
+                                  color: Colors.grey[300],
                                   child: const Icon(
-                                    Icons.mode_edit_sharp,
-                                    color: Color.fromARGB(255, 242, 55, 55),
+                                    Icons.camera_alt,
+                                    color: Colors.black,
                                     size: 20,
                                   ),
                                 )),
-                                right: 12,
-                                top: 50,
                               ),
-                            ],
-                          ),
+                              right: 50,
+                              // top: 50,
+                              bottom: 100,
+                            ),
+                          ],
                         ),
-                        // OutlinedButton(
-                        //   style: OutlinedButton.styleFrom(
-                        //     fixedSize: const Size(170, 35),
-                        //     shape: RoundedRectangleBorder(
-                        //       borderRadius: BorderRadius.circular(12),
-                        //     ),
-                        //   ),
-                        //   onPressed: () {
-                        //     _bottomSheet(context);
-                        //     // _showPicker(context);
-                        //   },
-                        //   child: Row(
-                        //     mainAxisAlignment: MainAxisAlignment.center,
-                        //     // ignore: prefer_const_literals_to_create_immutables
-                        //     children: [
-                        //       const Icon(
-                        //         Icons.add_a_photo_outlined,
-                        //         color: Colors.black54,
-                        //       ),
-                        //       const SizedBox(
-                        //         width: 10,
-                        //       ),
-                        //       const Text(
-                        //         'เปลี่ยนรูปโปรไฟล์',
-                        //         style: TextStyle(
-                        //           fontSize: 16.0,
-                        //           color: Colors.black54,
-                        //           fontFamily: 'FC-Minimal-Regular',
-                        //         ),
-                        //       ),
-                        //     ],
-                        //   ),
-                        // ),
-                        // // SizedBox(height: 8),
-                        // Row(
-                        //   mainAxisAlignment: MainAxisAlignment.center,
-                        //   children: [
-                        //     Text(
-                        //       fileName,
-                        //       overflow: TextOverflow.ellipsis,
-                        //       style: const TextStyle(
-                        //         //fontWeight: FontWeight.bold,
-                        //         fontSize: 16.0,
-                        //         color: Colors.black54,
-                        //         fontFamily: 'FC-Minimal-Regular',
-                        //       ),
-                        //     ),
-                        //   ],
-                        // ),
                         MyStyle().mySizebox(),
                         nameForm(),
                         MyStyle().mySizebox(),
@@ -260,33 +338,90 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   //โชว์ภาพตัวอย่างก่อนเลือกรูปและหลังเลือกรูป
-  Container showImage(context) {
-    return Container(
-      padding: const EdgeInsets.only(top: 40),
-      child: CircleAvatar(
-        radius: 90,
-        backgroundColor: Colors.red,
-        child: Padding(
-          padding: const EdgeInsets.all(2), // Border radius
-          child: ClipOval(
-            child: SizedBox.fromSize(
-              size: const Size.fromRadius(88), // Image radius
-              child: file != null
-                  ? CircleAvatar(radius: 88, backgroundImage: FileImage(file!))
-                  : profile == ''
-                      ? Image.asset('images/iconprofile.png')
-                      : CachedNetworkImage(
-                          imageUrl: MyConstant().domain + profile!,
-                          progressIndicatorBuilder:
-                              (context, url, downloadProgress) =>
-                                  MyStyle().showProgress(),
-                          errorWidget: (context, url, error) =>
-                              Image.asset('images/iconprofile.png'),
-                          fit: BoxFit.cover,
-                        ),
+  Widget showImage(context) {
+    return Positioned(
+      top: 140,
+      left: 40,
+      right: 40,
+      child: Center(
+        child: Stack(
+          children: [
+            InkWell(
+              onTap: () =>
+                  MyStyle().bottomSheet(context, 'ดูรูปโปรไฟล์', profile, () {
+                getImage(ImageSource.gallery);
+              }, 'โปรไฟล์'),
+              child: CircleAvatar(
+                radius: 93,
+                backgroundColor: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.all(2), // Border radius
+                  child: ClipOval(
+                    child: SizedBox.fromSize(
+                      size: const Size.fromRadius(88), // Image radius
+                      child: file != null
+                          ? CircleAvatar(
+                              radius: 88, backgroundImage: FileImage(file!))
+                          : profile == ''
+                              ? Image.asset('images/iconprofile.png')
+                              : CachedNetworkImage(
+                                  imageUrl: MyConstant().domain + profile!,
+                                  progressIndicatorBuilder:
+                                      (context, url, downloadProgress) =>
+                                          MyStyle().showProgress(),
+                                  errorWidget: (context, url, error) =>
+                                      Image.asset('images/iconprofile.png'),
+                                  fit: BoxFit.cover,
+                                ),
+                    ),
+                  ),
+                ),
+              ),
             ),
-          ),
+            Positioned(
+              child: InkWell(
+                onTap: () => _bottomSheet(context),
+                child: ClipOval(
+                    child: Container(
+                  padding: const EdgeInsets.all(8),
+                  color: Colors.grey[300],
+                  child: const Icon(
+                    Icons.camera_alt,
+                    color: Colors.black,
+                    size: 20,
+                  ),
+                )),
+              ),
+              right: 10,
+              bottom: 20,
+            ),
+          ],
         ),
+      ),
+    );
+  }
+
+  Widget showImageCoverPage(BuildContext context, String imageURL) {
+    return Container(
+      margin:
+          const EdgeInsetsDirectional.only(start: 40.0, end: 40.0, bottom: 90),
+      width: MediaQuery.of(context).size.width * 1,
+      height: MediaQuery.of(context).size.height * 0.25,
+      child: Card(
+        semanticContainer: true,
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        child: CachedNetworkImage(
+          imageUrl: MyConstant().domain + imageURL,
+          progressIndicatorBuilder: (context, url, downloadProgress) =>
+              MyStyle().showProgress(),
+          errorWidget: (context, url, error) => const Icon(Icons.error),
+          fit: BoxFit.cover,
+        ),
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+        elevation: 5,
+        margin: const EdgeInsets.all(0),
       ),
     );
   }
@@ -579,6 +714,7 @@ class _EditProfileState extends State<EditProfile> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),
+            primary: Colors.red,
           ),
           icon: const Icon(Icons.cloud_upload_outlined),
           label: const Text('Update Accound'),
@@ -798,6 +934,7 @@ class _EditProfileState extends State<EditProfile> {
                 child: Row(
                   children: <Widget>[
                     Radio(
+                      activeColor: Colors.red,
                       value: 'ชาย',
                       groupValue: gender,
                       onChanged: (value) {
@@ -834,6 +971,7 @@ class _EditProfileState extends State<EditProfile> {
                 child: Row(
                   children: <Widget>[
                     Radio(
+                      activeColor: Colors.red,
                       value: 'หญิง',
                       groupValue: gender,
                       onChanged: (value) {

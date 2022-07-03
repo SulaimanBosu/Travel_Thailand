@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:project/ProfilePage/profile.dart';
+import 'package:project/widgets/popover.dart';
 
 class MyStyle {
   Color darkColor = Colors.blue.shade900;
@@ -347,6 +349,195 @@ class MyStyle {
       builder: (context) => myWidget,
     );
     Navigator.pushAndRemoveUntil(context, route, (route) => onback);
+  }
+
+  void bottomSheet(BuildContext context, String item, profile,
+      VoidCallback onselect, String title) {
+    showModalBottomSheet<int>(
+      backgroundColor: Colors.transparent,
+      context: context,
+      builder: (context) {
+        final theme = Theme.of(context);
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Popover(
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24.0,
+                      vertical: 16.0,
+                    ),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(
+                          color: theme.dividerColor,
+                          width: 0.5,
+                        ),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      // ignore: prefer_const_literals_to_create_immutables
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16.0,
+                          ),
+                          child: DefaultTextStyle(
+                            child: Text(title),
+                            style: const TextStyle(
+                              color: Colors.redAccent,
+                              fontSize: 24.0,
+                              //fontFamily: 'FC-Minimal-Regular',
+                            ),
+                          ),
+                        ),
+                        //const Spacer(),
+                      ],
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      Navigator.pop(context);
+                      MyStyle().routeToWidget(context,
+                          FullImageProfile(imageProfile: profile), true);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24.0,
+                        vertical: 16.0,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: theme.dividerColor,
+                            width: 0.5,
+                          ),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        // ignore: prefer_const_literals_to_create_immutables
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                            ),
+                            child: DefaultTextStyle(
+                              child: Text(item),
+                              style: const TextStyle(
+                                color: Colors.blueAccent,
+                                fontSize: 24.0,
+                                fontFamily: 'FC-Minimal-Regular',
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      Navigator.pop(context);
+                      onselect();
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24.0,
+                        vertical: 16.0,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: theme.dividerColor,
+                            width: 0.5,
+                          ),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
+                        // ignore: prefer_const_literals_to_create_immutables
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                            ),
+                            child: DefaultTextStyle(
+                              child: Text('อัพโหลดรูปภาพ'),
+                              style: TextStyle(
+                                color: Colors.blueAccent,
+                                fontSize: 24.0,
+                                fontFamily: 'FC-Minimal-Regular',
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+              clipBehavior: Clip.antiAlias,
+              decoration: BoxDecoration(
+                color: theme.cardColor,
+                borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  InkWell(
+                    onTap: () => Navigator.pop(context),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24.0,
+                        vertical: 16.0,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: theme.dividerColor,
+                            width: 0.5,
+                          ),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        // ignore: prefer_const_literals_to_create_immutables
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                            ),
+                            child: DefaultTextStyle(
+                              child: Text('ยกเลิก'),
+                              style: TextStyle(
+                                color: Colors.blueAccent,
+                                fontSize: 24.0,
+                                fontFamily: 'FC-Minimal-Regular',
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Widget progress(BuildContext context) {

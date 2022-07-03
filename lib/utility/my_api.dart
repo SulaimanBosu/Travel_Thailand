@@ -1,9 +1,9 @@
 import 'dart:math';
 
+import 'package:project/model/landmark_model.dart';
 
 class MyApi {
-
-    double calculateDistance(double lat1, double lng1, double lat2, double lng2) {
+  double calculateDistance(double lat1, double lng1, double lat2, double lng2) {
     double distance = 0;
 
     var p = 0.017453292519943295;
@@ -16,7 +16,7 @@ class MyApi {
     return distance;
   }
 
-    // ignore: missing_return
+  // ignore: missing_return
   int calculateTransport(double distance) {
     int transport;
     if (distance <= 1) {
@@ -27,19 +27,17 @@ class MyApi {
     return transport;
   }
 
-
-
-    double calculateTime(double distance) {
+  double calculateTime(double distance) {
     double time;
     if (distance <= 1) {
       time = 15;
-    }else if(distance >= 100){
+    } else if (distance >= 100) {
       time = ((((distance - 1).round() * 1)) / 60);
-    }
-     else {
-    time = ((((distance - 1).round() * 2)) / 60);
+    } else {
+      time = ((((distance - 1).round() * 2)) / 60);
     }
     return time;
   }
+
   MyApi();
 }
