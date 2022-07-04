@@ -8,6 +8,7 @@ class UserModel {
   String? gender = '';
   String? email = '';
   String? file = '';
+  String? imagecoverPage = '';
 
   UserModel({
     this.userId,
@@ -17,6 +18,7 @@ class UserModel {
     this.gender,
     this.email,
     this.file,
+    this.imagecoverPage,
   });
 
   UserModel.fromJson(Map<String, dynamic> json) {
@@ -27,6 +29,7 @@ class UserModel {
     gender = json['Gender'];
     email = json['Email'];
     file = json['File'];
+    imagecoverPage = json['ImageCoverPage'];
   }
 
   Map<String, dynamic> toJson() {
@@ -38,6 +41,7 @@ class UserModel {
     data['Gender'] = gender;
     data['Email'] = email;
     data['File'] = file;
+    data['ImageCoverPage'] = imagecoverPage;
     return data;
   }
 }

@@ -351,7 +351,7 @@ class MyStyle {
     Navigator.pushAndRemoveUntil(context, route, (route) => onback);
   }
 
-  void bottomSheet(BuildContext context, String item, profile,
+  void bottomSheet(BuildContext context, String item,String item2, profile,
       VoidCallback onselect, String title) {
     showModalBottomSheet<int>(
       backgroundColor: Colors.transparent,
@@ -463,13 +463,13 @@ class MyStyle {
                         mainAxisSize: MainAxisSize.max,
                         // ignore: prefer_const_literals_to_create_immutables
                         children: [
-                          const Padding(
-                            padding: EdgeInsets.symmetric(
+                           Padding(
+                            padding: const EdgeInsets.symmetric(
                               horizontal: 16.0,
                             ),
                             child: DefaultTextStyle(
-                              child: Text('อัพโหลดรูปภาพ'),
-                              style: TextStyle(
+                              child: Text(item2),
+                              style: const TextStyle(
                                 color: Colors.blueAccent,
                                 fontSize: 24.0,
                                 fontFamily: 'FC-Minimal-Regular',

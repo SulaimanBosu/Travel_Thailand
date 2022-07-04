@@ -69,104 +69,91 @@ class _CardViewState extends State<CardView> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0),
           ),
-          elevation: 5,
-          color: Colors.grey[300],
+        //  elevation: 5,
+        //  color: Colors.grey[300],
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
+           // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               showImage(context, imageURL),
-              Container(
-                margin: const EdgeInsets.only(left: 5),
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 5, left: 5),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      MyStyle().mySizebox(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            widget.landmarkModel.landmarkName!,
-                            style: const TextStyle(
-                              color: Colors.black54,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14.0,
-                              fontFamily: 'FC-Minimal-Regular',
-                            ),
-                          ),
-                        ],
+              Padding(
+                padding: const EdgeInsets.only(right: 5, left: 10),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    MyStyle().mySizebox(),
+                    Text(
+                      widget.landmarkModel.landmarkName!,
+                      style: const TextStyle(
+                        color: Colors.black54,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14.0,
+                        fontFamily: 'FC-Minimal-Regular',
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            'จังหวัด ${widget.landmarkModel.provinceName}',
-                            style: const TextStyle(
-                              color: Colors.black45,
-                              fontSize: 12.0,
-                              fontFamily: 'FC-Minimal-Regular',
-                            ),
-                          ),
-                        ],
+                      textAlign: TextAlign.start,
+                    ),
+
+                    Text(
+                      'จังหวัด ${widget.landmarkModel.provinceName}',
+                      style: const TextStyle(
+                        color: Colors.black45,
+                        fontSize: 12.0,
+                        fontFamily: 'FC-Minimal-Regular',
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Icon(Icons.star,
-                                  size: 15,
-                                  color:
-                                      widget.landmarkModel.landmarkScore! >= 1
-                                          ? Colors.orange
-                                          : Colors.grey),
-                              Icon(Icons.star,
-                                  size: 15,
-                                  color:
-                                      widget.landmarkModel.landmarkScore! >= 2
-                                          ? Colors.orange
-                                          : Colors.grey),
-                              Icon(Icons.star,
-                                  size: 15,
-                                  color:
-                                      widget.landmarkModel.landmarkScore! >= 3
-                                          ? Colors.orange
-                                          : Colors.grey),
-                              Icon(Icons.star,
-                                  size: 15,
-                                  color:
-                                      widget.landmarkModel.landmarkScore! >= 4
-                                          ? Colors.orange
-                                          : Colors.grey),
-                              Icon(Icons.star,
-                                  size: 15,
-                                  color:
-                                      widget.landmarkModel.landmarkScore! == 5
-                                          ? Colors.orange
-                                          : Colors.grey),
-                            ],
+                    ),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.star,
+                                size: 15,
+                                color: widget.landmarkModel.landmarkScore! >= 1
+                                    ? Colors.orange
+                                    : Colors.grey),
+                            Icon(Icons.star,
+                                size: 15,
+                                color: widget.landmarkModel.landmarkScore! >= 2
+                                    ? Colors.orange
+                                    : Colors.grey),
+                            Icon(Icons.star,
+                                size: 15,
+                                color: widget.landmarkModel.landmarkScore! >= 3
+                                    ? Colors.orange
+                                    : Colors.grey),
+                            Icon(Icons.star,
+                                size: 15,
+                                color: widget.landmarkModel.landmarkScore! >= 4
+                                    ? Colors.orange
+                                    : Colors.grey),
+                            Icon(Icons.star,
+                                size: 15,
+                                color: widget.landmarkModel.landmarkScore! == 5
+                                    ? Colors.orange
+                                    : Colors.grey),
+                          ],
+                        ),
+                        // Text(
+                        //   'คะแนน ${widget.landmarkModel.landmarkScore}/5',
+                        //   style: const TextStyle(
+                        //     color: Colors.red,
+                        //     fontSize: 12.0,
+                        //     fontFamily: 'FC-Minimal-Regular',
+                        //   ),
+                        // ),
+                        Text(
+                          'View ${widget.landmarkModel.landmarkView}',
+                          style: const TextStyle(
+                            color: Colors.black45,
+                            fontSize: 12.0,
+                            fontFamily: 'FC-Minimal-Regular',
                           ),
-                          // Text(
-                          //   'คะแนน ${widget.landmarkModel.landmarkScore}/5',
-                          //   style: const TextStyle(
-                          //     color: Colors.red,
-                          //     fontSize: 12.0,
-                          //     fontFamily: 'FC-Minimal-Regular',
-                          //   ),
-                          // ),
-                          Text(
-                            'View ${widget.landmarkModel.landmarkView}',
-                            style: const TextStyle(
-                              color: Colors.black45,
-                              fontSize: 12.0,
-                              fontFamily: 'FC-Minimal-Regular',
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                        ),
+                      ],
+                    ),
+                    //SizedBox(height: screenhight * 0.01,)
+                  ],
                 ),
               ),
             ],
@@ -176,29 +163,24 @@ class _CardViewState extends State<CardView> {
     );
   }
 
-  Container showImage(BuildContext context, String imageURL) {
-    return Container(
-      margin: const EdgeInsetsDirectional.only(start: 0.0, end: 0.0),
-      // width: MediaQuery.of(context).size.width * 1,
-      // height: MediaQuery.of(context).size.height * 0.14,
-      child: Card(
-        semanticContainer: true,
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        child: CachedNetworkImage(
-          width: screenwidth,
-          height: Platform.isIOS ? screenhight * 0.14 : screenhight * 0.17,
-          imageUrl: imageURL,
-          progressIndicatorBuilder: (context, url, downloadProgress) =>
-              MyStyle().showProgress(),
-          errorWidget: (context, url, error) => const Icon(Icons.error),
-          fit: BoxFit.cover,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5.0),
-        ),
-        elevation: 5,
-        margin: const EdgeInsets.all(0),
+  Widget showImage(BuildContext context, String imageURL) {
+    return Card(
+      semanticContainer: true,
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      child: CachedNetworkImage(
+        width: screenwidth,
+        height: Platform.isIOS ? screenhight * 0.14 : screenhight * 0.14,
+        imageUrl: imageURL,
+        progressIndicatorBuilder: (context, url, downloadProgress) =>
+            MyStyle().showProgress(),
+        errorWidget: (context, url, error) => const Icon(Icons.error),
+        fit: BoxFit.cover,
       ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(5.0),
+      ),
+      elevation: 5,
+      margin: const EdgeInsets.all(0),
     );
   }
 }

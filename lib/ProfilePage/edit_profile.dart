@@ -43,17 +43,19 @@ class _EditProfileState extends State<EditProfile> {
       oldpassword,
       newpassword,
       conpassword,
-      profile;
+      profile,
+      imageCoverPage;
   bool statusRedEyepassword = true;
   bool statusRedEyenewpassword = true;
   bool statusRedEyeconpassword = true;
-  File? file;
+  File? imageProfile, coverPagefile;
   var gender;
   late SharedPreferences preferences;
   bool onData = false;
   bool onUpdate = true;
-  late String urlImage;
+  late String urlImage, urlCoverPage;
   int menuItem = 0;
+  bool isProfile = true;
 
   @override
   void initState() {
@@ -69,7 +71,8 @@ class _EditProfileState extends State<EditProfile> {
     super.initState();
   }
 
-  Future<void> setPreferences(String image, String pass) async {
+  Future<void> setPreferences(
+      String image, String coverPage, String pass) async {
     preferences.setString('User_id', userid!);
     preferences.setString('Email', email!);
     preferences.setString('Password', pass);
@@ -78,6 +81,7 @@ class _EditProfileState extends State<EditProfile> {
     preferences.setString('Gender', gender);
     preferences.setString('Phone', phone!);
     preferences.setString('Image_profile', image);
+    preferences.setString('Image_CoverPage', coverPage);
 
     userModel.userId = userid;
     userModel.email = email;
@@ -86,6 +90,7 @@ class _EditProfileState extends State<EditProfile> {
     userModel.gender = gender;
     userModel.phone = phone;
     userModel.file = profile;
+    userModel.imagecoverPage = imageCoverPage;
   }
 
   Future<void> getPreferences() async {
@@ -94,6 +99,7 @@ class _EditProfileState extends State<EditProfile> {
     name = preferences.getString('first_name')!;
     lastname = preferences.getString('last_name')!;
     profile = preferences.getString('Image_profile')!;
+    imageCoverPage = preferences.getString('Image_CoverPage')!;
     phone = preferences.getString('Phone')!;
     gender = preferences.getString('Gender')!;
     email = preferences.getString('Email')!;
@@ -200,56 +206,34 @@ class _EditProfileState extends State<EditProfile> {
               ),
               PopupMenuItem<int>(
                 value: 4,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                child: Column(
                   children: [
-                    Icon(name == '' || name!.isEmpty
-                        ? Icons.login_outlined
-                        : Icons.logout_rounded),
-                    const SizedBox(
-                      width: 5,
+                    const Divider(thickness: 1),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(
+                          name == '' || name!.isEmpty
+                              ? Icons.login_outlined
+                              : Icons.logout_rounded,
+                          color: Colors.red,
+                        ),
+                        const SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          name == '' || name!.isEmpty
+                              ? 'เข้าสู่ระบบ'
+                              : 'ออกจากระบบ',
+                          style: const TextStyle(color: Colors.red),
+                        ),
+                      ],
                     ),
-                    Text(name == '' || name!.isEmpty
-                        ? 'เข้าสู่ระบบ'
-                        : 'ออกจากระบบ'),
                   ],
                 ),
               ),
             ],
           ),
-          // IconButton(
-          //   onPressed: () {
-          // PopupMenuButton<int>(
-          //  //color: Colors.black54,
-          //   shape: RoundedRectangleBorder(
-          //     borderRadius: BorderRadius.circular(10),
-          //   //  side: BorderSide.none
-          //   ),
-          //   elevation: 0,
-          //   icon: const Icon(
-          //     Icons.more_vert_outlined,
-          //     color: Colors.red,
-          //   ),
-          //   itemBuilder: (BuildContext context) => <PopupMenuItem<int>>[
-
-          //      const PopupMenuItem<int>(value: 1, child: Text('Item One')),
-          //      const PopupMenuItem<int>(value: 2, child: Text('Item Two')),
-          //      const PopupMenuItem<int>(value: 3, child: Text('Item Three')),
-          //      const PopupMenuItem<int>(value: 4, child: Text('I am Item Four'))
-          //   ],
-          //   onSelected: (int value) {
-          //     setState(() {
-          //       menuItem = value;
-          //       debugPrint('ItemMenu ==== ${menuItem.toString()}');
-          //     });
-          //   },
-          // )
-          // },
-          //   icon: const Icon(
-          //     Icons.more_horiz_outlined,
-          //     color: Colors.red,
-          //   ),
-          // )
         ],
       ),
       body: !onUpdate
@@ -261,7 +245,8 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   SafeArea buildContent(BuildContext context) {
-    final fileName = file != null ? basename(file!.path) : profile!;
+    final fileName =
+        imageProfile != null ? basename(imageProfile!.path) : profile!;
     return SafeArea(
       child: Center(
         child: Stack(
@@ -278,31 +263,8 @@ class _EditProfileState extends State<EditProfile> {
                         ),
                         Stack(
                           children: [
-                            showImageCoverPage(context, profile!),
+                            showImageCoverPage(context),
                             showImage(context),
-                            Positioned(
-                              child: InkWell(
-                                onTap: () {
-                                  MyStyle().bottomSheet(
-                                      context, 'ดูรูปหน้าปก', profile, () {
-                                    getImage(ImageSource.gallery);
-                                  }, 'หน้าปก');
-                                },
-                                child: ClipOval(
-                                    child: Container(
-                                  padding: const EdgeInsets.all(8),
-                                  color: Colors.grey[300],
-                                  child: const Icon(
-                                    Icons.camera_alt,
-                                    color: Colors.black,
-                                    size: 20,
-                                  ),
-                                )),
-                              ),
-                              right: 50,
-                              // top: 50,
-                              bottom: 100,
-                            ),
                           ],
                         ),
                         MyStyle().mySizebox(),
@@ -340,17 +302,22 @@ class _EditProfileState extends State<EditProfile> {
   //โชว์ภาพตัวอย่างก่อนเลือกรูปและหลังเลือกรูป
   Widget showImage(context) {
     return Positioned(
-      top: 140,
+      top: screenHight * 0.12,
       left: 40,
       right: 40,
       child: Center(
         child: Stack(
           children: [
             InkWell(
-              onTap: () =>
-                  MyStyle().bottomSheet(context, 'ดูรูปโปรไฟล์', profile, () {
-                getImage(ImageSource.gallery);
-              }, 'โปรไฟล์'),
+              onTap: () {
+                setState(() {
+                  isProfile = true;
+                });
+                MyStyle().bottomSheet(
+                    context, 'ดูรูปโปรไฟล์', 'อัพโหลดรูปภาพ', profile, () {
+                  getImage(ImageSource.gallery);
+                }, 'โปรไฟล์');
+              },
               child: CircleAvatar(
                 radius: 93,
                 backgroundColor: Colors.white,
@@ -359,9 +326,10 @@ class _EditProfileState extends State<EditProfile> {
                   child: ClipOval(
                     child: SizedBox.fromSize(
                       size: const Size.fromRadius(88), // Image radius
-                      child: file != null
+                      child: imageProfile != null
                           ? CircleAvatar(
-                              radius: 88, backgroundImage: FileImage(file!))
+                              radius: 88,
+                              backgroundImage: FileImage(imageProfile!))
                           : profile == ''
                               ? Image.asset('images/iconprofile.png')
                               : CachedNetworkImage(
@@ -380,7 +348,12 @@ class _EditProfileState extends State<EditProfile> {
             ),
             Positioned(
               child: InkWell(
-                onTap: () => _bottomSheet(context),
+                onTap: () {
+                  setState(() {
+                    isProfile = true;
+                  });
+                  _bottomSheet(context);
+                },
                 child: ClipOval(
                     child: Container(
                   padding: const EdgeInsets.all(8),
@@ -401,28 +374,66 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
-  Widget showImageCoverPage(BuildContext context, String imageURL) {
-    return Container(
-      margin:
-          const EdgeInsetsDirectional.only(start: 40.0, end: 40.0, bottom: 90),
-      width: MediaQuery.of(context).size.width * 1,
-      height: MediaQuery.of(context).size.height * 0.25,
-      child: Card(
-        semanticContainer: true,
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        child: CachedNetworkImage(
-          imageUrl: MyConstant().domain + imageURL,
-          progressIndicatorBuilder: (context, url, downloadProgress) =>
-              MyStyle().showProgress(),
-          errorWidget: (context, url, error) => const Icon(Icons.error),
-          fit: BoxFit.cover,
+  Widget showImageCoverPage(BuildContext context) {
+    return Stack(
+      children: [
+        Container(
+          margin: EdgeInsetsDirectional.only(
+              start: 30.0, end: 30.0, bottom: screenHight * 0.12),
+          width: MediaQuery.of(context).size.width * 1,
+          height: MediaQuery.of(context).size.height * 0.25,
+          child: Card(
+            color: Colors.white10,
+            semanticContainer: true,
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            child: coverPagefile != null
+                ? Image.file(
+                    coverPagefile!,
+                    fit: BoxFit.cover,
+                  )
+                : CachedNetworkImage(
+                    imageUrl: MyConstant().domain + imageCoverPage!,
+                    progressIndicatorBuilder:
+                        (context, url, downloadProgress) =>
+                            MyStyle().showProgress(),
+                    errorWidget: (context, url, error) =>
+                        Image.asset('images/iconprofile.png'),
+                    fit: BoxFit.cover,
+                  ),
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20))),
+            elevation: 0,
+            margin: const EdgeInsets.all(0),
+          ),
         ),
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(20), topRight: Radius.circular(20))),
-        elevation: 5,
-        margin: const EdgeInsets.all(0),
-      ),
+        Positioned(
+          child: InkWell(
+            onTap: () {
+              setState(() {
+                isProfile = false;
+              });
+              MyStyle().bottomSheet(
+                  context, 'ดูรูปหน้าปก', 'อัพโหลดรูปภาพ', imageCoverPage, () {
+                getImage(ImageSource.gallery);
+              }, 'หน้าปก');
+            },
+            child: ClipOval(
+                child: Container(
+              padding: const EdgeInsets.all(8),
+              color: Colors.grey[300],
+              child: const Icon(
+                Icons.camera_alt,
+                color: Colors.black,
+                size: 20,
+              ),
+            )),
+          ),
+          right: 50,
+          top: screenHight * 0.185,
+        ),
+      ],
     );
   }
 
@@ -652,11 +663,18 @@ class _EditProfileState extends State<EditProfile> {
 
       if (result == null) return;
       final path = result.path;
-
-      setState(() => file = File(path));
-      if (file != null) {
-        final fileName = basename(file!.path);
-        debugPrint('ชื่อรูปภาพ $fileName');
+      if (isProfile) {
+        setState(() => imageProfile = File(path));
+        if (imageProfile != null) {
+          final fileName = basename(imageProfile!.path);
+         setState(() => debugPrint('ชื่อรูปภาพ $fileName'));
+        }
+      } else {
+        setState(() => coverPagefile = File(path));
+        if (coverPagefile != null) {
+          final fileName = basename(coverPagefile!.path);
+        setState(() =>  debugPrint('ชื่อรูปภาพ $fileName'));
+        }
       }
     } catch (e) {
       debugPrint(e.toString());
@@ -726,24 +744,45 @@ class _EditProfileState extends State<EditProfile> {
     Random random = Random();
     int i = random.nextInt(1000000);
     String imageName = 'Profile$i.jpg';
-    String url = '${MyConstant().domain}/application/saveImageFile.php';
-    try {
-      if (file != null) {
-        Map<String, dynamic> map = Map();
-        map['file'] = await MultipartFile.fromFile(
-          file!.path,
-          filename: imageName,
-        );
-        debugPrint('Respone ==>> ${imageName.toString()}');
 
-        FormData formData = FormData.fromMap(map);
-        await Dio().post(url, data: formData).then((value) {
-          debugPrint('Respone ==>> $value');
-          urlImage = '/application/backend/imageProfile/$imageName';
-          uploadData(context, urlImage, _password);
-        });
+    try {
+      if (imageProfile != null || coverPagefile != null) {
+        if (imageProfile == null) urlImage = profile!;
+        if (coverPagefile == null) urlCoverPage = imageCoverPage!;
+        if (imageProfile != null) {
+          String url = '${MyConstant().domain}/application/saveImageFile.php';
+          Map<String, dynamic> map = Map();
+          map['file'] = await MultipartFile.fromFile(
+            imageProfile!.path,
+            filename: imageName,
+          );
+          debugPrint('Respone ==>> ${imageName.toString()}');
+
+          FormData formData = FormData.fromMap(map);
+          await Dio().post(url, data: formData).then((value) {
+            debugPrint('Respone ==>> $value');
+            urlImage = '/application/backend/imageProfile/$imageName';
+          });
+        }
+        if (coverPagefile != null) {
+          String url =
+              '${MyConstant().domain}/application/saveImagecoverPagefile.php';
+          Map<String, dynamic> mapcoverPage = Map();
+          mapcoverPage['file'] = await MultipartFile.fromFile(
+            coverPagefile!.path,
+            filename: imageName,
+          );
+          debugPrint('coverPage ==>> ${imageName.toString()}');
+
+          FormData formDatacoverPage = FormData.fromMap(mapcoverPage);
+          await Dio().post(url, data: formDatacoverPage).then((value) {
+            debugPrint('coverPage ==>> $value');
+            urlCoverPage = '/application/backend/imageCoverPage/$imageName';
+          });
+        }
+        uploadData(context, urlImage, urlCoverPage, _password);
       } else {
-        uploadData(context, profile!, _password);
+        uploadData(context, profile!, imageCoverPage!, _password);
       }
     } catch (e) {
       debugPrint('อัพโหลดไม่สำเร็จ === ${e.toString()}');
@@ -755,8 +794,8 @@ class _EditProfileState extends State<EditProfile> {
     }
   }
 
-  Future<void> uploadData(
-      BuildContext context, String imageProfile, String _password) async {
+  Future<void> uploadData(BuildContext context, String imageProfile,
+      String imageCoverPage, String _password) async {
     String url = '${MyConstant().domain}/application/get_profile.php';
     FormData formData = FormData.fromMap(
       {
@@ -769,6 +808,7 @@ class _EditProfileState extends State<EditProfile> {
         "gender": gender,
         "phone": phone,
         "profile": imageProfile,
+        "CoverPage": imageCoverPage
       },
     );
     try {
@@ -783,7 +823,7 @@ class _EditProfileState extends State<EditProfile> {
           setState(() {
             onUpdate = true;
           });
-          setPreferences(imageProfile, _password);
+          setPreferences(imageProfile, imageCoverPage, _password);
           editlDialog(context);
         } else {
           MyStyle().showdialog(context, 'ล้มเหลว', 'การเชื่อมต่อขัดข้อง');

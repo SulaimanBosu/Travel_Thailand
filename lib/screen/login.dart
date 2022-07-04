@@ -258,6 +258,7 @@ class _LoginState extends State<Login> {
           String gender = result['Gender'];
           String phone = result['Phone'];
           imageProfile = result['Image_profile'];
+          String imageCoverPage = result['Image_CoverPage'];
           SharedPreferences preferences = await SharedPreferences.getInstance();
 
           preferences.setString('User_id', userID);
@@ -268,6 +269,7 @@ class _LoginState extends State<Login> {
           preferences.setString('Gender', gender);
           preferences.setString('Phone', phone);
           preferences.setString('Image_profile', imageProfile);
+          preferences.setString('Image_CoverPage', imageCoverPage);
           usermodel = UserModel.fromJson(result);
 
           usermodel.userId = userID;
@@ -277,6 +279,7 @@ class _LoginState extends State<Login> {
           usermodel.gender = gender;
           usermodel.phone = phone;
           usermodel.file = imageProfile;
+          usermodel.imagecoverPage = imageCoverPage;
 
           debugPrint('UserID == $userID');
           debugPrint('emailformsql == $emailformsql');
@@ -286,6 +289,7 @@ class _LoginState extends State<Login> {
           debugPrint('success == $success');
           debugPrint('message == $message');
           debugPrint('Image_profile == $imageProfile');
+          debugPrint('Image_CoverPage == $imageCoverPage');
           Navigator.pop(context);
           routeToHome(usermodel);
           // dialog(context, usermodel);

@@ -57,6 +57,8 @@ class _FavoritesState extends State<Favorites> {
     });
   }
 
+
+
   Future<void> getPreferences() async {
     preferences = await SharedPreferences.getInstance();
     userid = preferences.getString('User_id')!;
@@ -229,8 +231,9 @@ class _FavoritesState extends State<Favorites> {
                             maxCrossAxisExtent: 265,
                             mainAxisSpacing: 20,
                             crossAxisSpacing: 10,
+                            childAspectRatio: 1,
                             children: landmarkCards,
-                          ),
+                          )
           ],
         ),
       ),

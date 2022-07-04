@@ -113,18 +113,31 @@ class MyDrawer {
                                 ),
                                 PopupMenuItem<int>(
                                   value: 4,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
+                                  child: Column(
                                     children: [
-                                      Icon(name == '' || name.isEmpty
-                                          ? Icons.login_outlined
-                                          : Icons.logout_rounded),
-                                      const SizedBox(
-                                        width: 5,
+                                      const Divider(thickness: 1),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Icon(
+                                            name == '' || name.isEmpty
+                                                ? Icons.login_outlined
+                                                : Icons.logout_rounded,
+                                            color: Colors.red,
+                                          ),
+                                          const SizedBox(
+                                            width: 5,
+                                          ),
+                                          Text(
+                                            name == '' || name.isEmpty
+                                                ? 'เข้าสู่ระบบ'
+                                                : 'ออกจากระบบ',
+                                            style: const TextStyle(
+                                                color: Colors.red),
+                                          ),
+                                        ],
                                       ),
-                                      Text(name == '' || name.isEmpty
-                                          ? 'เข้าสู่ระบบ'
-                                          : 'ออกจากระบบ'),
                                     ],
                                   ),
                                 ),

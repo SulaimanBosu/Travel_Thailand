@@ -39,7 +39,8 @@ class _ProfileState extends State<Profile> {
       phone = '',
       gender = '',
       email = '',
-      password = '';
+      password = '',
+      imageCoverPage = '';
   late SharedPreferences preferences;
   bool onData = false;
   bool isLoading = true;
@@ -69,6 +70,7 @@ class _ProfileState extends State<Profile> {
     name = preferences.getString('first_name')!;
     lastname = preferences.getString('last_name')!;
     file = preferences.getString('Image_profile')!;
+    imageCoverPage = preferences.getString('Image_CoverPage')!;
     phone = preferences.getString('Phone')!;
     gender = preferences.getString('Gender')!;
     email = preferences.getString('Email')!;
@@ -148,7 +150,10 @@ class _ProfileState extends State<Profile> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: const [
-                          Icon(Icons.home_outlined),
+                          Icon(
+                            Icons.home_outlined,
+                            color: Colors.black54,
+                          ),
                           SizedBox(
                             width: 5,
                           ),
@@ -161,7 +166,10 @@ class _ProfileState extends State<Profile> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: const [
-                          Icon(MdiIcons.accountDetails),
+                          Icon(
+                            MdiIcons.accountDetails,
+                            color: Colors.black54,
+                          ),
                           SizedBox(
                             width: 5,
                           ),
@@ -174,7 +182,10 @@ class _ProfileState extends State<Profile> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: const [
-                          Icon(Icons.settings),
+                          Icon(
+                            Icons.settings,
+                            color: Colors.black54,
+                          ),
                           SizedBox(
                             width: 5,
                           ),
@@ -184,18 +195,29 @@ class _ProfileState extends State<Profile> {
                     ),
                     PopupMenuItem<int>(
                       value: 4,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                      child: Column(
                         children: [
-                          Icon(name == '' || name.isEmpty
-                              ? Icons.login_outlined
-                              : Icons.logout_rounded),
-                          const SizedBox(
-                            width: 5,
+                          const Divider(thickness: 1),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Icon(
+                                name == '' || name.isEmpty
+                                    ? Icons.login_outlined
+                                    : Icons.logout_rounded,
+                                color: Colors.red,
+                              ),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                name == '' || name.isEmpty
+                                    ? 'เข้าสู่ระบบ'
+                                    : 'ออกจากระบบ',
+                                style: const TextStyle(color: Colors.red),
+                              ),
+                            ],
                           ),
-                          Text(name == '' || name.isEmpty
-                              ? 'เข้าสู่ระบบ'
-                              : 'ออกจากระบบ'),
                         ],
                       ),
                     ),
@@ -238,7 +260,6 @@ class _ProfileState extends State<Profile> {
                                       children: [
                                         showImageCoverPage(
                                           context,
-                                          file,
                                         ),
                                         userprofile(),
                                       ],
@@ -287,7 +308,7 @@ class _ProfileState extends State<Profile> {
 
   Widget userprofile() {
     return Positioned(
-      top: 140,
+      top: screenhight * 0.12,
       left: 40,
       right: 40,
       child: CircleAvatar(
@@ -316,10 +337,15 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  Widget showImageCoverPage(BuildContext context, String imageURL) {
+  Widget showImageCoverPage(
+    BuildContext context,
+  ) {
     return InkWell(
       onTap: () {
-        _bottomSheet();
+        MyStyle().bottomSheet(context, 'ดูรูปหน้าปก', 'แก้ไข', imageCoverPage,
+            () {
+          navigateSecondPage(const EditProfile());
+        }, 'หน้าปก');
       },
       child: Container(
         margin: const EdgeInsetsDirectional.only(
@@ -330,282 +356,22 @@ class _ProfileState extends State<Profile> {
           semanticContainer: true,
           clipBehavior: Clip.antiAliasWithSaveLayer,
           child: CachedNetworkImage(
-            imageUrl: MyConstant().domain + imageURL,
+            imageUrl: MyConstant().domain + imageCoverPage,
             progressIndicatorBuilder: (context, url, downloadProgress) =>
                 MyStyle().showProgress(),
-            errorWidget: (context, url, error) => const Icon(Icons.error),
+            errorWidget: (context, url, error) =>
+                Image.asset('images/iconprofile.png'),
             fit: BoxFit.cover,
           ),
           shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20), topRight: Radius.circular(20))),
-          elevation: 5,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
+          ),
+          elevation: 1,
           margin: const EdgeInsets.all(0),
         ),
-      ),
-    );
-  }
-
-  Future showBottomsheet(String getValue, String title) {
-    return showModalBottomSheet<void>(
-      isScrollControlled: true,
-      //enableDrag:true,
-      context: context,
-      builder: (BuildContext context) {
-        return Container(
-          padding: const EdgeInsets.all(20),
-          height: MediaQuery.of(context).size.height * 0.95,
-          color: Colors.white70,
-          child: editform(),
-        );
-      },
-    );
-  }
-
-  Widget editform() {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                width: 300.0,
-                child: TextField(
-                  // onChanged: (value) => user = value.trim(),
-                  controller: _controller,
-                  autofocus: false,
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(
-                      Icons.account_box,
-                      color: Colors.black54,
-                    ),
-                    labelStyle: TextStyle(
-                      fontSize: 22.0,
-                      // fontWeight: FontWeight.bold,
-                      color: Colors.black54,
-                      // fontStyle: FontStyle.italic,
-                      fontFamily: 'FC-Minimal-Regular',
-                    ),
-                    labelText: 'ชื่อ : ',
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black54),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.red),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                width: 300.0,
-                child: TextField(
-                  // onChanged: (value) => user = value.trim(),
-                  controller: _controller,
-                  autofocus: false,
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(
-                      Icons.account_box,
-                      color: Colors.black54,
-                    ),
-                    labelStyle: TextStyle(
-                      fontSize: 22.0,
-                      // fontWeight: FontWeight.bold,
-                      color: Colors.black54,
-                      // fontStyle: FontStyle.italic,
-                      fontFamily: 'FC-Minimal-Regular',
-                    ),
-                    labelText: 'นามสกุล : ',
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black54),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.red),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                width: 300.0,
-                child: TextField(
-                  // onChanged: (value) => user = value.trim(),
-                  controller: _controller,
-                  autofocus: false,
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(
-                      Icons.account_box,
-                      color: Colors.black54,
-                    ),
-                    labelStyle: TextStyle(
-                      fontSize: 22.0,
-                      // fontWeight: FontWeight.bold,
-                      color: Colors.black54,
-                      // fontStyle: FontStyle.italic,
-                      fontFamily: 'FC-Minimal-Regular',
-                    ),
-                    labelText: 'เบอร์โทร : ',
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black54),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.red),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                width: 300.0,
-                child: TextField(
-                  // onChanged: (value) => user = value.trim(),
-                  controller: _controller,
-                  autofocus: false,
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(
-                      Icons.account_box,
-                      color: Colors.black54,
-                    ),
-                    labelStyle: TextStyle(
-                      fontSize: 22.0,
-                      // fontWeight: FontWeight.bold,
-                      color: Colors.black54,
-                      // fontStyle: FontStyle.italic,
-                      fontFamily: 'FC-Minimal-Regular',
-                    ),
-                    labelText: 'อีเมลล์ : ',
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black54),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.red),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                width: 300.0,
-                child: TextField(
-                  // onChanged: (value) => user = value.trim(),
-                  controller: _controller,
-                  autofocus: false,
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(
-                      Icons.account_box,
-                      color: Colors.black54,
-                    ),
-                    labelStyle: TextStyle(
-                      fontSize: 22.0,
-                      // fontWeight: FontWeight.bold,
-                      color: Colors.black54,
-                      // fontStyle: FontStyle.italic,
-                      fontFamily: 'FC-Minimal-Regular',
-                    ),
-                    labelText: 'รหัสผ่าน : ',
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black54),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.red),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                width: 300.0,
-                child: TextField(
-                  // onChanged: (value) => user = value.trim(),
-                  controller: _controller,
-                  autofocus: false,
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(
-                      Icons.account_box,
-                      color: Colors.black54,
-                    ),
-                    labelStyle: TextStyle(
-                      fontSize: 22.0,
-                      // fontWeight: FontWeight.bold,
-                      color: Colors.black54,
-                      // fontStyle: FontStyle.italic,
-                      fontFamily: 'FC-Minimal-Regular',
-                    ),
-                    labelText: 'รหัสผ่านใหม่ : ',
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black54),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.red),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                width: 300.0,
-                child: TextField(
-                  // onChanged: (value) => user = value.trim(),
-                  controller: _controller,
-                  autofocus: false,
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(
-                      Icons.account_box,
-                      color: Colors.black54,
-                    ),
-                    labelStyle: TextStyle(
-                      fontSize: 22.0,
-                      // fontWeight: FontWeight.bold,
-                      color: Colors.black54,
-                      // fontStyle: FontStyle.italic,
-                      fontFamily: 'FC-Minimal-Regular',
-                    ),
-                    labelText: 'ยืนยันรหัสผ่านใหม่ : ',
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black54),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.red),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
       ),
     );
   }

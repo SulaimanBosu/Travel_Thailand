@@ -33,7 +33,7 @@ class _RegisterState extends State<Register> {
   late String name, lastname, phone, email, password, conpassword;
   bool statusRedEyepassword = true;
   bool statusRedEyeconpassword = true;
-  File? file;
+  File? file, coverPagefile;
   var gender;
   final picker = ImagePicker();
   // bool uploadStatus = true;
@@ -52,6 +52,7 @@ class _RegisterState extends State<Register> {
   late FocusNode myFocusPassword;
   late FocusNode myFocusConpassword;
   bool isLoading = false;
+  bool isProfile = true;
 
   @override
   void initState() {
@@ -108,98 +109,271 @@ class _RegisterState extends State<Register> {
   SafeArea buildContent(BuildContext context) {
     final fileName = file != null ? basename(file!.path) : 'No File Selected';
     return SafeArea(
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+      child: Center(
+        child: Stack(
           children: [
-            const SizedBox(
-              height: 20,
-            ),
-            showImage(context),
-            OutlinedButton(
-              style: OutlinedButton.styleFrom(
-                fixedSize: const Size(170, 35),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              onPressed: () {
-                _bottomSheet(context);
-                //_showPicker(context);
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+            SingleChildScrollView(
+              child: Column(
                 children: [
-                  const Icon(
-                    Icons.add_a_photo,
-                    color: Colors.black54,
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    file == null ? 'เพิ่มรูปภาพ' : 'เปลี่ยนรูปโปรไฟล์',
-                    style: const TextStyle(
-                      fontSize: 16.0,
-                      color: Colors.black54,
-                      fontFamily: 'FC-Minimal-Regular',
+                  Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Stack(
+                          children: [
+                            showImageCoverPage(context),
+                            showImage(context),
+                          ],
+                        ),
+                        MyStyle().mySizebox(),
+                        nameForm(),
+                        MyStyle().mySizebox(),
+                        lastnameForm(),
+                        MyStyle().mySizebox(),
+                        phoneForm(),
+                        MyStyle().mySizebox(),
+                        radio(),
+                        MyStyle().mySizebox(),
+                        emailForm(),
+                        MyStyle().mySizebox(),
+                        passwordForm(),
+                        MyStyle().mySizebox(),
+                        conpasswordForm(),
+                        MyStyle().mySizebox(),
+                        registerButton(context),
+                        MyStyle().mySizebox(),
+                        MyStyle().mySizebox(),
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
-            // SizedBox(height: 8),
-            Text(
-              fileName,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                //fontWeight: FontWeight.bold,
-                fontSize: 16.0,
-                color: file == null ? Colors.redAccent : Colors.black54,
-                fontFamily: 'FC-Minimal-Regular',
-              ),
-              textAlign: TextAlign.center,
-            ),
-            MyStyle().mySizebox(),
-            nameForm(),
-            MyStyle().mySizebox(),
-            lastnameForm(),
-            MyStyle().mySizebox(),
-            phoneForm(),
-            MyStyle().mySizebox(),
-            radio(),
-            MyStyle().mySizebox(),
-            emailForm(),
-            MyStyle().mySizebox(),
-            passwordForm(),
-            MyStyle().mySizebox(),
-            conpasswordForm(),
-            MyStyle().mySizebox(),
-            registerButton(context),
-            MyStyle().mySizebox(),
-            MyStyle().mySizebox(),
           ],
         ),
       ),
     );
   }
 
-  //โชว์ภาพตัวอย่างก่อนเลือกรูปและหลังเลือกรูป
-  Container showImage(context) {
-    return Container(
-      padding:
-          const EdgeInsetsDirectional.only(start: 10.0, end: 10.0, bottom: 10),
-      width: MediaQuery.of(context).size.width * 0.9,
-      height: MediaQuery.of(context).size.width * 0.6,
-      child: Container(
-          child: file == null
-              ? const CircleAvatar(
-                  radius: 24,
-                  backgroundImage: AssetImage('images/addimages1.png'),
-                )
-              : CircleAvatar(radius: 24, backgroundImage: FileImage(file!))),
+  // SafeArea buildContent(BuildContext context) {
+  //   final fileName = file != null ? basename(file!.path) : 'No File Selected';
+  //   return SafeArea(
+  //     child: SingleChildScrollView(
+  //       child: Column(
+  //         mainAxisAlignment: MainAxisAlignment.center,
+  //         children: [
+  //           const SizedBox(
+  //             height: 20,
+  //           ),
+  //           Stack(
+  //             children: [
+  //               //showImageCoverPage(context),
+  //               showImage(context),
+  //             ],
+  //           ),
+  //           // OutlinedButton(
+  //           //   style: OutlinedButton.styleFrom(
+  //           //     fixedSize: const Size(170, 35),
+  //           //     shape: RoundedRectangleBorder(
+  //           //       borderRadius: BorderRadius.circular(12),
+  //           //     ),
+  //           //   ),
+  //           //   onPressed: () {
+  //           //     _bottomSheet(context);
+  //           //     //_showPicker(context);
+  //           //   },
+  //           //   child: Row(
+  //           //     mainAxisAlignment: MainAxisAlignment.center,
+  //           //     children: [
+  //           //       const Icon(
+  //           //         Icons.add_a_photo,
+  //           //         color: Colors.black54,
+  //           //       ),
+  //           //       const SizedBox(
+  //           //         width: 10,
+  //           //       ),
+  //           //       Text(
+  //           //         file == null ? 'เพิ่มรูปภาพ' : 'เปลี่ยนรูปโปรไฟล์',
+  //           //         style: const TextStyle(
+  //           //           fontSize: 16.0,
+  //           //           color: Colors.black54,
+  //           //           fontFamily: 'FC-Minimal-Regular',
+  //           //         ),
+  //           //       ),
+  //           //     ],
+  //           //   ),
+  //           // ),
+  //           // // SizedBox(height: 8),
+  //           // Text(
+  //           //   fileName,
+  //           //   overflow: TextOverflow.ellipsis,
+  //           //   style: TextStyle(
+  //           //     //fontWeight: FontWeight.bold,
+  //           //     fontSize: 16.0,
+  //           //     color: file == null ? Colors.redAccent : Colors.black54,
+  //           //     fontFamily: 'FC-Minimal-Regular',
+  //           //   ),
+  //           //   textAlign: TextAlign.center,
+  //           // ),
+  //           MyStyle().mySizebox(),
+  //           nameForm(),
+  //           MyStyle().mySizebox(),
+  //           lastnameForm(),
+  //           MyStyle().mySizebox(),
+  //           phoneForm(),
+  //           MyStyle().mySizebox(),
+  //           radio(),
+  //           MyStyle().mySizebox(),
+  //           emailForm(),
+  //           MyStyle().mySizebox(),
+  //           passwordForm(),
+  //           MyStyle().mySizebox(),
+  //           conpasswordForm(),
+  //           MyStyle().mySizebox(),
+  //           registerButton(context),
+  //           MyStyle().mySizebox(),
+  //           MyStyle().mySizebox(),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
+
+  Widget showImage(context) {
+    return Positioned(
+      top: screenHight * 0.12,
+      left: 40,
+      right: 40,
+      child: Center(
+        child: Stack(
+          children: [
+            InkWell(
+              onTap: () {
+                setState(() {
+                  isProfile = true;
+                });
+                _bottomSheet(context);
+              },
+              child: CircleAvatar(
+                radius: 93,
+                backgroundColor: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.all(2), // Border radius
+                  child: ClipOval(
+                    child: SizedBox.fromSize(
+                      size: const Size.fromRadius(88), // Image radius
+                      child: file == null
+                          ? const CircleAvatar(
+                              radius: 24,
+                              backgroundImage:
+                                  AssetImage('images/addimages1.png'),
+                            )
+                          : CircleAvatar(
+                              radius: 24, backgroundImage: FileImage(file!)),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              child: InkWell(
+                onTap: () {
+                  setState(() {
+                    isProfile = true;
+                  });
+                  _bottomSheet(context);
+                },
+                child: ClipOval(
+                    child: Container(
+                  padding: const EdgeInsets.all(8),
+                  color: Colors.grey[300],
+                  child: const Icon(
+                    Icons.camera_alt,
+                    color: Colors.black,
+                    size: 20,
+                  ),
+                )),
+              ),
+              right: 10,
+              bottom: 20,
+            ),
+          ],
+        ),
+      ),
     );
   }
+
+  Widget showImageCoverPage(BuildContext context) {
+    return Stack(
+      children: [
+        Container(
+          margin: EdgeInsetsDirectional.only(
+              start: 30.0, end: 30.0, bottom: screenHight * 0.12),
+          width: MediaQuery.of(context).size.width * 1,
+          height: MediaQuery.of(context).size.height * 0.25,
+          child: Card(
+            color: Colors.red,
+            semanticContainer: true,
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            child: coverPagefile != null
+                ? Image.file(
+                    coverPagefile!,
+                    fit: BoxFit.cover,
+                  )
+                : Image.asset('images/addimages1.png'),
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20))),
+            elevation: 0,
+            margin: const EdgeInsets.all(0),
+          ),
+        ),
+        Positioned(
+          child: InkWell(
+            onTap: () {
+              setState(() {
+                isProfile = false;
+              });
+              _bottomSheet(context);
+            },
+            child: ClipOval(
+                child: Container(
+              padding: const EdgeInsets.all(8),
+              color: Colors.grey[300],
+              child: const Icon(
+                Icons.camera_alt,
+                color: Colors.black,
+                size: 20,
+              ),
+            )),
+          ),
+          right: 50,
+          top: screenHight * 0.185,
+        ),
+      ],
+    );
+  }
+
+  // //โชว์ภาพตัวอย่างก่อนเลือกรูปและหลังเลือกรูป
+  // Container showImage(context) {
+  //   return Container(
+  //     padding:
+  //         const EdgeInsetsDirectional.only(start: 10.0, end: 10.0, bottom: 10),
+  //     width: MediaQuery.of(context).size.width * 0.9,
+  //     height: MediaQuery.of(context).size.width * 0.6,
+  //     child: Container(
+  //         child: file == null
+  //             ? const CircleAvatar(
+  //                 radius: 24,
+  //                 backgroundImage: AssetImage('images/addimages1.png'),
+  //               )
+  //             : CircleAvatar(radius: 24, backgroundImage: FileImage(file!))),
+  //   );
+  // }
 
   void _bottomSheet(BuildContext context) {
     showModalBottomSheet<int>(
@@ -427,11 +601,18 @@ class _RegisterState extends State<Register> {
 
       if (result == null) return;
       final path = result.path;
-
-      setState(() => file = File(path));
-      if (file != null) {
-        final fileName = basename(file!.path);
-        debugPrint('ชื่อรูปภาพ $fileName');
+      if (isProfile) {
+        setState(() => file = File(path));
+        if (file != null) {
+          final fileName = basename(file!.path);
+          setState(() => debugPrint('ชื่อรูปภาพ $fileName'));
+        }
+      } else {
+        setState(() => coverPagefile = File(path));
+        if (coverPagefile != null) {
+          final fileName = basename(coverPagefile!.path);
+          setState(() => debugPrint('ชื่อรูปภาพ $fileName'));
+        }
       }
     } catch (e) {
       debugPrint(e.toString());
@@ -491,7 +672,7 @@ class _RegisterState extends State<Register> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),
-            primary:Colors.red,
+            primary: Colors.red,
           ),
           icon: const Icon(Icons.cloud_upload_outlined),
           label: const Text('Create Accound'),
@@ -500,27 +681,50 @@ class _RegisterState extends State<Register> {
 
   //เพิ่มรูปภาพไปยังโฟลเดอร์ที่เก็บรูป พร้อมเปลี่ยนชื่อรูป
   Future<void> createUser(BuildContext context) async {
+    String urlImage = '';
+    String urlCoverPage = '';
     Random random = Random();
     int i = random.nextInt(1000000);
     String imageName = 'Profile$i.jpg';
-    String url = '${MyConstant().domain}/application/saveImageFile.php';
-    try {
-      if (file != null) {
-        Map<String, dynamic> map = Map();
-        map['file'] = await MultipartFile.fromFile(
-          file!.path,
-          filename: imageName,
-        );
-        debugPrint('Respone ==>> ${imageName.toString()}');
 
-        FormData formData = FormData.fromMap(map);
-        await Dio().post(url, data: formData).then((value) {
-          debugPrint('Respone ==>> $value');
-          String urlImage = '/application/backend/imageProfile/$imageName';
-          uploadData(context, urlImage);
-        });
+    try {
+      if (file != null || coverPagefile != null) {
+        if (file == null) urlImage = '';
+        if (coverPagefile == null) urlCoverPage = '';
+        if (file != null) {
+          String url = '${MyConstant().domain}/application/saveImageFile.php';
+          Map<String, dynamic> map = Map();
+          map['file'] = await MultipartFile.fromFile(
+            file!.path,
+            filename: imageName,
+          );
+          debugPrint('Respone ==>> ${imageName.toString()}');
+
+          FormData formData = FormData.fromMap(map);
+          await Dio().post(url, data: formData).then((value) {
+            debugPrint('Respone ==>> $value');
+            urlImage = '/application/backend/imageProfile/$imageName';
+          });
+        }
+        if (coverPagefile != null) {
+          String url =
+              '${MyConstant().domain}/application/saveImagecoverPagefile.php';
+          Map<String, dynamic> map = Map();
+          map['file'] = await MultipartFile.fromFile(
+            file!.path,
+            filename: imageName,
+          );
+          debugPrint('coverPagefile ==>> ${imageName.toString()}');
+
+          FormData formData = FormData.fromMap(map);
+          await Dio().post(url, data: formData).then((value) {
+            debugPrint('coverPagefile ==>> $value');
+            urlCoverPage = '/application/backend/imageCoverPage/$imageName';
+          });
+        }
+        uploadData(context, urlImage,urlCoverPage);
       } else {
-        uploadData(context, '');
+        uploadData(context, urlImage,urlCoverPage);
       }
     } catch (e) {
       debugPrint('อัพโหลดไม่สำเร็จ === ${e.toString()}');
@@ -532,7 +736,11 @@ class _RegisterState extends State<Register> {
     }
   }
 
-  Future<void> uploadData(BuildContext context, String imageProfile) async {
+  Future<void> uploadData(
+    BuildContext context,
+    String imageProfile,
+    String imageCoverPage,
+  ) async {
     String url = '${MyConstant().domain}/application/registerdata_post.php';
     FormData formData = FormData.fromMap(
       {
@@ -543,6 +751,7 @@ class _RegisterState extends State<Register> {
         "gender": gender,
         "phone": phone,
         "profile": imageProfile,
+        "CoverPage": imageCoverPage
       },
     );
     try {
@@ -593,6 +802,7 @@ class _RegisterState extends State<Register> {
     _conpassword.clear();
     gender = null;
     file = null;
+    coverPagefile = null;
     MaterialPageRoute route = MaterialPageRoute(
       builder: (context) => myWidget,
     );

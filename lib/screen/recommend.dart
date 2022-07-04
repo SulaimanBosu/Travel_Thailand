@@ -269,6 +269,7 @@ class _RecommendState extends State<Recommend> {
                             maxCrossAxisExtent: 265,
                             mainAxisSpacing: 20,
                             crossAxisSpacing: 10,
+                            childAspectRatio :1,
                             children: landmarkCards,
                           )
           ],
