@@ -123,7 +123,7 @@ class _SearchState extends State<Search> {
               landmark.provinceName!.toLowerCase().contains(query))
           .toList();
     });
-   // setState(() => landmarkModels = item);
+    // setState(() => landmarkModels = item);
   }
 
   AppBar buildAppbar() {
@@ -322,7 +322,9 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
                       child: Text(
                         isLoading
                             ? ''
-                            : 'พบแหล่งท่องเที่ยวทั้งหมด ${landmarkCards.length}',
+                            : landmark.landmarkId == null
+                                ? 'ไม่พบแหล่งท่องเที่ยว'
+                                : 'พบแหล่งท่องเที่ยวทั้งหมด ${landmarkCards.length.toString()}',
                         style: const TextStyle(
                           color: Colors.black54,
                           fontSize: 20.0,

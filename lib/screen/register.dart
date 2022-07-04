@@ -686,6 +686,7 @@ class _RegisterState extends State<Register> {
     Random random = Random();
     int i = random.nextInt(1000000);
     String imageName = 'Profile$i.jpg';
+    String imageCoverPageName = 'coverPagefile$i.jpg';
 
     try {
       if (file != null || coverPagefile != null) {
@@ -711,15 +712,15 @@ class _RegisterState extends State<Register> {
               '${MyConstant().domain}/application/saveImagecoverPagefile.php';
           Map<String, dynamic> map = Map();
           map['file'] = await MultipartFile.fromFile(
-            file!.path,
-            filename: imageName,
+            coverPagefile!.path,
+            filename: imageCoverPageName,
           );
-          debugPrint('coverPagefile ==>> ${imageName.toString()}');
+          debugPrint('coverPagefile ==>> ${imageCoverPageName.toString()}');
 
-          FormData formData = FormData.fromMap(map);
-          await Dio().post(url, data: formData).then((value) {
+          FormData formDataCoverPage = FormData.fromMap(map);
+          await Dio().post(url, data: formDataCoverPage).then((value) {
             debugPrint('coverPagefile ==>> $value');
-            urlCoverPage = '/application/backend/imageCoverPage/$imageName';
+            urlCoverPage = '/application/backend/imageCoverPage/$imageCoverPageName';
           });
         }
         uploadData(context, urlImage,urlCoverPage);
@@ -741,6 +742,7 @@ class _RegisterState extends State<Register> {
     String imageProfile,
     String imageCoverPage,
   ) async {
+    debugPrint('imageCoverPage>>>>>>>>>>>>>>>>>>>>>>>> === ${imageCoverPage.toString()}');
     String url = '${MyConstant().domain}/application/registerdata_post.php';
     FormData formData = FormData.fromMap(
       {
