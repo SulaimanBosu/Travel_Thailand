@@ -1,8 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:project/model/comment_model.dart';
+import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
 
 class CommentListview extends StatefulWidget {
@@ -48,7 +50,7 @@ class _CommentListviewState extends State<CommentListview> {
                     Container(
                       height:
                           widget.commentModels[index].commentDetail!.length < 50
-                              ? screenhight * 0.065
+                              ? screenhight * 0.06
                               : screenhight *
                                   widget.commentModels[index].commentDetail!
                                       .length /
@@ -58,62 +60,102 @@ class _CommentListviewState extends State<CommentListview> {
                       //     : BoxDecoration(color: Colors.grey[50]),
                       child: Container(
                         padding: const EdgeInsetsDirectional.only(
-                            top: 0.0, bottom: 0.0),
+                            top: 0.0, bottom: 0.0, start: 15),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
-                              padding: const EdgeInsetsDirectional.only(
-                                  start: 10.0, end: 2.0),
-                              child: Container(
-                                child: const Icon(
-                                  Icons.person,
-                                  color: Colors.blue,
-                                  size: 10,
+                              margin: EdgeInsets.only(right: 10),
+                              child: CircleAvatar(
+                                radius: 17,
+                                backgroundColor: Colors.red,
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.all(2), // Border radius
+                                  child: ClipOval(
+                                    child: SizedBox.fromSize(
+                                      size: const Size.fromRadius(
+                                          16), // Image radius
+                                      child: CachedNetworkImage(
+                                        imageUrl: MyConstant().domain +
+                                            widget.commentModels[index]
+                                                .userProfile!,
+                                        progressIndicatorBuilder:
+                                            (context, url, downloadProgress) =>
+                                                MyStyle().showProgress(),
+                                        errorWidget: (context, url, error) =>
+                                            Image.asset(
+                                                'images/iconprofile.png'),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
                             Expanded(
                               flex: 5,
-                              child: Container(
-                                width: MediaQuery.of(context).size.width * 0.2,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      '${widget.commentModels[index].userFirstName!}\t\t${widget.commentModels[index].userLastName!}',
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        decoration: TextDecoration.underline,
-                                        fontSize: 12.0,
-                                        fontWeight: FontWeight.bold,
-                                        textBaseline: TextBaseline.ideographic,
-                                        color: Colors.black45,
-                                        // fontStyle: FontStyle.italic,
-                                        fontFamily: 'FC-Minimal-Regular',
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Card(
+                                    color: Colors.grey.shade200,
+                                    semanticContainer: true,
+                                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      side:  BorderSide(
+                                        color: Colors.grey.shade300,
                                       ),
                                     ),
-                                    Expanded(
-                                      child: Text(
-                                        'Comment : ${widget.commentModels[index].commentDetail}',
-                                        overflow: TextOverflow.fade,
-                                        style: MyStyle().mainH2Title,
+                                    elevation: 1,
+                                    child: Container(
+                                      margin: EdgeInsets.all(4),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            '${widget.commentModels[index].userFirstName!}\t\t${widget.commentModels[index].userLastName!}',
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                              // decoration: TextDecoration.underline,
+                                              fontSize: 12.0,
+                                              fontWeight: FontWeight.bold,
+                                              textBaseline:
+                                                  TextBaseline.ideographic,
+                                              color: Colors.black,
+                                              // fontStyle: FontStyle.italic,
+                                              //fontFamily: 'FC-Minimal-Regular',
+                                            ),
+                                          ),
+                                          Text(
+                                            '${widget.commentModels[index].commentDetail}',
+                                            overflow: TextOverflow.fade,
+                                            style: MyStyle().mainH2Title,
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    Text(
+                                  ),
+                                  Expanded(
+                                    child: Text(
                                       widget.commentModels[index].commentDate
                                           .toString(),
                                       overflow: TextOverflow.ellipsis,
                                       style: const TextStyle(
-                                        color: Colors.red,
+                                        color: Colors.black45,
                                         fontSize: 12.0,
                                         fontFamily: 'FC-Minimal-Regular',
                                       ),
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
+                              //),
                             ),
                             Expanded(
                               flex: 1,

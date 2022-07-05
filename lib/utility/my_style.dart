@@ -63,9 +63,9 @@ class MyStyle {
   );
 
   TextStyle mainH2Title = const TextStyle(
-    fontSize: 12.0,
+    fontSize: 14.0,
     // fontWeight: FontWeight.bold,
-    color: Colors.black45,
+    color: Colors.black54,
     // fontStyle: FontStyle.italic,
     fontFamily: 'FC-Minimal-Regular',
   );
