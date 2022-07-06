@@ -60,6 +60,10 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
       gender = '',
       email = '';
   int score = 0;
+  String? textComment;
+  bool isSendicon = false;
+  bool isIconFaceColor = false;
+
   @override
   void initState() {
     SystemChrome.setPreferredOrientations([
@@ -72,7 +76,6 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
     // getLocation();
     readComment();
     delaydialog();
-
     debugPrint(landmarkModel.imageid.toString());
     // TODO: implement initState
     super.initState();
@@ -275,49 +278,148 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
   Widget build(BuildContext context) {
     screenwidth = MediaQuery.of(context).size.width;
     screenhight = MediaQuery.of(context).size.height;
-    final maxLines = 5;
     return Scaffold(
-      bottomSheet: Container(
-        padding: const EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
-        color: Colors.white,
-        // width: screenwidth,
-        //height: maxLines * 9.0,
-        child: TextField(
-          //  onChanged: (value) => phone = value.trim(),
-          // controller: _phone,
-          // focusNode: myFocusPhone,
-
-          maxLines: null,
-          minLines: 1,
-          textAlignVertical: TextAlignVertical.center,
-          style: TextStyle(
-              overflow: TextOverflow.ellipsis, fontSize: screenwidth * 0.037),
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: Colors.grey.shade300,
-            prefixIcon: Icon(
-              Icons.chat_outlined,
-              color: Colors.black54,
-              size: screenwidth * 0.05,
-            ),
-            contentPadding: const EdgeInsets.symmetric(vertical: 5.0),
-            hintStyle: TextStyle(
-              overflow: TextOverflow.fade,
-              fontSize: screenwidth * 0.037,
-              color: Colors.black54,
-            ),
-            hintText: 'เขียนความคิดเห็น...',
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(40),
-              borderSide: const BorderSide(color: Colors.white),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(40),
-              borderSide: const BorderSide(color: Colors.white),
-            ),
-          ),
-        ),
-      ),
+      bottomSheet: BottomSheet(
+          onClosing: () {},
+          builder: (context) {
+            return StatefulBuilder(builder: (context, setState) {
+              return Container(
+                width: screenwidth,
+                // height: 90,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        padding: EdgeInsets.only(top: 5),
+                        child: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              isSendicon = !isSendicon;
+                            });
+                          },
+                          icon: Icon(
+                            Icons.camera_alt_outlined,
+                            size: screenwidth * 0.08,
+                            color: Colors.black54,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 7,
+                      child: Container(
+                        padding: const EdgeInsets.only(
+                            top: 5, bottom: 25, left: 5, right: 15),
+                        //width: screenwidth * 0.8,
+                        // height: MediaQuery.of(context).viewInsets.top * 0.10,
+                        color: Colors.white,
+                        child: TextField(
+                          // buildCounter: (
+                          //   context, {
+                          //   currentLength = 0,
+                          //   isFocused = false,
+                          //   maxLength = 150,
+                          // }) =>
+                          //     Text(
+                          //   '$currentLength of $maxLength',
+                          //   semanticsLabel: 'character count',
+                          // ),
+                          onChanged: (value) {
+                            textComment = value.trim();
+                            if (value.isNotEmpty) {
+                              setState(() {
+                                isSendicon = true;
+                              });
+                            } else {
+                              setState(() {
+                                isSendicon = false;
+                              });
+                            }
+                          },
+                          maxLines: 5,
+                          minLines: 1,
+                          // maxLength: 100,
+                          textAlignVertical: TextAlignVertical.center,
+                          style: TextStyle(
+                              overflow: TextOverflow.ellipsis,
+                              fontSize: screenwidth * 0.037),
+                          decoration: InputDecoration(
+                            // suffix: isSendicon
+                            //     ? const SizedBox.shrink()
+                            //     : InkWell(
+                            //         onTap: () => setState(() {
+                            //           isIconFaceColor = !isIconFaceColor;
+                            //         }),
+                            //         child: Padding(
+                            //           padding: const EdgeInsets.only(top:9.0),
+                            //           child: Icon(
+                            //             Icons.photo_library_outlined,
+                            //             color: isIconFaceColor
+                            //                 ? Colors.blue
+                            //                 : Colors.black45,
+                            //           ),
+                            //         ),
+                            //       ),
+                            suffixIcon: InkWell(
+                              onTap: () => setState(() {
+                                isIconFaceColor = !isIconFaceColor;
+                              }),
+                              child: Icon(
+                                Icons.tag_faces_outlined,
+                                color: isIconFaceColor
+                                    ? Colors.blue
+                                    : Colors.black45,
+                              ),
+                            ),
+                            filled: true,
+                            fillColor: Colors.grey.shade300,
+                            prefixIcon: Icon(
+                                    Icons.sms_outlined,
+                                    color: Colors.black54,
+                                    size: screenwidth * 0.05,
+                                  ),
+                            contentPadding:
+                                const EdgeInsets.symmetric(vertical: 5.0),
+                            hintStyle: TextStyle(
+                              overflow: TextOverflow.fade,
+                              fontSize: screenwidth * 0.03,
+                              color: Colors.black54,
+                            ),
+                            hintText: 'เขียนความคิดเห็น...',
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(40),
+                              borderSide: const BorderSide(color: Colors.white),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(40),
+                              borderSide: const BorderSide(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    isSendicon
+                        ? Expanded(
+                            flex: 1,
+                            child: Container(
+                              padding: const EdgeInsets.only(
+                                  top: 10, bottom: 25, right: 5),
+                              child: Icon(
+                                Icons.send_rounded,
+                                size: screenwidth * 0.09,
+                                color: Colors.blue,
+                              ),
+                            ),
+                          )
+                        : const SizedBox.shrink()
+                  ],
+                ),
+              );
+            });
+          }),
       backgroundColor: Colors.white,
       body: isLocation
           ? Stack(
@@ -534,6 +636,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
               ? SliverToBoxAdapter(
                   child: moreComment
                       ? Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             InkWell(
                               onTap: () {
@@ -541,28 +644,22 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                                   moreComment = false;
                                 });
                               },
-                              child: Column(
-                                children: [
-                                  const Icon(
-                                    Icons.arrow_drop_up,
+                              child: Container(
+                                margin:
+                                    EdgeInsets.only(left: screenwidth * 0.16),
+                                width: screenwidth,
+                                color: Colors.grey.shade100,
+                                // child: const Center(
+                                //   widthFactor: 1,
+                                //   heightFactor: 2,
+                                child: const Text(
+                                  'ดูความคิดเห็นน้อยลง',
+                                  style: TextStyle(
+                                    color: Colors.black45,
+                                    fontSize: 18.0,
+                                    fontFamily: 'FC-Minimal-Regular',
                                   ),
-                                  Container(
-                                    width: screenwidth,
-                                    color: Colors.grey.shade100,
-                                    child: const Center(
-                                      widthFactor: 1,
-                                      heightFactor: 2,
-                                      child: Text(
-                                        'Comment น้อยลง',
-                                        style: TextStyle(
-                                          color: Colors.red,
-                                          fontSize: 18.0,
-                                          fontFamily: 'FC-Minimal-Regular',
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                                ),
                               ),
                             ),
                             // Divider(
@@ -572,6 +669,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                           ],
                         )
                       : Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             InkWell(
                               onTap: () {
@@ -579,27 +677,24 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                                   moreComment = true;
                                 });
                               },
-                              child: Column(
-                                children: [
-                                  Container(
-                                    width: screenwidth,
-                                    color: Colors.grey.shade100,
-                                    child: const Center(
-                                      widthFactor: 1,
-                                      heightFactor: 2,
-                                      child: Text(
-                                        'Comment เพิ่มเติม...',
-                                        style: TextStyle(
-                                          color: Colors.red,
-                                          fontSize: 18.0,
-                                          fontFamily: 'FC-Minimal-Regular',
-                                        ),
-                                      ),
-                                    ),
+                              child: Container(
+                                margin:
+                                    EdgeInsets.only(left: screenwidth * 0.16),
+                                width: screenwidth,
+                                color: Colors.grey.shade100,
+                                // child: const Center(
+                                //   widthFactor: 1,
+                                //   heightFactor: 2,
+                                child: const Text(
+                                  'ดูความคิดเห็นเพิ่มเติม...',
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                    fontSize: 18.0,
+                                    fontFamily: 'FC-Minimal-Regular',
                                   ),
-                                  const Icon(Icons.arrow_drop_down),
-                                ],
+                                ),
                               ),
+                              // const Icon(Icons.arrow_drop_down),
                             ),
 
                             // Divider(
@@ -614,9 +709,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                 ),
           SliverToBoxAdapter(
             child: Container(
-              color: Colors.red,
-              width: screenwidth,
-              height: screenhight * 0.09,
+              margin: EdgeInsets.only(bottom: screenhight * 0.1),
             ),
           )
         ],

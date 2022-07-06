@@ -67,7 +67,7 @@ class _CommentListviewState extends State<CommentListview> {
                             Container(
                               margin: const EdgeInsets.only(right: 10),
                               child: CircleAvatar(
-                                radius: 17,
+                                radius: 19,
                                 backgroundColor: Colors.red,
                                 child: Padding(
                                   padding:
@@ -75,7 +75,7 @@ class _CommentListviewState extends State<CommentListview> {
                                   child: ClipOval(
                                     child: SizedBox.fromSize(
                                       size: const Size.fromRadius(
-                                          16), // Image radius
+                                          18), // Image radius
                                       child: CachedNetworkImage(
                                         imageUrl: MyConstant().domain +
                                             widget.commentModels[index]
@@ -198,7 +198,7 @@ class _CommentListviewState extends State<CommentListview> {
                       ),
                     ),
                     //  SizedBox(
-                    //   height: screenhight * 0.0005,
+                    //   height: screenhight * 0.025,
                     // ),
                     // Divider(
                     //   color: Colors.grey.shade200,
