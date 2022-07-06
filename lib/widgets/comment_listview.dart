@@ -48,13 +48,13 @@ class _CommentListviewState extends State<CommentListview> {
                 child: Column(
                   children: [
                     Container(
-                      height:
-                          widget.commentModels[index].commentDetail!.length < 50
-                              ? screenhight * 0.06
-                              : screenhight *
-                                  widget.commentModels[index].commentDetail!
-                                      .length /
-                                  100,
+                      // height:
+                      //     widget.commentModels[index].commentDetail!.length < 50
+                      //         ? screenhight * 0.06
+                      //         : screenhight *
+                      //             widget.commentModels[index].commentDetail!
+                      //                 .length /
+                      //             100,
                       // decoration: index % 2 == 0
                       //     ? const BoxDecoration(color: Colors.white)
                       //     : BoxDecoration(color: Colors.grey[50]),
@@ -65,7 +65,7 @@ class _CommentListviewState extends State<CommentListview> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
-                              margin: EdgeInsets.only(right: 10),
+                              margin: const EdgeInsets.only(right: 10),
                               child: CircleAvatar(
                                 radius: 17,
                                 backgroundColor: Colors.red,
@@ -100,18 +100,18 @@ class _CommentListviewState extends State<CommentListview> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Card(
-                                    color: Colors.grey.shade200,
+                                    color: Colors.grey.shade100,
                                     semanticContainer: true,
                                     clipBehavior: Clip.antiAliasWithSaveLayer,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10.0),
-                                      side:  BorderSide(
-                                        color: Colors.grey.shade300,
+                                      side: BorderSide(
+                                        color: Colors.grey.shade200,
                                       ),
                                     ),
                                     elevation: 1,
                                     child: Container(
-                                      margin: EdgeInsets.all(4),
+                                      margin: const EdgeInsets.all(10),
                                       child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
@@ -141,45 +141,69 @@ class _CommentListviewState extends State<CommentListview> {
                                       ),
                                     ),
                                   ),
-                                  Expanded(
-                                    child: Text(
-                                      widget.commentModels[index].commentDate
-                                          .toString(),
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        color: Colors.black45,
-                                        fontSize: 12.0,
-                                        fontFamily: 'FC-Minimal-Regular',
-                                      ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 5,bottom: 15,top: 2),
+                                    child: Row(
+                                      children: const [
+                                        Text(
+                                          'ถูกใจ',
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            color: Colors.black54,
+                                            fontSize: 12.0,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 13,
+                                        ),
+                                        Text(
+                                          'ตอบกลับ',
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            color: Colors.black54,
+                                            fontSize: 12.0,
+                                          ),
+                                        ),
+                                        // Text(
+                                        //   widget.commentModels[index].commentDate
+                                        //       .toString(),
+                                        //   overflow: TextOverflow.ellipsis,
+                                        //   style: const TextStyle(
+                                        //     color: Colors.black45,
+                                        //     fontSize: 12.0,
+                                        //     fontFamily: 'FC-Minimal-Regular',
+                                        //   ),
+                                        // ),
+                                      ],
                                     ),
                                   ),
                                 ],
                               ),
                               //),
                             ),
-                            Expanded(
-                              flex: 1,
-                              child: IconButton(
-                                icon: const Icon(
-                                  MdiIcons.thumbUp,
-                                  color: Colors.black45,
-                                  size: 15,
-                                ),
-                                // ignore: unnecessary_statements
-                                onPressed: () {},
-                              ),
-                            ),
+                            // Expanded(
+                            //   flex: 1,
+                            //   child: IconButton(
+                            //     icon: const Icon(
+                            //       MdiIcons.thumbUp,
+                            //       color: Colors.black45,
+                            //       size: 15,
+                            //     ),
+                            //     // ignore: unnecessary_statements
+                            //     onPressed: () {},
+                            //   ),
+                            // ),
                           ],
                         ),
                       ),
                     ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Divider(
-                      color: Colors.grey.shade200,
-                      thickness: 1,
-                    ),
+                    //  SizedBox(
+                    //   height: screenhight * 0.0005,
+                    // ),
+                    // Divider(
+                    //   color: Colors.grey.shade200,
+                    //   thickness: 1,
+                    // ),
                   ],
                 ),
               ),

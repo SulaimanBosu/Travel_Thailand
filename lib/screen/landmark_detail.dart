@@ -2,10 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
+import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:location/location.dart';
@@ -273,7 +275,49 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
   Widget build(BuildContext context) {
     screenwidth = MediaQuery.of(context).size.width;
     screenhight = MediaQuery.of(context).size.height;
+    final maxLines = 5;
     return Scaffold(
+      bottomSheet: Container(
+        padding: const EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
+        color: Colors.white,
+        // width: screenwidth,
+        //height: maxLines * 9.0,
+        child: TextField(
+          //  onChanged: (value) => phone = value.trim(),
+          // controller: _phone,
+          // focusNode: myFocusPhone,
+
+          maxLines: null,
+          minLines: 1,
+          textAlignVertical: TextAlignVertical.center,
+          style: TextStyle(
+              overflow: TextOverflow.ellipsis, fontSize: screenwidth * 0.037),
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: Colors.grey.shade300,
+            prefixIcon: Icon(
+              Icons.chat_outlined,
+              color: Colors.black54,
+              size: screenwidth * 0.05,
+            ),
+            contentPadding: const EdgeInsets.symmetric(vertical: 5.0),
+            hintStyle: TextStyle(
+              overflow: TextOverflow.fade,
+              fontSize: screenwidth * 0.037,
+              color: Colors.black54,
+            ),
+            hintText: 'เขียนความคิดเห็น...',
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(40),
+              borderSide: const BorderSide(color: Colors.white),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(40),
+              borderSide: const BorderSide(color: Colors.white),
+            ),
+          ),
+        ),
+      ),
       backgroundColor: Colors.white,
       body: isLocation
           ? Stack(
@@ -569,7 +613,11 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                   child: Container(),
                 ),
           SliverToBoxAdapter(
-            child: MyStyle().mySizebox(),
+            child: Container(
+              color: Colors.red,
+              width: screenwidth,
+              height: screenhight * 0.09,
+            ),
           )
         ],
       ),
