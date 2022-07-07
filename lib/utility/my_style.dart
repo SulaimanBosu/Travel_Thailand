@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:project/ProfilePage/profile.dart';
 import 'package:project/widgets/popover.dart';
+import 'package:resize/resize.dart';
 
 class MyStyle {
   Color darkColor = Colors.blue.shade900;
@@ -62,8 +63,8 @@ class MyStyle {
     color: Colors.black54,
   );
 
-  TextStyle mainH2Title = const TextStyle(
-    fontSize: 14.0,
+  TextStyle mainH2Title = TextStyle(
+    fontSize: 13.5 .sp,
     // fontWeight: FontWeight.bold,
     color: Colors.black54,
     // fontStyle: FontStyle.italic,

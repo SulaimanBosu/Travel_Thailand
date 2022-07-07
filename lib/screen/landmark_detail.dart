@@ -23,6 +23,7 @@ import 'package:project/utility/my_api.dart';
 import 'package:project/utility/my_style.dart';
 import 'package:project/widgets/comment_listview.dart';
 import 'package:project/widgets/google_map_widget.dart';
+import 'package:resize/resize.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LandmarkDetail extends StatefulWidget {
@@ -369,8 +370,6 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                       child: Container(
                         padding: const EdgeInsets.only(
                             bottom: 25, left: 5, right: 15),
-                        //width: screenwidth * 0.8,
-                        // height: MediaQuery.of(context).viewInsets.top * 0.10,
                         color: Colors.white,
                         child: TextField(
                           // buildCounter: (
@@ -398,28 +397,11 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                           },
                           maxLines: 5,
                           minLines: 1,
-                          // maxLength: 100,
                           textAlignVertical: TextAlignVertical.center,
                           style: TextStyle(
                               overflow: TextOverflow.ellipsis,
                               fontSize: screenwidth * 0.037),
                           decoration: InputDecoration(
-                            // suffix: isSendicon
-                            //     ? const SizedBox.shrink()
-                            //     : InkWell(
-                            //         onTap: () => setState(() {
-                            //           isIconFaceColor = !isIconFaceColor;
-                            //         }),
-                            //         child: Padding(
-                            //           padding: const EdgeInsets.only(top:9.0),
-                            //           child: Icon(
-                            //             Icons.photo_library_outlined,
-                            //             color: isIconFaceColor
-                            //                 ? Colors.blue
-                            //                 : Colors.black45,
-                            //           ),
-                            //         ),
-                            //       ),
                             suffixIcon: InkWell(
                               onTap: () => setState(() {
                                 isIconFaceColor = !isIconFaceColor;
@@ -621,9 +603,9 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                       commentModel.userFirstName == null
                           ? 'ความคิดเห็นทั้งหมด (0)'
                           : 'ความคิดเห็นทั้งหมด (${commentModels.length})',
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: Colors.black54,
-                        fontSize: 18.0,
+                        fontSize: 14.0.sp,
                         fontFamily: 'FC-Minimal-Regular',
                       ),
                       textAlign: TextAlign.start,
@@ -668,10 +650,10 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                           );
                         }
                       },
-                      child: const Text(
+                      child: Text(
                         'ให้คะแนน',
                         style: TextStyle(
-                          fontSize: 16.0,
+                          fontSize: 14.0.sp,
                           color: Colors.black54,
                           fontFamily: 'FC-Minimal-Regular',
                         ),
@@ -739,11 +721,12 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                                 // child: const Center(
                                 //   widthFactor: 1,
                                 //   heightFactor: 2,
-                                child: const Text(
+                                child: Text(
                                   'ดูความคิดเห็นน้อยลง',
                                   style: TextStyle(
+                                    decoration: TextDecoration.underline,
                                     color: Colors.black45,
-                                    fontSize: 18.0,
+                                    fontSize: 13.0.sp,
                                     fontFamily: 'FC-Minimal-Regular',
                                   ),
                                 ),
@@ -772,11 +755,11 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                                 // child: const Center(
                                 //   widthFactor: 1,
                                 //   heightFactor: 2,
-                                child: const Text(
+                                child: Text(
                                   'ดูความคิดเห็นเพิ่มเติม...',
                                   style: TextStyle(
                                     color: Colors.red,
-                                    fontSize: 18.0,
+                                    fontSize: 13.0.sp,
                                     fontFamily: 'FC-Minimal-Regular',
                                   ),
                                 ),

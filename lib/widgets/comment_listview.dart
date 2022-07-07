@@ -7,6 +7,7 @@ import 'package:project/model/comment_model.dart';
 import 'package:project/utility/alert_dialog.dart';
 import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
+import 'package:resize/resize.dart';
 
 class CommentListview extends StatefulWidget {
   final List<CommentModel> commentModels;
@@ -125,9 +126,10 @@ class _CommentListviewState extends State<CommentListview> {
                                           Text(
                                             '${widget.commentModels[index].userFirstName!}\t\t${widget.commentModels[index].userLastName!}',
                                             overflow: TextOverflow.ellipsis,
-                                            style: const TextStyle(
+                                            style: TextStyle(
                                               // decoration: TextDecoration.underline,
-                                              fontSize: 12.0,
+
+                                              fontSize: 9.0.sp,
                                               fontWeight: FontWeight.bold,
                                               textBaseline:
                                                   TextBaseline.ideographic,
@@ -157,11 +159,11 @@ class _CommentListviewState extends State<CommentListview> {
                                             Text(
                                               widget.commentdate[index],
                                               overflow: TextOverflow.ellipsis,
-                                              style: const TextStyle(
+                                              style:  TextStyle(
                                                 decoration:
                                                     TextDecoration.underline,
                                                 color: Colors.black54,
-                                                fontSize: 12.0,
+                                                fontSize: 9.0 .sp,
                                               ),
                                             ),
                                             SizedBox(
@@ -190,7 +192,7 @@ class _CommentListviewState extends State<CommentListview> {
                                                           true
                                                       ? Colors.blue
                                                       : Colors.black54,
-                                                  fontSize: 12.0,
+                                                  fontSize: 10.0 .sp,
                                                 ),
                                               ),
                                             ),
@@ -209,12 +211,12 @@ class _CommentListviewState extends State<CommentListview> {
                                                   Navigator.pop(context);
                                                 });
                                               }),
-                                              child: const Text(
+                                              child:  Text(
                                                 'ลบ',
                                                 overflow: TextOverflow.ellipsis,
                                                 style: TextStyle(
                                                   color: Colors.black54,
-                                                  fontSize: 12.0,
+                                                  fontSize: 10 .sp,
                                                 ),
                                               ),
                                             ),
