@@ -27,6 +27,44 @@ class MyApi {
     return transport;
   }
 
+  String difference(String date) {
+    int minutes;
+    double hours;
+    String dayString = '';
+    int day;
+    double week;
+    double month;
+    double year;
+    DateTime dt = DateTime.parse(date);
+    var now = DateTime.now();
+    var diff = now.difference(dt);
+    day = diff.inDays.toInt();
+    minutes = diff.inMinutes.toInt();
+
+    if (minutes < 1) {
+      dayString = 'ไม่กี่วินาที';
+    } else if (minutes >= 1 && minutes < 60) {
+      dayString = '${minutes.toStringAsFixed(0)}นาที';
+    } else if (minutes >= 60 && minutes < 1440) {
+      hours = minutes / 60;
+      dayString = '${hours.toStringAsFixed(0)}ชั่วโมง';
+    } else if (minutes >= 1440 && day >= 1 && day < 2) {
+      dayString = 'เมื่อวานนี้';
+    } else if (day >= 2 && day < 7) {
+      dayString = '${day.toStringAsFixed(0)}วัน';
+    }else if (day >= 7 && day < 30) {
+      week = day / 7;
+      dayString = '${week.toStringAsFixed(0)}สัปดาห์';
+    } else if (day >= 30 && day < 365) {
+      month = day / 30;
+      dayString = '${month.toStringAsFixed(0)}เดือน';
+    } else if (day >= 365) {
+      year = day / 365;
+      dayString = '${year.toStringAsFixed(0)}ปี';
+    }
+    return dayString;
+  }
+
   double calculateTime(double distance) {
     double time;
     if (distance <= 1) {

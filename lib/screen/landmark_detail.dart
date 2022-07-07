@@ -19,6 +19,7 @@ import 'package:project/screen/google_map.dart';
 import 'package:project/screen/login.dart';
 import 'package:project/utility/alert_dialog.dart';
 import 'package:project/utility/myConstant.dart';
+import 'package:project/utility/my_api.dart';
 import 'package:project/utility/my_style.dart';
 import 'package:project/widgets/comment_listview.dart';
 import 'package:project/widgets/google_map_widget.dart';
@@ -42,6 +43,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
   LandmarkModel landmarkModel = LandmarkModel();
   CommentModel commentModel = CommentModel();
   List<CommentModel> commentModels = [];
+  List<String> commentdate = [];
   double screenwidth = 0;
   double screenhight = 0;
   int landmarkScore = 0;
@@ -61,6 +63,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
       email = '';
   int score = 0;
   String? textComment;
+  final textfieldControler = TextEditingController();
   bool isSendicon = false;
   bool isIconFaceColor = false;
 
@@ -76,6 +79,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
     // getLocation();
     readComment();
     delaydialog();
+    _refreshComment();
     debugPrint(landmarkModel.imageid.toString());
     // TODO: implement initState
     super.initState();
@@ -84,6 +88,19 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
   @override
   void dispose() {
     super.dispose();
+  }
+
+  _refreshComment() {
+    Timer timer = Timer.periodic(
+      const Duration(seconds: 60),
+      (Timer t) => setState(
+        () {
+          if (commentModel.userFirstName != null) {
+            readComment();
+          }
+        },
+      ),
+    );
   }
 
   void delaydialog() {
@@ -215,7 +232,8 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
       await Dio().post(urlcomment, data: getcomment).then((value) {
         var result = json.decode(value.data);
         debugPrint('data == $result');
-
+        commentModels.clear();
+        commentdate.clear();
         for (var map in result) {
           commentModel = CommentModel.fromJson(map);
           setState(
@@ -223,6 +241,13 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
               commentModels.add(commentModel);
               index++;
               isLoading = false;
+              if (commentModel.userFirstName != null) {
+                String date = MyApi().difference(commentModel.commentDate!);
+                commentdate.add(date);
+                debugPrint(
+                    'UserComment ========= ${commentModel.userFirstName}');
+                debugPrint('CommentDate ========= $date');
+              }
             },
           );
         }
@@ -265,6 +290,37 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
     });
   }
 
+  Future<void> addComment() async {
+    String urlFavorites = '${MyConstant().domain}/application/comment_post.php';
+    try {
+      FormData getFavorites = FormData.fromMap(
+        {
+          "Comment_detail": textComment,
+          "User_id": userid,
+          "Landmark_id": landmarkModel.landmarkId,
+        },
+      );
+      await Dio().post(urlFavorites, data: getFavorites).then((value) {
+        var result = json.decode(value.data);
+        debugPrint('Comment == $result');
+        String success = result['success'];
+        if (success == '1') {
+          setState(() {
+            readComment();
+          });
+        } else {
+          setState(() {
+            MyStyle().showdialog(context, 'ล้มเหลว', 'กรุณาลองใหม่อีกครั้ง');
+          });
+        }
+      });
+    } catch (error) {
+      debugPrint("ดาวน์โหลดไม่สำเร็จ: $error");
+      MyStyle().showdialog(
+          context, 'ล้มเหลว', 'ไม่พบการเชื่อมต่อเครือข่ายอินเตอร์เน็ต');
+    }
+  }
+
   Future _refreshData() async {
     setState(() {
       commentModels.clear();
@@ -284,6 +340,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
           builder: (context) {
             return StatefulBuilder(builder: (context, setState) {
               return Container(
+                color: Colors.white,
                 width: screenwidth,
                 // height: 90,
                 child: Row(
@@ -293,7 +350,6 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                     Expanded(
                       flex: 1,
                       child: Container(
-                        padding: EdgeInsets.only(top: 5),
                         child: IconButton(
                           onPressed: () {
                             setState(() {
@@ -312,7 +368,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                       flex: 7,
                       child: Container(
                         padding: const EdgeInsets.only(
-                            top: 5, bottom: 25, left: 5, right: 15),
+                            bottom: 25, left: 5, right: 15),
                         //width: screenwidth * 0.8,
                         // height: MediaQuery.of(context).viewInsets.top * 0.10,
                         color: Colors.white,
@@ -327,6 +383,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                           //   '$currentLength of $maxLength',
                           //   semanticsLabel: 'character count',
                           // ),
+                          controller: textfieldControler,
                           onChanged: (value) {
                             textComment = value.trim();
                             if (value.isNotEmpty) {
@@ -377,10 +434,10 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                             filled: true,
                             fillColor: Colors.grey.shade300,
                             prefixIcon: Icon(
-                                    Icons.sms_outlined,
-                                    color: Colors.black54,
-                                    size: screenwidth * 0.05,
-                                  ),
+                              Icons.sms_outlined,
+                              color: Colors.black54,
+                              size: screenwidth * 0.05,
+                            ),
                             contentPadding:
                                 const EdgeInsets.symmetric(vertical: 5.0),
                             hintStyle: TextStyle(
@@ -404,13 +461,42 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                     isSendicon
                         ? Expanded(
                             flex: 1,
-                            child: Container(
-                              padding: const EdgeInsets.only(
-                                  top: 10, bottom: 25, right: 5),
-                              child: Icon(
-                                Icons.send_rounded,
-                                size: screenwidth * 0.09,
-                                color: Colors.blue,
+                            child: InkWell(
+                              onTap: () {
+                                if (userid!.isEmpty) {
+                                  MyAlertDialog().showAlertDialog(
+                                    Icons.error_outline_outlined,
+                                    context,
+                                    'กรุณาเข้าสู่ระบบ',
+                                    'ไม่อนุญาติให้ผู้ใช้ที่ไม่ได้ลงทะเบียน เข้ามาแสดงความคิดเห็น',
+                                    'ตกลง',
+                                    () {
+                                      Navigator.pop(context);
+                                      MaterialPageRoute route =
+                                          MaterialPageRoute(
+                                        builder: (context) => const Login(),
+                                      );
+                                      Navigator.push(context, route)
+                                          .then((value) {});
+                                    },
+                                  );
+                                } else {
+                                  if (textComment!.isNotEmpty ||
+                                      textComment != '') {
+                                    addComment();
+                                    textfieldControler.clear();
+                                    isSendicon = false;
+                                  }
+                                }
+                              },
+                              child: Container(
+                                padding:
+                                    const EdgeInsets.only(top: 5, right: 5),
+                                child: Icon(
+                                  Icons.send_rounded,
+                                  size: screenwidth * 0.09,
+                                  color: Colors.blue,
+                                ),
                               ),
                             ),
                           )
@@ -631,6 +717,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                       commentModels: commentModels,
                       index: index,
                       moreComment: moreComment,
+                      commentdate: commentdate,
                     ),
           commentModels.length > 3
               ? SliverToBoxAdapter(
@@ -648,7 +735,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                                 margin:
                                     EdgeInsets.only(left: screenwidth * 0.16),
                                 width: screenwidth,
-                                color: Colors.grey.shade100,
+                                color: Colors.white,
                                 // child: const Center(
                                 //   widthFactor: 1,
                                 //   heightFactor: 2,
@@ -681,7 +768,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                                 margin:
                                     EdgeInsets.only(left: screenwidth * 0.16),
                                 width: screenwidth,
-                                color: Colors.grey.shade100,
+                                color: Colors.white,
                                 // child: const Center(
                                 //   widthFactor: 1,
                                 //   heightFactor: 2,
@@ -709,7 +796,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                 ),
           SliverToBoxAdapter(
             child: Container(
-              margin: EdgeInsets.only(bottom: screenhight * 0.1),
+              margin: EdgeInsets.only(bottom: screenhight * 0.11),
             ),
           )
         ],

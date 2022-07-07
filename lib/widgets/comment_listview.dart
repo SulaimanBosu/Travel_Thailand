@@ -4,11 +4,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:project/model/comment_model.dart';
+import 'package:project/utility/alert_dialog.dart';
 import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
 
 class CommentListview extends StatefulWidget {
   final List<CommentModel> commentModels;
+  final List<String> commentdate;
   final int index;
   final bool moreComment;
   const CommentListview({
@@ -16,6 +18,7 @@ class CommentListview extends StatefulWidget {
     required this.commentModels,
     required this.index,
     required this.moreComment,
+    required this.commentdate,
   }) : super(key: key);
 
   @override
@@ -25,6 +28,7 @@ class CommentListview extends StatefulWidget {
 class _CommentListviewState extends State<CommentListview> {
   late double screenwidth;
   late double screenhight;
+  List<bool> isLike = [];
 
   @override
   void initState() {
@@ -142,28 +146,122 @@ class _CommentListviewState extends State<CommentListview> {
                                     ),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.only(left: 5,bottom: 15,top: 2),
+                                    padding: const EdgeInsets.only(
+                                        left: 5, bottom: 15, top: 2),
                                     child: Row(
-                                      children: const [
-                                        Text(
-                                          'ถูกใจ',
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            color: Colors.black54,
-                                            fontSize: 12.0,
-                                          ),
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Text(
+                                              widget.commentdate[index],
+                                              overflow: TextOverflow.ellipsis,
+                                              style: const TextStyle(
+                                                decoration:
+                                                    TextDecoration.underline,
+                                                color: Colors.black54,
+                                                fontSize: 12.0,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: screenwidth * 0.025,
+                                            ),
+                                            InkWell(
+                                              onTap: () => setState(() {
+                                                if (widget.commentModels[index]
+                                                        .isLike ==
+                                                    true) {
+                                                  widget.commentModels[index]
+                                                      .isLike = false;
+                                                } else {
+                                                  widget.commentModels[index]
+                                                      .isLike = true;
+                                                }
+                                              }),
+                                              child: Text(
+                                                'ถูกใจ',
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(
+                                                  color: widget
+                                                              .commentModels[
+                                                                  index]
+                                                              .isLike ==
+                                                          true
+                                                      ? Colors.blue
+                                                      : Colors.black54,
+                                                  fontSize: 12.0,
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: screenwidth * 0.04,
+                                            ),
+                                            InkWell(
+                                              onTap: (() {
+                                                MyAlertDialog().showAlertDialog(
+                                                    Icons
+                                                        .delete_forever_outlined,
+                                                    context,
+                                                    'ลบ',
+                                                    'คุณต้องการลบความคิดเห็นใช่หรือไม่',
+                                                    'ตกลง',
+                                                    () {
+                                                      Navigator.pop(context);
+                                                    });
+                                              }),
+                                              child: const Text(
+                                                'ลบ',
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(
+                                                  color: Colors.black54,
+                                                  fontSize: 12.0,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        SizedBox(
-                                          width: 13,
-                                        ),
-                                        Text(
-                                          'ตอบกลับ',
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            color: Colors.black54,
-                                            fontSize: 12.0,
-                                          ),
-                                        ),
+
+                                        widget.commentModels[index].isLike ==
+                                                true
+                                            ? Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 10),
+                                                child: Row(
+                                                  children: [
+                                                    Container(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              right: 3),
+                                                      child: const Text(
+                                                        '1',
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: Colors.black54,
+                                                          fontSize: 12.0,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    CircleAvatar(
+                                                      radius:
+                                                          screenwidth * 0.018,
+                                                      backgroundColor:
+                                                          Colors.blue.shade600,
+                                                      child: Icon(
+                                                        Icons.thumb_up,
+                                                        color: Colors.white,
+                                                        size:
+                                                            screenwidth * 0.022,
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                              )
+                                            : Container(),
+
                                         // Text(
                                         //   widget.commentModels[index].commentDate
                                         //       .toString(),
