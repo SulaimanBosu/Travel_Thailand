@@ -205,10 +205,9 @@ class _CommentListviewState extends State<CommentListview> {
                                                     context,
                                                     'ลบ',
                                                     'คุณต้องการลบความคิดเห็นใช่หรือไม่',
-                                                    'ตกลง',
-                                                    () {
-                                                      Navigator.pop(context);
-                                                    });
+                                                    'ตกลง', () {
+                                                  Navigator.pop(context);
+                                                });
                                               }),
                                               child: const Text(
                                                 'ลบ',
