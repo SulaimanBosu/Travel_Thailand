@@ -70,7 +70,7 @@ class _LandmarkState extends State<Landmark> {
     Future.delayed(const Duration(milliseconds: 20000), () {
       if (isdata == false) {
         isLoading = false;
-
+        isdata = true;
         MyStyle().showdialog(
             context, 'ล้มเหลว', 'ดาวน์โหลดข้อมูลล้มเหลว กรุณาลองใหม่อีกครั้ง');
       }

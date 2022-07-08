@@ -22,7 +22,6 @@ import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_api.dart';
 import 'package:project/utility/my_style.dart';
 import 'package:project/widgets/comment_listview.dart';
-import 'package:project/widgets/google_map_widget.dart';
 import 'package:resize/resize.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -41,7 +40,8 @@ class LandmarkDetail extends StatefulWidget {
 }
 
 class _LandmarkDetailState extends State<LandmarkDetail> {
-  LandmarkModel landmarkModel = LandmarkModel();
+  List<LandmarkModel> landmarkProvince = [];
+  List<LandmarkModel> landmarktype = [];
   CommentModel commentModel = CommentModel();
   List<CommentModel> commentModels = [];
   List<String> commentdate = [];
@@ -50,6 +50,8 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
   int landmarkScore = 0;
   int index = 0;
   bool isLoading = true;
+  bool isProvinceLoading = true;
+  bool isTypeLoading = true;
   bool isFavorites = false;
   bool isLocation = false;
   bool moreComment = false;
@@ -73,15 +75,17 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
-    landmarkModel = widget.landmarkModel;
-    landmarkScore = landmarkModel.landmarkScore!;
-    debugPrint('latitude ============ ${landmarkModel.latitude.toString()}');
+    landmarkScore = widget.landmarkModel.landmarkScore!;
+    debugPrint(
+        'latitude ============ ${widget.landmarkModel.latitude.toString()}');
     getPreferences();
     // getLocation();
+    isLoad();
     readComment();
     delaydialog();
     _refreshComment();
-    debugPrint(landmarkModel.imageid.toString());
+    recommentlandmark();
+    debugPrint(widget.landmarkModel.imageid.toString());
     // TODO: implement initState
     super.initState();
   }
@@ -89,6 +93,77 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
   @override
   void dispose() {
     super.dispose();
+  }
+
+  isLoad() {
+    Future.delayed(const Duration(milliseconds: 5000), () {
+      if (landmarkProvince.isEmpty) {
+        setState(() {
+          isProvinceLoading = false;
+        });
+      }
+    });
+  }
+
+  Future<void> recommentlandmark() async {
+    String url = '${MyConstant().domain}/application/get_type.php';
+
+    FormData formDataProvince = FormData.fromMap(
+      {
+        "id": 'province',
+        "Province_name": widget.landmarkModel.provinceName,
+      },
+    );
+
+    try {
+      await Dio().post(url, data: formDataProvince).then((value) {
+        var result = json.decode(value.data);
+        //debugPrint('data == $result');
+        for (var map in result) {
+          LandmarkModel landmark = LandmarkModel.fromJson(map);
+          setState(
+            () {
+              if (landmark.landmarkId != widget.landmarkModel.landmarkId) {
+                landmarkProvince.add(landmark);
+                isProvinceLoading = false;
+              }
+            },
+          );
+        }
+      });
+
+      FormData formDatatype = FormData.fromMap(
+        {
+          "id": 'Type',
+          "Type": widget.landmarkModel.type,
+        },
+      );
+
+      await Dio().post(url, data: formDatatype).then((value) {
+        var result = json.decode(value.data);
+        //debugPrint('data == $result');
+        for (var map in result) {
+          LandmarkModel landmark = LandmarkModel.fromJson(map);
+          setState(
+            () {
+              if (landmark.landmarkId != widget.landmarkModel.landmarkId) {
+                landmarktype.add(landmark);
+                isTypeLoading = false;
+              }
+            },
+          );
+        }
+      });
+    } catch (error) {
+      debugPrint("ดาวน์โหลดไม่สำเร็จ: $error");
+      MyStyle().showdialog(
+          context, 'ล้มเหลว', 'ไม่พบการเชื่อมต่อเครือข่ายอินเตอร์เน็ต');
+      setState(
+        () {
+          isProvinceLoading = false;
+        },
+      );
+    }
   }
 
   _refreshComment() {
@@ -126,7 +201,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
           context,
           MaterialPageRoute(
             builder: (context) => GoogleMapScreen(
-              landmarkModel: landmarkModel,
+              landmarkModel: widget.landmarkModel,
               lat: lat,
               lng: lng,
               userId: userid!,
@@ -158,9 +233,9 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
     String urladdScore = '${MyConstant().domain}/application/post_score.php';
     FormData addscore = FormData.fromMap(
       {
-        "score_id": landmarkModel.landmarkId,
-        "User_id": landmarkModel.landmarkId,
-        "Landmark_id": landmarkModel.landmarkId,
+        "score_id": widget.landmarkModel.landmarkId,
+        "User_id": widget.landmarkModel.landmarkId,
+        "Landmark_id": widget.landmarkModel.landmarkId,
         "score": score.toString(),
       },
     );
@@ -207,7 +282,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
     FormData landmarkview = FormData.fromMap(
       {
         "User_id": userid,
-        "Landmark_id": landmarkModel.landmarkId,
+        "Landmark_id": widget.landmarkModel.landmarkId,
       },
     );
     await Dio().post(urllandmarkview, data: landmarkview).then((value) {
@@ -226,7 +301,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
     String urlcomment = '${MyConstant().domain}/application/get_comment.php';
     FormData getcomment = FormData.fromMap(
       {
-        "Landmark_id": landmarkModel.landmarkId,
+        "Landmark_id": widget.landmarkModel.landmarkId,
       },
     );
     try {
@@ -272,7 +347,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
       {
         "id": id,
         "User_id": userid,
-        "Landmark_id": landmarkModel.landmarkId,
+        "Landmark_id": widget.landmarkModel.landmarkId,
       },
     );
     await Dio().post(urlFavorites, data: getFavorites).then((value) {
@@ -298,7 +373,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
         {
           "Comment_detail": textComment,
           "User_id": userid,
-          "Landmark_id": landmarkModel.landmarkId,
+          "Landmark_id": widget.landmarkModel.landmarkId,
         },
       );
       await Dio().post(urlFavorites, data: getFavorites).then((value) {
@@ -325,9 +400,12 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
   Future _refreshData() async {
     setState(() {
       commentModels.clear();
+      landmarkProvince.clear();
+      landmarktype.clear();
       isLoading = true;
       index = 0;
       readComment();
+      recommentlandmark();
     });
   }
 
@@ -336,158 +414,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
     screenwidth = MediaQuery.of(context).size.width;
     screenhight = MediaQuery.of(context).size.height;
     return Scaffold(
-      bottomSheet: BottomSheet(
-          onClosing: () {},
-          builder: (context) {
-            return StatefulBuilder(builder: (context, setState) {
-              return Container(
-                color: Colors.white,
-                width: screenwidth,
-                // height: 90,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: Container(
-                        child: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              isSendicon = !isSendicon;
-                            });
-                          },
-                          icon: Icon(
-                            Icons.camera_alt_outlined,
-                            size: screenwidth * 0.08,
-                            color: Colors.black54,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 7,
-                      child: Container(
-                        padding: const EdgeInsets.only(
-                            bottom: 25, left: 5, right: 15),
-                        color: Colors.white,
-                        child: TextField(
-                          // buildCounter: (
-                          //   context, {
-                          //   currentLength = 0,
-                          //   isFocused = false,
-                          //   maxLength = 150,
-                          // }) =>
-                          //     Text(
-                          //   '$currentLength of $maxLength',
-                          //   semanticsLabel: 'character count',
-                          // ),
-                          controller: textfieldControler,
-                          onChanged: (value) {
-                            textComment = value.trim();
-                            if (value.isNotEmpty) {
-                              setState(() {
-                                isSendicon = true;
-                              });
-                            } else {
-                              setState(() {
-                                isSendicon = false;
-                              });
-                            }
-                          },
-                          maxLines: 5,
-                          minLines: 1,
-                          textAlignVertical: TextAlignVertical.center,
-                          style: TextStyle(
-                              overflow: TextOverflow.ellipsis,
-                              fontSize: screenwidth * 0.037),
-                          decoration: InputDecoration(
-                            suffixIcon: InkWell(
-                              onTap: () => setState(() {
-                                isIconFaceColor = !isIconFaceColor;
-                              }),
-                              child: Icon(
-                                Icons.tag_faces_outlined,
-                                color: isIconFaceColor
-                                    ? Colors.blue
-                                    : Colors.black45,
-                              ),
-                            ),
-                            filled: true,
-                            fillColor: Colors.grey.shade300,
-                            prefixIcon: Icon(
-                              Icons.sms_outlined,
-                              color: Colors.black54,
-                              size: screenwidth * 0.05,
-                            ),
-                            contentPadding:
-                                const EdgeInsets.symmetric(vertical: 5.0),
-                            hintStyle: TextStyle(
-                              overflow: TextOverflow.fade,
-                              fontSize: screenwidth * 0.03,
-                              color: Colors.black54,
-                            ),
-                            hintText: 'เขียนความคิดเห็น...',
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(40),
-                              borderSide: const BorderSide(color: Colors.white),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(40),
-                              borderSide: const BorderSide(color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    isSendicon
-                        ? Expanded(
-                            flex: 1,
-                            child: InkWell(
-                              onTap: () {
-                                if (userid!.isEmpty) {
-                                  MyAlertDialog().showAlertDialog(
-                                    Icons.error_outline_outlined,
-                                    context,
-                                    'กรุณาเข้าสู่ระบบ',
-                                    'ไม่อนุญาติให้ผู้ใช้ที่ไม่ได้ลงทะเบียน เข้ามาแสดงความคิดเห็น',
-                                    'ตกลง',
-                                    () {
-                                      Navigator.pop(context);
-                                      MaterialPageRoute route =
-                                          MaterialPageRoute(
-                                        builder: (context) => const Login(),
-                                      );
-                                      Navigator.push(context, route)
-                                          .then((value) {});
-                                    },
-                                  );
-                                } else {
-                                  if (textComment!.isNotEmpty ||
-                                      textComment != '') {
-                                    addComment();
-                                    textfieldControler.clear();
-                                    isSendicon = false;
-                                  }
-                                }
-                              },
-                              child: Container(
-                                padding:
-                                    const EdgeInsets.only(top: 5, right: 5),
-                                child: Icon(
-                                  Icons.send_rounded,
-                                  size: screenwidth * 0.09,
-                                  color: Colors.blue,
-                                ),
-                              ),
-                            ),
-                          )
-                        : const SizedBox.shrink()
-                  ],
-                ),
-              );
-            });
-          }),
+      bottomSheet: buildBottomSheet(),
       backgroundColor: Colors.white,
       body: isLocation
           ? Stack(
@@ -503,6 +430,159 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
             )
           : bodywidget(context),
     );
+  }
+
+  BottomSheet buildBottomSheet() {
+    return BottomSheet(
+        onClosing: () {},
+        builder: (context) {
+          return StatefulBuilder(builder: (context, setState) {
+            return Container(
+              color: Colors.white,
+              width: screenwidth,
+              // height: 90,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      child: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            isSendicon = !isSendicon;
+                          });
+                        },
+                        icon: Icon(
+                          Icons.camera_alt_outlined,
+                          size: screenwidth * 0.08,
+                          color: Colors.black54,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 7,
+                    child: Container(
+                      padding:
+                          const EdgeInsets.only(bottom: 25, left: 5, right: 15),
+                      color: Colors.white,
+                      child: TextField(
+                        // buildCounter: (
+                        //   context, {
+                        //   currentLength = 0,
+                        //   isFocused = false,
+                        //   maxLength = 150,
+                        // }) =>
+                        //     Text(
+                        //   '$currentLength of $maxLength',
+                        //   semanticsLabel: 'character count',
+                        // ),
+                        controller: textfieldControler,
+                        onChanged: (value) {
+                          textComment = value.trim();
+                          if (value.isNotEmpty) {
+                            setState(() {
+                              isSendicon = true;
+                            });
+                          } else {
+                            setState(() {
+                              isSendicon = false;
+                            });
+                          }
+                        },
+                        maxLines: 5,
+                        minLines: 1,
+                        textAlignVertical: TextAlignVertical.center,
+                        style: TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: screenwidth * 0.037),
+                        decoration: InputDecoration(
+                          suffixIcon: InkWell(
+                            onTap: () => setState(() {
+                              isIconFaceColor = !isIconFaceColor;
+                            }),
+                            child: Icon(
+                              Icons.tag_faces_outlined,
+                              color: isIconFaceColor
+                                  ? Colors.blue
+                                  : Colors.black45,
+                            ),
+                          ),
+                          filled: true,
+                          fillColor: Colors.grey.shade300,
+                          prefixIcon: Icon(
+                            Icons.sms_outlined,
+                            color: Colors.black54,
+                            size: screenwidth * 0.05,
+                          ),
+                          contentPadding:
+                              const EdgeInsets.symmetric(vertical: 5.0),
+                          hintStyle: TextStyle(
+                            overflow: TextOverflow.fade,
+                            fontSize: screenwidth * 0.03,
+                            color: Colors.black54,
+                          ),
+                          hintText: 'เขียนความคิดเห็น...',
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(40),
+                            borderSide: const BorderSide(color: Colors.white),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(40),
+                            borderSide: const BorderSide(color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  isSendicon
+                      ? Expanded(
+                          flex: 1,
+                          child: InkWell(
+                            onTap: () {
+                              if (userid!.isEmpty) {
+                                MyAlertDialog().showAlertDialog(
+                                  Icons.error_outline_outlined,
+                                  context,
+                                  'กรุณาเข้าสู่ระบบ',
+                                  'ไม่อนุญาติให้ผู้ใช้ที่ไม่ได้ลงทะเบียน เข้ามาแสดงความคิดเห็น',
+                                  'ตกลง',
+                                  () {
+                                    Navigator.pop(context);
+                                    MaterialPageRoute route = MaterialPageRoute(
+                                      builder: (context) => const Login(),
+                                    );
+                                    Navigator.push(context, route)
+                                        .then((value) {});
+                                  },
+                                );
+                              } else {
+                                if (textComment!.isNotEmpty ||
+                                    textComment != '') {
+                                  addComment();
+                                  textfieldControler.clear();
+                                  isSendicon = false;
+                                }
+                              }
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.only(top: 5, right: 5),
+                              child: Icon(
+                                Icons.send_rounded,
+                                size: screenwidth * 0.09,
+                                color: Colors.blue,
+                              ),
+                            ),
+                          ),
+                        )
+                      : const SizedBox.shrink()
+                ],
+              ),
+            );
+          });
+        });
   }
 
   Widget bodywidget(BuildContext context) {
@@ -525,151 +605,69 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
             ),
           ),
           information(),
-          SliverToBoxAdapter(
-            child: Column(
-              children: [
-                GoogleMapWidget(
-                  // lat: widget.lat,
-                  // lng: widget.lng,
-                  landmarkModel: landmarkModel,
-                ),
-                InkWell(
-                  onTap: () {
-                    if (lat == 0 && lng == 0) {
-                      setState(() {
-                        isLocation = true;
-                        getLocation();
-                      });
-                    } else {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => GoogleMapScreen(
-                            landmarkModel: landmarkModel,
-                            lat: lat,
-                            lng: lng,
-                            userId: userid!,
-                          ),
-                        ),
-                      ).then((value) {
-                        SystemChrome.setPreferredOrientations([
-                          DeviceOrientation.portraitUp,
-                        ]);
-                      });
-                    }
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: 10.0, right: 10, bottom: 10),
-                    child: Card(
-                      semanticContainer: true,
-                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                        side: const BorderSide(
-                          color: Colors.red,
-                        ),
-                      ),
-                      elevation: 5,
-                      child: Container(
-                        width: screenwidth,
-                        padding: const EdgeInsets.all(15.0),
-                        child: const Text(
-                          'เปิดแผนที่',
-                          textAlign: TextAlign.center,
-                        ),
+          isProvinceLoading
+              ? SliverToBoxAdapter(
+                  child: Container(
+                    width: screenwidth,
+                    height: 12.vh,
+                    child: const Center(
+                      child: CupertinoActivityIndicator(
+                        animating: true,
+                        radius: 15,
                       ),
                     ),
                   ),
                 )
-              ],
-            ),
-          ),
-          SliverToBoxAdapter(
-              child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Divider(
-                color: Colors.grey.shade200,
-                thickness: 10,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(
-                        top: 10, left: 10, right: 10, bottom: 5),
-                    child: Text(
-                      commentModel.userFirstName == null
-                          ? 'ความคิดเห็นทั้งหมด (0)'
-                          : 'ความคิดเห็นทั้งหมด (${commentModels.length})',
-                      style: TextStyle(
-                        color: Colors.black54,
-                        fontSize: 14.0.sp,
-                        fontFamily: 'FC-Minimal-Regular',
-                      ),
-                      textAlign: TextAlign.start,
-                    ),
+              : landmarkProvince.isEmpty
+                  ? SliverToBoxAdapter(
+                      child: Container(),
+                    )
+                  : buildListviewlandmark(landmarkProvince, index),
+          landmarktype.isEmpty
+              ? SliverToBoxAdapter(
+                  child: Container(),
+                )
+              : SliverToBoxAdapter(
+                  child: Container(
+                    width: screenwidth,
+                    height: 12.vh,
+                    child: landmarktype.isNotEmpty
+                        ? Column(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(bottom: 7.h, top: 7.h),
+                                child: Divider(
+                                  color: Colors.grey.shade200,
+                                  thickness: 1.0,
+                                ),
+                              ),
+                              Container(
+                                margin:
+                                    EdgeInsets.only(left: 20.w, bottom: 5.h),
+                                width: 100.vw,
+                                child: const Text(
+                                  'แหล่งท่องเที่ยวประเภทเดียวกัน',
+                                  style: TextStyle(color: Colors.black54),
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(bottom: 7.h, top: 7.h),
+                                child: Divider(
+                                  color: Colors.grey.shade200,
+                                  thickness: 1.0,
+                                ),
+                              ),
+                            ],
+                          )
+                        : Container(),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      right: 10,
-                    ),
-                    child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        fixedSize: const Size(130, 15),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      onPressed: () {
-                        if (userid!.isEmpty) {
-                          MyAlertDialog().showAlertDialog(
-                            Icons.error_outline_outlined,
-                            context,
-                            'กรุณาเข้าสู่ระบบ',
-                            'กรุณาเข้าสู่ระบบก่อนที่จะให้คะแนนแหล่งเที่ยว',
-                            'ตกลง',
-                            () {
-                              Navigator.pop(context);
-                              MaterialPageRoute route = MaterialPageRoute(
-                                builder: (context) => const Login(),
-                              );
-                              Navigator.push(context, route).then((value) {
-                                setState(() {
-                                  getPreferences();
-                                });
-                              });
-                            },
-                          );
-                        } else {
-                          _showAlertDialog(
-                            Icons.star_border_outlined,
-                            context,
-                            'ให้คะแนน',
-                          );
-                        }
-                      },
-                      child: Text(
-                        'ให้คะแนน',
-                        style: TextStyle(
-                          fontSize: 14.0.sp,
-                          color: Colors.black54,
-                          fontFamily: 'FC-Minimal-Regular',
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const Divider(
-                // indent: 10,
-                // endIndent: 10,
-                color: Colors.black12,
-                thickness: 1,
-              ),
-            ],
-          )),
+                ),
+          isTypeLoading
+              ? SliverToBoxAdapter(
+                  child: Container(),
+                )
+              : buildListviewlandmark(landmarktype, index),
+          commentBar(context),
           isLoading
               ? const SliverToBoxAdapter(
                   child: CupertinoActivityIndicator(
@@ -702,84 +700,390 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                       commentdate: commentdate,
                     ),
           commentModels.length > 3
-              ? SliverToBoxAdapter(
-                  child: moreComment
-                      ? Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                setState(() {
-                                  moreComment = false;
-                                });
-                              },
-                              child: Container(
-                                margin:
-                                    EdgeInsets.only(left: screenwidth * 0.16),
-                                width: screenwidth,
-                                color: Colors.white,
-                                // child: const Center(
-                                //   widthFactor: 1,
-                                //   heightFactor: 2,
-                                child: Text(
-                                  'ดูความคิดเห็นน้อยลง',
-                                  style: TextStyle(
-                                    decoration: TextDecoration.underline,
-                                    color: Colors.black45,
-                                    fontSize: 13.0.sp,
-                                    fontFamily: 'FC-Minimal-Regular',
-                                  ),
-                                ),
-                              ),
-                            ),
-                            // Divider(
-                            //   color: Colors.grey.shade200,
-                            //   thickness: 1,
-                            // ),
-                          ],
-                        )
-                      : Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                setState(() {
-                                  moreComment = true;
-                                });
-                              },
-                              child: Container(
-                                margin:
-                                    EdgeInsets.only(left: screenwidth * 0.16),
-                                width: screenwidth,
-                                color: Colors.white,
-                                // child: const Center(
-                                //   widthFactor: 1,
-                                //   heightFactor: 2,
-                                child: Text(
-                                  'ดูความคิดเห็นเพิ่มเติม...',
-                                  style: TextStyle(
-                                    color: Colors.red,
-                                    fontSize: 13.0.sp,
-                                    fontFamily: 'FC-Minimal-Regular',
-                                  ),
-                                ),
-                              ),
-                              // const Icon(Icons.arrow_drop_down),
-                            ),
-
-                            // Divider(
-                            //   color: Colors.grey.shade200,
-                            //   thickness: 1,
-                            // ),
-                          ],
-                        ),
-                )
+              ? commentMore()
               : SliverToBoxAdapter(
                   child: Container(),
                 ),
           SliverToBoxAdapter(
             child: Container(
               margin: EdgeInsets.only(bottom: screenhight * 0.11),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  SliverToBoxAdapter buildListviewlandmark(
+      List<LandmarkModel> listLandmark, int index) {
+    return SliverToBoxAdapter(
+      child: Container(
+        width: screenwidth,
+        height: 26.vh,
+        child: ListView.builder(
+          itemCount: listLandmark.length,
+          scrollDirection: Axis.horizontal,
+          itemBuilder: (context, index) {
+            return Container(
+              width: 40.vw,
+              //  height: 10 .vh,
+              margin: EdgeInsets.only(left: 1.5.vw, right: 1.5.vw),
+              child: GestureDetector(
+                onTap: () {
+                  debugPrint('you click index $index');
+                  MaterialPageRoute route = MaterialPageRoute(
+                    builder: (context) => LandmarkDetail(
+                      landmarkModel: listLandmark[index],
+                    ),
+                  );
+                  Navigator.push(context, route).then((value) {
+                    // readlandmark();
+                    // widget.getPreferences();
+                    SystemChrome.setPreferredOrientations([
+                      DeviceOrientation.portraitUp,
+                    ]);
+                  });
+                },
+                // ignore: avoid_unnecessary_containers
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  //  elevation: 5,
+                  //  color: Colors.grey[300],
+                  child: Column(
+                    // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Card(
+                        semanticContainer: true,
+                        clipBehavior: Clip.antiAliasWithSaveLayer,
+                        child: CachedNetworkImage(
+                          width: screenwidth,
+                          height: Platform.isIOS ? 14.vh : 16.vh,
+                          imageUrl: listLandmark[index].imagePath!,
+                          progressIndicatorBuilder:
+                              (context, url, downloadProgress) =>
+                                  MyStyle().showProgress(),
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.error),
+                          fit: BoxFit.cover,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                        ),
+                        elevation: 5,
+                        margin: const EdgeInsets.all(0),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 5, left: 10),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            MyStyle().mySizebox(),
+                            Text(
+                              listLandmark[index].landmarkName!,
+                              style: const TextStyle(
+                                color: Colors.black54,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14.0,
+                                fontFamily: 'FC-Minimal-Regular',
+                              ),
+                              textAlign: TextAlign.start,
+                            ),
+
+                            Text(
+                              'จังหวัด ${listLandmark[index].provinceName}',
+                              style: const TextStyle(
+                                color: Colors.black45,
+                                fontSize: 12.0,
+                                fontFamily: 'FC-Minimal-Regular',
+                              ),
+                            ),
+
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(Icons.star,
+                                        size: 15,
+                                        color: listLandmark[index]
+                                                    .landmarkScore! >=
+                                                1
+                                            ? Colors.orange
+                                            : Colors.grey),
+                                    Icon(Icons.star,
+                                        size: 15,
+                                        color: listLandmark[index]
+                                                    .landmarkScore! >=
+                                                2
+                                            ? Colors.orange
+                                            : Colors.grey),
+                                    Icon(Icons.star,
+                                        size: 15,
+                                        color: listLandmark[index]
+                                                    .landmarkScore! >=
+                                                3
+                                            ? Colors.orange
+                                            : Colors.grey),
+                                    Icon(Icons.star,
+                                        size: 15,
+                                        color: listLandmark[index]
+                                                    .landmarkScore! >=
+                                                4
+                                            ? Colors.orange
+                                            : Colors.grey),
+                                    Icon(Icons.star,
+                                        size: 15,
+                                        color: listLandmark[index]
+                                                    .landmarkScore! ==
+                                                5
+                                            ? Colors.orange
+                                            : Colors.grey),
+                                  ],
+                                ),
+                                Text(
+                                  'View ${listLandmark[index].landmarkView}',
+                                  style: const TextStyle(
+                                    color: Colors.black45,
+                                    fontSize: 12.0,
+                                    fontFamily: 'FC-Minimal-Regular',
+                                  ),
+                                ),
+                              ],
+                            ),
+                            //SizedBox(height: screenhight * 0.01,)
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  SliverToBoxAdapter commentMore() {
+    return SliverToBoxAdapter(
+      child: moreComment
+          ? Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                InkWell(
+                  onTap: () {
+                    setState(() {
+                      moreComment = false;
+                    });
+                  },
+                  child: Container(
+                    margin: EdgeInsets.only(left: screenwidth * 0.16),
+                    width: screenwidth,
+                    color: Colors.white,
+                    // child: const Center(
+                    //   widthFactor: 1,
+                    //   heightFactor: 2,
+                    child: Text(
+                      'ดูความคิดเห็นน้อยลง',
+                      style: TextStyle(
+                        decoration: TextDecoration.underline,
+                        color: Colors.black45,
+                        fontSize: 13.0.sp,
+                        fontFamily: 'FC-Minimal-Regular',
+                      ),
+                    ),
+                  ),
+                ),
+                // Divider(
+                //   color: Colors.grey.shade200,
+                //   thickness: 1,
+                // ),
+              ],
+            )
+          : Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                InkWell(
+                  onTap: () {
+                    setState(() {
+                      moreComment = true;
+                    });
+                  },
+                  child: Container(
+                    margin: EdgeInsets.only(left: screenwidth * 0.16),
+                    width: screenwidth,
+                    color: Colors.white,
+                    // child: const Center(
+                    //   widthFactor: 1,
+                    //   heightFactor: 2,
+                    child: Text(
+                      'ดูความคิดเห็นเพิ่มเติม...',
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 13.0.sp,
+                        fontFamily: 'FC-Minimal-Regular',
+                      ),
+                    ),
+                  ),
+                  // const Icon(Icons.arrow_drop_down),
+                ),
+
+                // Divider(
+                //   color: Colors.grey.shade200,
+                //   thickness: 1,
+                // ),
+              ],
+            ),
+    );
+  }
+
+  SliverToBoxAdapter commentBar(BuildContext context) {
+    return SliverToBoxAdapter(
+        child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Divider(
+          color: Colors.grey.shade200,
+          thickness: 10,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              margin: const EdgeInsets.only(
+                  top: 10, left: 10, right: 10, bottom: 5),
+              child: Text(
+                commentModel.userFirstName == null
+                    ? 'ความคิดเห็นทั้งหมด (0)'
+                    : 'ความคิดเห็นทั้งหมด (${commentModels.length})',
+                style: TextStyle(
+                  color: Colors.black54,
+                  fontSize: 14.0.sp,
+                  fontFamily: 'FC-Minimal-Regular',
+                ),
+                textAlign: TextAlign.start,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                right: 10,
+              ),
+              child: OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  fixedSize: const Size(130, 15),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                onPressed: () {
+                  if (userid!.isEmpty) {
+                    MyAlertDialog().showAlertDialog(
+                      Icons.error_outline_outlined,
+                      context,
+                      'กรุณาเข้าสู่ระบบ',
+                      'กรุณาเข้าสู่ระบบก่อนที่จะให้คะแนนแหล่งเที่ยว',
+                      'ตกลง',
+                      () {
+                        Navigator.pop(context);
+                        MaterialPageRoute route = MaterialPageRoute(
+                          builder: (context) => const Login(),
+                        );
+                        Navigator.push(context, route).then((value) {
+                          setState(() {
+                            getPreferences();
+                          });
+                        });
+                      },
+                    );
+                  } else {
+                    _showAlertDialog(
+                      Icons.star_border_outlined,
+                      context,
+                      'ให้คะแนน',
+                    );
+                  }
+                },
+                child: Text(
+                  'ให้คะแนน',
+                  style: TextStyle(
+                    fontSize: 14.0.sp,
+                    color: Colors.black54,
+                    fontFamily: 'FC-Minimal-Regular',
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        const Divider(
+          // indent: 10,
+          // endIndent: 10,
+          color: Colors.black12,
+          thickness: 1,
+        ),
+      ],
+    ));
+  }
+
+  SliverToBoxAdapter openGoogleButton(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Column(
+        children: [
+          // GoogleMapWidget(
+          //   // lat: widget.lat,
+          //   // lng: widget.lng,
+          //   landmarkModel: landmarkModel,
+          // ),
+          InkWell(
+            onTap: () {
+              if (lat == 0 && lng == 0) {
+                setState(() {
+                  isLocation = true;
+                  getLocation();
+                });
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => GoogleMapScreen(
+                      landmarkModel: widget.landmarkModel,
+                      lat: lat,
+                      lng: lng,
+                      userId: userid!,
+                    ),
+                  ),
+                ).then((value) {
+                  SystemChrome.setPreferredOrientations([
+                    DeviceOrientation.portraitUp,
+                  ]);
+                });
+              }
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(left: 10.0, right: 10, bottom: 10),
+              child: Card(
+                semanticContainer: true,
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                  side: const BorderSide(
+                    color: Colors.red,
+                  ),
+                ),
+                elevation: 5,
+                child: Container(
+                  width: screenwidth,
+                  padding: const EdgeInsets.all(15.0),
+                  child: const Text(
+                    'เปิดแผนที่',
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
             ),
           )
         ],
@@ -829,7 +1133,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                   ),
                   MyStyle().mySizebox(),
                   Text(
-                    '\t\t\t\t${landmarkModel.landmarkDetail!}',
+                    '\t\t\t\t${widget.landmarkModel.landmarkDetail!}',
                     style: const TextStyle(
                       color: Colors.black54,
                       fontSize: 18.0,
@@ -840,52 +1144,124 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 10, top: 10),
-              child: Divider(
-                color: Colors.grey.shade200,
-                thickness: 10.0,
+            InkWell(
+              onTap: () {
+                if (lat == 0 && lng == 0) {
+                  setState(() {
+                    isLocation = true;
+                    getLocation();
+                  });
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => GoogleMapScreen(
+                        landmarkModel: widget.landmarkModel,
+                        lat: lat,
+                        lng: lng,
+                        userId: userid!,
+                      ),
+                    ),
+                  ).then((value) {
+                    SystemChrome.setPreferredOrientations([
+                      DeviceOrientation.portraitUp,
+                    ]);
+                  });
+                }
+              },
+              child: Padding(
+                padding:
+                    const EdgeInsets.only(left: 10.0, right: 10, bottom: 10),
+                child: Card(
+                  semanticContainer: true,
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                    side: const BorderSide(
+                      color: Colors.black54,
+                    ),
+                  ),
+                  elevation: 5,
+                  child: Container(
+                    width: screenwidth,
+                    padding: const EdgeInsets.all(15.0),
+                    child: const Text(
+                      'ดูในแผนที่',
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 20.0, right: 10, bottom: 10),
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.location_on,
-                    color: Colors.redAccent,
-                    size: 15,
-                  ),
-                  Text(
-                    ' ตำบล ${landmarkModel.districtName!}\t',
-                    style: const TextStyle(
-                      color: Colors.black54,
-                      fontSize: 14.0,
-                      fontFamily: 'FC-Minimal-Regular',
+            landmarkProvince.isEmpty
+                ? Container()
+                : Padding(
+                    padding: const EdgeInsets.only(bottom: 10, top: 10),
+                    child: Divider(
+                      color: Colors.grey.shade200,
+                      thickness: 10.0,
                     ),
-                    textAlign: TextAlign.left,
                   ),
-                  Text(
-                    ' อำเภอ ${landmarkModel.amphurName!}\t',
-                    style: const TextStyle(
-                      color: Colors.black54,
-                      fontSize: 14.0,
-                      fontFamily: 'FC-Minimal-Regular',
-                    ),
-                    textAlign: TextAlign.left,
-                  ),
-                  Text(
-                    ' จังหวัด ${landmarkModel.provinceName!}\t',
-                    style: const TextStyle(
-                      color: Colors.black54,
-                      fontSize: 14.0,
-                      fontFamily: 'FC-Minimal-Regular',
-                    ),
-                    textAlign: TextAlign.left,
-                  ),
-                ],
-              ),
-            ),
+            // Padding(
+            //   padding: EdgeInsets.only(left: 20.0, right: 10, bottom: 5.h),
+            //   child: Row(
+            //     children: [
+            //       const Icon(
+            //         Icons.location_on,
+            //         color: Colors.redAccent,
+            //         size: 15,
+            //       ),
+            //       Text(
+            //         ' ตำบล ${landmarkModel.districtName!}\t',
+            //         style:  TextStyle(
+            //           color: Colors.black54,
+            //           fontSize: 14.0 .sp,
+            //           fontFamily: 'FC-Minimal-Regular',
+            //         ),
+            //         textAlign: TextAlign.left,
+            //       ),
+            //       Text(
+            //         ' อำเภอ ${landmarkModel.amphurName!}\t',
+            //         style:  TextStyle(
+            //           color: Colors.black54,
+            //           fontSize: 14.0 .sp,
+            //           fontFamily: 'FC-Minimal-Regular',
+            //         ),
+            //         textAlign: TextAlign.left,
+            //       ),
+            //       Text(
+            //         ' จังหวัด ${landmarkModel.provinceName!}\t',
+            //         style:  TextStyle(
+            //           color: Colors.black54,
+            //           fontSize: 14.0 .sp,
+            //           fontFamily: 'FC-Minimal-Regular',
+            //         ),
+            //         textAlign: TextAlign.left,
+            //       ),
+            //     ],
+            //   ),
+            // ),
+            landmarkProvince.isNotEmpty
+                ? Column(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(left: 20.w, bottom: 5.h),
+                        width: 100.vw,
+                        child: const Text(
+                          'แหล่งท่องเที่ยวจังหวัดเดียวกัน',
+                          style: TextStyle(color: Colors.black54),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 7.h, top: 7.h),
+                        child: Divider(
+                          color: Colors.grey.shade200,
+                          thickness: 1.0,
+                        ),
+                      ),
+                    ],
+                  )
+                : Container(),
           ],
         ),
       ),
@@ -895,7 +1271,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
   Widget screenwidget(BuildContext context) {
     return Stack(
       children: [
-        showImage(context, landmarkModel.imagePath!),
+        showImage(context, widget.landmarkModel.imagePath!),
         SafeArea(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1064,7 +1440,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      landmarkModel.landmarkName!,
+                      widget.landmarkModel.landmarkName!,
                       style: const TextStyle(
                         color: Colors.black54,
                         fontWeight: FontWeight.bold,
@@ -1074,7 +1450,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                       textAlign: TextAlign.left,
                     ),
                     Text(
-                      'จังหวัด ${landmarkModel.provinceName!}',
+                      'จังหวัด ${widget.landmarkModel.provinceName!}',
                       style: const TextStyle(
                         color: Colors.black54,
                         //fontWeight: FontWeight.bold,
@@ -1100,7 +1476,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
           context,
           MaterialPageRoute(
             builder: (context) => FullImage(
-              landmarkId: landmarkModel.landmarkId!,
+              landmarkId: widget.landmarkModel.landmarkId!,
             ),
           ),
         ).then((value) {
@@ -1141,14 +1517,15 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
         path: '/maps/search/',
         queryParameters: {
           'api': '1',
-          'query': '${landmarkModel.latitude},${landmarkModel.longitude}',
+          'query':
+              '${widget.landmarkModel.latitude},${widget.landmarkModel.longitude}',
         },
       );
-      Uint8List bytes =
-          (await NetworkAssetBundle(Uri.parse("${landmarkModel.imagePath}"))
-                  .load("${landmarkModel.imagePath}"))
-              .buffer
-              .asUint8List();
+      Uint8List bytes = (await NetworkAssetBundle(
+                  Uri.parse("${widget.landmarkModel.imagePath}"))
+              .load("${widget.landmarkModel.imagePath}"))
+          .buffer
+          .asUint8List();
       Directory? directory;
       if (Platform.isAndroid) {
         directory = await getExternalStorageDirectory();
@@ -1160,9 +1537,10 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
           .writeAsBytes(bytes, mode: FileMode.write);
       debugPrint('path ========>>> ${file.path.toString()}');
       await FlutterShare.shareFile(
-        title: 'สถานที่ท่องเที่ยวของจังหวัด:${landmarkModel.provinceName}',
+        title:
+            'สถานที่ท่องเที่ยวของจังหวัด:${widget.landmarkModel.provinceName}',
         text:
-            'มีสถานที่ท่องเที่ยวสวยๆมากมาย อย่างเช่น${landmarkModel.landmarkName}\n\t\t\t${landmarkModel.landmarkDetail}\n\nพิกัด : ตำบล${landmarkModel.districtName}\t\tอำเภอ${landmarkModel.amphurName}\t\tจังหวัด${landmarkModel.provinceName}\nที่มา :Application Travel Thailand\nLocation : ${googlemapsUri.toString()}\n',
+            'มีสถานที่ท่องเที่ยวสวยๆมากมาย อย่างเช่น${widget.landmarkModel.landmarkName}\n\t\t\t${widget.landmarkModel.landmarkDetail}\n\nพิกัด : ตำบล${widget.landmarkModel.districtName}\t\tอำเภอ${widget.landmarkModel.amphurName}\t\tจังหวัด${widget.landmarkModel.provinceName}\nที่มา :Application Travel Thailand\nLocation : ${googlemapsUri.toString()}\n',
         chooserTitle: 'แชร์',
         filePath: file.path,
         fileType: 'image/jpg',

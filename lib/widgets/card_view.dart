@@ -8,6 +8,7 @@ import 'package:location/location.dart';
 import 'package:project/model/landmark_model.dart';
 import 'package:project/screen/landmark_detail.dart';
 import 'package:project/utility/my_style.dart';
+import 'package:resize/resize.dart';
 
 class CardView extends StatefulWidget {
   final LandmarkModel landmarkModel;
@@ -69,10 +70,10 @@ class _CardViewState extends State<CardView> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0),
           ),
-        //  elevation: 5,
-        //  color: Colors.grey[300],
+          //  elevation: 5,
+          //  color: Colors.grey[300],
           child: Column(
-           // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               showImage(context, imageURL),
               Padding(
@@ -169,7 +170,8 @@ class _CardViewState extends State<CardView> {
       clipBehavior: Clip.antiAliasWithSaveLayer,
       child: CachedNetworkImage(
         width: screenwidth,
-        height: Platform.isIOS ? screenhight * 0.14 : screenhight * 0.14,
+        height: 16.vh,
+        // height: Platform.isIOS ? screenhight * 0.14 : screenhight * 0.14,
         imageUrl: imageURL,
         progressIndicatorBuilder: (context, url, downloadProgress) =>
             MyStyle().showProgress(),

@@ -1,6 +1,15 @@
+import 'dart:convert';
 import 'dart:math';
 
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:project/model/landmark_model.dart';
+import 'package:project/utility/myConstant.dart';
+import 'package:project/utility/my_style.dart';
+import 'package:project/widgets/card_view.dart';
+
+typedef StringVoidFunc = void Function(String);
+typedef BoolVoidFunc = void Function(bool);
 
 class MyApi {
   double calculateDistance(double lat1, double lng1, double lat2, double lng2) {
@@ -52,7 +61,7 @@ class MyApi {
       dayString = 'เมื่อวานนี้';
     } else if (day >= 2 && day < 7) {
       dayString = '${day.toStringAsFixed(0)}วัน';
-    }else if (day >= 7 && day < 30) {
+    } else if (day >= 7 && day < 30) {
       week = day / 7;
       dayString = '${week.toStringAsFixed(0)}สัปดาห์';
     } else if (day >= 30 && day < 365) {
@@ -75,6 +84,58 @@ class MyApi {
       time = ((((distance - 1).round() * 2)) / 60);
     }
     return time;
+  }
+
+  List<Widget> getlandmark(BuildContext context, String pathUrl,
+      BoolVoidFunc isLoading)  {
+    int index = 0;
+    List<Widget> landmarks = [];
+    try {
+       Dio().get(pathUrl).then((value) {
+        var result = json.decode(value.data);
+        //debugPrint('Value == $result');
+        for (var map in result) {
+          LandmarkModel landmark = LandmarkModel.fromJson(map);
+          landmarks.add(CardView(
+            landmarkModel: landmark,
+            index: index,
+            readlandmark: () {},
+            getPreferences: () {
+            //  onRefresh();
+            },
+          ));
+          index++;
+          
+          isLoading(false);
+        }
+      });
+    } catch (error) {
+      debugPrint("ดาวน์โหลดไม่สำเร็จ: $error");
+      MyStyle().showdialog(
+          context, 'ล้มเหลว', 'ไม่พบการเชื่อมต่อเครือข่ายอินเตอร์เน็ต');
+    }
+    return landmarks;
+  }
+
+  Future<List> postlandmark(
+      BuildContext context, String pathUrl, FormData formData) async {
+    List<LandmarkModel> landmarks = [];
+
+    try {
+      await Dio().post(pathUrl, data: formData).then((value) {
+        var result = json.decode(value.data);
+        //debugPrint('data == $result');
+        for (var map in result) {
+          LandmarkModel landmark = LandmarkModel.fromJson(map);
+          landmarks.add(landmark);
+        }
+      });
+    } catch (error) {
+      debugPrint("ดาวน์โหลดไม่สำเร็จ: $error");
+      MyStyle().showdialog(
+          context, 'ล้มเหลว', 'ไม่พบการเชื่อมต่อเครือข่ายอินเตอร์เน็ต');
+    }
+    return landmarks;
   }
 
   MyApi();

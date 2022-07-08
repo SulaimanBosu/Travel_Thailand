@@ -102,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
     profile = preferences.getString('Image_profile')!;
   }
 
-  BottomNavigationBarItem recommend() {
+  BottomNavigationBarItem homePage() {
     return const BottomNavigationBarItem(
       icon: Icon(
         Icons.recommend_outlined,
@@ -207,7 +207,7 @@ class _HomeScreenState extends State<HomeScreen> {
           });
         },
         items: <BottomNavigationBarItem>[
-          recommend(),
+          homePage(),
           popular(),
           favorites(),
           allLandmark(),
