@@ -18,6 +18,7 @@ import 'package:project/utility/alert_dialog.dart';
 import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
 import 'package:project/widgets/popover.dart';
+import 'package:resize/resize.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Listview extends StatefulWidget {
@@ -125,7 +126,7 @@ class _ListviewState extends State<Listview> {
                 ),
                 child: Container(
                   width: screenwidth,
-                  height: screenhight * 0.16,
+                  height: 14.vh,
                   decoration: index % 2 == 0
                       ? const BoxDecoration(color: Colors.white)
                       : BoxDecoration(color: Colors.grey[50]),
@@ -154,7 +155,7 @@ class _ListviewState extends State<Listview> {
                             padding: const EdgeInsetsDirectional.only(
                                 start: 0.0, end: 0.0),
                             width: MediaQuery.of(context).size.width * 0.4,
-                            height: MediaQuery.of(context).size.height * 0.15,
+                            height: 14.vh,
                             child: Container(
                               child: Card(
                                 semanticContainer: true,
@@ -180,8 +181,8 @@ class _ListviewState extends State<Listview> {
                           Container(
                             //  padding: EdgeInsetsDirectional.only(start: 5.0, end: 5.0),
                             //   padding: EdgeInsets.all(5.0),
-                            width: MediaQuery.of(context).size.width * 0.488,
-                            height: MediaQuery.of(context).size.width * 0.25,
+                            width: 57.vw,
+                            height: 15.vh,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
@@ -256,11 +257,12 @@ class _ListviewState extends State<Listview> {
                                     Expanded(
                                       flex: 3,
                                       child: Text(
+                                        // '234} Km. | (24hr.)',
                                         '${widget.distances[index]} Km. | (${widget.times[index].toStringAsFixed(2)}hr.)',
                                         //overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           color: Colors.red,
-                                          fontSize: 10.0,
+                                          fontSize: 9.0.sp,
                                           fontFamily: 'FC-Minimal-Regular',
                                         ),
                                       ),
@@ -270,9 +272,9 @@ class _ListviewState extends State<Listview> {
                                       child: Text(
                                         'View ${widget.landmarkModel[index].landmarkView}',
                                         //overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           color: Colors.black54,
-                                          fontSize: 10.0,
+                                          fontSize: 9.0.sp,
                                           fontFamily: 'FC-Minimal-Regular',
                                         ),
                                         textAlign: TextAlign.end,
@@ -289,15 +291,16 @@ class _ListviewState extends State<Listview> {
                                 //   ),
                                 // ),
                                 Expanded(
-                                  flex: 2,
+                                  //flex: 1,
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      OutlinedButton.icon(
+                                      OutlinedButton(
                                         style: OutlinedButton.styleFrom(
-                                          //  fixedSize: const Size(100, 10),
+                                          //    fixedSize: const Size(100, 10),
+                                          minimumSize: Size(27.vw, 8.vw),
                                           maximumSize: Size(screenwidth / 3.7,
-                                              screenhight / 10),
+                                              screenwidth / 10),
                                         ),
                                         onPressed: () {
                                           debugPrint(
@@ -320,30 +323,34 @@ class _ListviewState extends State<Listview> {
                                             ]);
                                           });
                                         },
-                                        icon: const Icon(
-                                          Icons.location_on,
-                                          color: Colors.red,
-                                          size: 15,
-                                        ),
-                                        label: const Text(
-                                          'รายระเอียด',
-                                          style: TextStyle(
-                                            color: Colors.black54,
-                                            fontSize: 12.0,
-                                            fontFamily: 'FC-Minimal-Regular',
+                                        child: Row(children: [
+                                          Icon(
+                                            Icons.location_on,
+                                            color: Colors.red,
+                                            size: 15.sp,
                                           ),
-                                        ),
+                                          const SizedBox(
+                                            width: 3,
+                                          ),
+                                          Text(
+                                            'รายระเอียด',
+                                            style: TextStyle(
+                                              color: Colors.black54,
+                                              fontSize: 12.0.sp,
+                                              fontFamily: 'FC-Minimal-Regular',
+                                            ),
+                                          ),
+                                        ]),
                                       ),
                                       const SizedBox(
                                         width: 3,
                                       ),
                                       OutlinedButton.icon(
                                         style: OutlinedButton.styleFrom(
-                                          fixedSize: const Size(80, 10),
-                                          // maximumSize: Size(screenwidth / 4.5,
-                                          //     screenhight / 15),
+                                          // fixedSize: const Size(80, 10),
+                                          minimumSize: Size(27.vw, 8.vw),
                                           maximumSize: Size(screenwidth / 3.7,
-                                              screenhight / 10),
+                                              screenwidth / 10),
                                         ),
                                         onPressed: () {
                                           if (widget.userId.isEmpty) {
@@ -382,11 +389,11 @@ class _ListviewState extends State<Listview> {
                                           Icons.navigation_outlined,
                                           size: 15,
                                         ),
-                                        label: const Text(
+                                        label: Text(
                                           'นำทาง',
                                           style: TextStyle(
                                             color: Colors.red,
-                                            fontSize: 12.0,
+                                            fontSize: 12.0.sp,
                                             fontFamily: 'FC-Minimal-Regular',
                                           ),
                                         ),
@@ -397,17 +404,17 @@ class _ListviewState extends State<Listview> {
                               ],
                             ),
                           ),
-                          Expanded(
-                            child: IconButton(
-                              icon: const Icon(
-                                Icons.favorite_border_rounded,
-                                color: Colors.black45,
-                                //size: 15,
-                              ),
-                              // ignore: unnecessary_statements
-                              onPressed: () {},
-                            ),
-                          ),
+                          // Expanded(
+                          //   child: IconButton(
+                          //     icon: const Icon(
+                          //       Icons.favorite_border_rounded,
+                          //       color: Colors.black45,
+                          //       //size: 15,
+                          //     ),
+                          //     // ignore: unnecessary_statements
+                          //     onPressed: () {},
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),

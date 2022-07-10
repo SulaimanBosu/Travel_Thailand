@@ -16,6 +16,7 @@ import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
 import 'package:project/widgets/popover.dart';
 import 'package:project/widgets/popup_menu.dart';
+import 'package:resize/resize.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class EditProfile extends StatefulWidget {
@@ -379,7 +380,7 @@ class _EditProfileState extends State<EditProfile> {
       children: [
         Container(
           margin: EdgeInsetsDirectional.only(
-              start: 30.0, end: 30.0, bottom: screenHight * 0.12),
+              start: 10.0, end: 10.0, bottom: screenHight * 0.12),
           width: MediaQuery.of(context).size.width * 1,
           height: MediaQuery.of(context).size.height * 0.25,
           child: Card(
@@ -430,8 +431,8 @@ class _EditProfileState extends State<EditProfile> {
               ),
             )),
           ),
-          right: 50,
-          top: screenHight * 0.185,
+          right: 7 .vw,
+          bottom: 14 .vh,
         ),
       ],
     );

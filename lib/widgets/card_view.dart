@@ -85,10 +85,10 @@ class _CardViewState extends State<CardView> {
                     MyStyle().mySizebox(),
                     Text(
                       widget.landmarkModel.landmarkName!,
-                      style: const TextStyle(
+                      style:  TextStyle(
                         color: Colors.black54,
                         fontWeight: FontWeight.bold,
-                        fontSize: 14.0,
+                        fontSize: 14.0 .sp,
                         fontFamily: 'FC-Minimal-Regular',
                       ),
                       textAlign: TextAlign.start,
@@ -96,9 +96,9 @@ class _CardViewState extends State<CardView> {
 
                     Text(
                       'จังหวัด ${widget.landmarkModel.provinceName}',
-                      style: const TextStyle(
+                      style:  TextStyle(
                         color: Colors.black45,
-                        fontSize: 12.0,
+                        fontSize: 12.0 .sp,
                         fontFamily: 'FC-Minimal-Regular',
                       ),
                     ),
@@ -145,9 +145,9 @@ class _CardViewState extends State<CardView> {
                         // ),
                         Text(
                           'View ${widget.landmarkModel.landmarkView}',
-                          style: const TextStyle(
+                          style:  TextStyle(
                             color: Colors.black45,
-                            fontSize: 12.0,
+                            fontSize: 10.0 .sp,
                             fontFamily: 'FC-Minimal-Regular',
                           ),
                         ),
@@ -170,7 +170,7 @@ class _CardViewState extends State<CardView> {
       clipBehavior: Clip.antiAliasWithSaveLayer,
       child: CachedNetworkImage(
         width: screenwidth,
-        height: 16.vh,
+        height: 29.vw,
         // height: Platform.isIOS ? screenhight * 0.14 : screenhight * 0.14,
         imageUrl: imageURL,
         progressIndicatorBuilder: (context, url, downloadProgress) =>

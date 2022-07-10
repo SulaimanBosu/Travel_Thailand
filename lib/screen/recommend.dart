@@ -1,20 +1,20 @@
 // ignore_for_file: sized_box_for_whitespace, avoid_unnecessary_containers
 
 import 'dart:convert';
-import 'dart:html';
+import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_slider/carousel_controller.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:location/location.dart';
 import 'package:project/model/landmark_model.dart';
 import 'package:project/model/province_model.dart';
 import 'package:project/screen/landmark_detail.dart';
 import 'package:project/utility/myConstant.dart';
-import 'package:project/utility/my_api.dart';
 import 'package:project/utility/my_style.dart';
+import 'package:project/widgets/buildListview_landmark.dart';
 import 'package:project/widgets/card_view.dart';
 import 'package:project/widgets/drawer.dart';
 import 'package:project/widgets/search.dart';
@@ -78,12 +78,12 @@ class _RecommendState extends State<Recommend> {
   Future<void> recommentlandmark() async {
     String url = '${MyConstant().domain}/application/get_type.php';
 
-    FormData formDataProvince = FormData.fromMap(
-      {
-        "id": 'province',
-        "Province_name": landmark.provinceName,
-      },
-    );
+    // FormData formDataProvince = FormData.fromMap(
+    //   {
+    //     "id": 'province',
+    //     "Province_name": landmark.provinceName,
+    //   },
+    // );
 
     try {
       // await Dio().post(url, data: formDataProvince).then((value) {
@@ -105,20 +105,18 @@ class _RecommendState extends State<Recommend> {
       FormData formDatatype = FormData.fromMap(
         {
           "id": 'Type',
-          "Type": landmark.type,
+          "Type": 'ภูเขา',
         },
       );
 
       await Dio().post(url, data: formDatatype).then((value) {
         var result = json.decode(value.data);
-        //debugPrint('data == $result');
+        debugPrint('landmarktype == $result');
         for (var map in result) {
           LandmarkModel landmark = LandmarkModel.fromJson(map);
           setState(
             () {
-              if (landmark.landmarkId != landmark.landmarkId) {
-                landmarktype.add(landmark);
-              }
+              landmarktype.add(landmark);
             },
           );
         }
@@ -169,7 +167,7 @@ class _RecommendState extends State<Recommend> {
     try {
       await Dio().get(url).then((value) {
         var result = json.decode(value.data);
-        debugPrint('Value == $result');
+        // debugPrint('Value == $result');
         for (var map in result) {
           landmark = LandmarkModel.fromJson(map);
           setState(
@@ -279,14 +277,13 @@ class _RecommendState extends State<Recommend> {
                 : SliverToBoxAdapter(
                     child: Container(
                       width: MediaQuery.of(context).size.width,
-                      height: 30.vh,
+                      height: 70.vw,
                       child: buildHead(),
                     ),
                   ),
             // !isLoading
             //     ? SliverToBoxAdapter(
             //         child: Container(
-
             //           margin: EdgeInsets.only(top: 4.vh, bottom: 4.vh),
             //           child: Divider(
             //             color: Colors.grey.shade200,
@@ -297,11 +294,11 @@ class _RecommendState extends State<Recommend> {
             //     : SliverToBoxAdapter(
             //         child: Container(),
             //       ),
-            landmarktype.isNotEmpty
+            !isLoading
                 ? SliverToBoxAdapter(
                     child: Container(
                         width: screenwidth,
-                        height: 12.vh,
+                       height: 8.vh,
                         child: Column(
                           children: [
                             Padding(
@@ -312,32 +309,29 @@ class _RecommendState extends State<Recommend> {
                               ),
                             ),
                             Container(
-                              margin: EdgeInsets.only(left: 20.w, bottom: 5.h),
-                              width: 100.vw,
-                              child: const Text(
-                                'แหล่งท่องเที่ยวประเภทเดียวกัน',
-                                style: TextStyle(color: Colors.black54),
+                                margin:
+                                    EdgeInsets.only(left: 20.w, bottom: 1.0.vh),
+                                width: 100.vw,
+                                child: const Text(
+                                  'แหล่งท่องเที่ยวประเภทเดียวกัน',
+                                  style: TextStyle(color: Colors.black54),
+                                ),
                               ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(bottom: 7.h, top: 7.h),
-                              child: Divider(
-                                color: Colors.grey.shade200,
-                                thickness: 1.0,
-                              ),
-                            ),
+                           
                           ],
                         )),
                   )
                 : SliverToBoxAdapter(
                     child: Container(),
                   ),
-
-            landmarktype.isNotEmpty
+            landmarktype.isEmpty
                 ? SliverToBoxAdapter(
                     child: Container(),
                   )
-                : buildListviewlandmark(landmarktype, index),
+                : BuildListviewLandmark(
+                    screenwidth: screenwidth,
+                    listLandmark: landmarktype,
+                    index: index),
             isLoading
                 ? SliverToBoxAdapter(
                     child: Container(
@@ -506,153 +500,5 @@ class _RecommendState extends State<Recommend> {
               );
             },
           );
-  }
-
-  SliverToBoxAdapter buildListviewlandmark(
-      List<LandmarkModel> listLandmark, int index) {
-    return SliverToBoxAdapter(
-      child: Container(
-        width: screenwidth,
-        height: 26.vh,
-        child: ListView.builder(
-          itemCount: listLandmark.length,
-          scrollDirection: Axis.horizontal,
-          itemBuilder: (context, index) {
-            return Container(
-              width: 40.vw,
-              //  height: 10 .vh,
-              margin: EdgeInsets.only(left: 1.5.vw, right: 1.5.vw),
-              child: GestureDetector(
-                onTap: () {
-                  debugPrint('you click index $index');
-                  MaterialPageRoute route = MaterialPageRoute(
-                    builder: (context) => LandmarkDetail(
-                      landmarkModel: listLandmark[index],
-                    ),
-                  );
-                  Navigator.push(context, route).then((value) {});
-                },
-                // ignore: avoid_unnecessary_containers
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  //  elevation: 5,
-                  //  color: Colors.grey[300],
-                  child: Column(
-                    // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Card(
-                        semanticContainer: true,
-                        clipBehavior: Clip.antiAliasWithSaveLayer,
-                        child: CachedNetworkImage(
-                          width: screenwidth,
-                          height: 16.vh,
-                          imageUrl: listLandmark[index].imagePath!,
-                          progressIndicatorBuilder:
-                              (context, url, downloadProgress) =>
-                                  MyStyle().showProgress(),
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
-                          fit: BoxFit.cover,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5.0),
-                        ),
-                        elevation: 5,
-                        margin: const EdgeInsets.all(0),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 5, left: 10),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            MyStyle().mySizebox(),
-                            Text(
-                              listLandmark[index].landmarkName!,
-                              style: const TextStyle(
-                                color: Colors.black54,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14.0,
-                                fontFamily: 'FC-Minimal-Regular',
-                              ),
-                              textAlign: TextAlign.start,
-                            ),
-
-                            Text(
-                              'จังหวัด ${listLandmark[index].provinceName}',
-                              style: const TextStyle(
-                                color: Colors.black45,
-                                fontSize: 12.0,
-                                fontFamily: 'FC-Minimal-Regular',
-                              ),
-                            ),
-
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(Icons.star,
-                                        size: 15,
-                                        color: listLandmark[index]
-                                                    .landmarkScore! >=
-                                                1
-                                            ? Colors.orange
-                                            : Colors.grey),
-                                    Icon(Icons.star,
-                                        size: 15,
-                                        color: listLandmark[index]
-                                                    .landmarkScore! >=
-                                                2
-                                            ? Colors.orange
-                                            : Colors.grey),
-                                    Icon(Icons.star,
-                                        size: 15,
-                                        color: listLandmark[index]
-                                                    .landmarkScore! >=
-                                                3
-                                            ? Colors.orange
-                                            : Colors.grey),
-                                    Icon(Icons.star,
-                                        size: 15,
-                                        color: listLandmark[index]
-                                                    .landmarkScore! >=
-                                                4
-                                            ? Colors.orange
-                                            : Colors.grey),
-                                    Icon(Icons.star,
-                                        size: 15,
-                                        color: listLandmark[index]
-                                                    .landmarkScore! ==
-                                                5
-                                            ? Colors.orange
-                                            : Colors.grey),
-                                  ],
-                                ),
-                                Text(
-                                  'View ${listLandmark[index].landmarkView}',
-                                  style: const TextStyle(
-                                    color: Colors.black45,
-                                    fontSize: 12.0,
-                                    fontFamily: 'FC-Minimal-Regular',
-                                  ),
-                                ),
-                              ],
-                            ),
-                            //SizedBox(height: screenhight * 0.01,)
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-    );
   }
 }

@@ -14,12 +14,14 @@ class CommentListview extends StatefulWidget {
   final List<String> commentdate;
   final int index;
   final bool moreComment;
+  final VoidCallback onLike;
   const CommentListview({
     Key? key,
     required this.commentModels,
     required this.index,
     required this.moreComment,
     required this.commentdate,
+    required this.onLike,
   }) : super(key: key);
 
   @override
@@ -159,11 +161,11 @@ class _CommentListviewState extends State<CommentListview> {
                                             Text(
                                               widget.commentdate[index],
                                               overflow: TextOverflow.ellipsis,
-                                              style:  TextStyle(
+                                              style: TextStyle(
                                                 decoration:
                                                     TextDecoration.underline,
                                                 color: Colors.black54,
-                                                fontSize: 9.0 .sp,
+                                                fontSize: 9.0.sp,
                                               ),
                                             ),
                                             SizedBox(
@@ -171,6 +173,7 @@ class _CommentListviewState extends State<CommentListview> {
                                             ),
                                             InkWell(
                                               onTap: () => setState(() {
+                                                 
                                                 if (widget.commentModels[index]
                                                         .isLike ==
                                                     true) {
@@ -179,6 +182,7 @@ class _CommentListviewState extends State<CommentListview> {
                                                 } else {
                                                   widget.commentModels[index]
                                                       .isLike = true;
+                                                  widget.onLike();
                                                 }
                                               }),
                                               child: Text(
@@ -192,7 +196,7 @@ class _CommentListviewState extends State<CommentListview> {
                                                           true
                                                       ? Colors.blue
                                                       : Colors.black54,
-                                                  fontSize: 10.0 .sp,
+                                                  fontSize: 10.0.sp,
                                                 ),
                                               ),
                                             ),
@@ -211,12 +215,12 @@ class _CommentListviewState extends State<CommentListview> {
                                                   Navigator.pop(context);
                                                 });
                                               }),
-                                              child:  Text(
+                                              child: Text(
                                                 'ลบ',
                                                 overflow: TextOverflow.ellipsis,
                                                 style: TextStyle(
                                                   color: Colors.black54,
-                                                  fontSize: 10 .sp,
+                                                  fontSize: 10.sp,
                                                 ),
                                               ),
                                             ),

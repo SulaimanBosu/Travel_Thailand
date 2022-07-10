@@ -57,14 +57,14 @@ class MyStyle {
     );
   }
 
-  TextStyle mainTitle = const TextStyle(
-    fontSize: 14.0,
+  TextStyle mainTitle = TextStyle(
+    fontSize: 12.0 .sp,
     fontWeight: FontWeight.bold,
     color: Colors.black54,
   );
 
   TextStyle mainH2Title = TextStyle(
-    fontSize: 13.5 .sp,
+    fontSize: 10 .sp,
     // fontWeight: FontWeight.bold,
     color: Colors.black54,
     // fontStyle: FontStyle.italic,

@@ -17,6 +17,7 @@ import 'package:project/widgets/drawer.dart';
 import 'package:project/widgets/popover.dart';
 import 'package:project/widgets/popup_menu.dart';
 import 'package:project/widgets/sliverAppBar.dart';
+import 'package:resize/resize.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:user_profile_avatar/user_profile_avatar.dart';
 
@@ -349,7 +350,7 @@ class _ProfileState extends State<Profile> {
       },
       child: Container(
         margin: const EdgeInsetsDirectional.only(
-            start: 40.0, end: 40.0, bottom: 90),
+            start: 10.0, end: 10.0, bottom: 90),
         width: MediaQuery.of(context).size.width * 1,
         height: MediaQuery.of(context).size.height * 0.25,
         child: Card(
@@ -394,7 +395,7 @@ class _ProfileState extends State<Profile> {
               height: 1,
             ),
             Container(
-              width: screenwidth * 0.8,
+              width: 95 .vw,
               height: screenhight * 0.055,
               decoration: const BoxDecoration(
                 border: Border(
@@ -414,7 +415,7 @@ class _ProfileState extends State<Profile> {
                     },
                     child: Text(
                       getValue,
-                      style: const TextStyle(fontSize: 16, height: 1.4),
+                      style:  TextStyle(fontSize: 14 .sp, height: 1.4),
                     ),
                   ),
                   InkWell(

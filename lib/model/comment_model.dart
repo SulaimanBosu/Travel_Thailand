@@ -1,4 +1,5 @@
 class CommentModel {
+  int? commentid;
   String? userFirstName;
   String? userLastName;
   String? userProfile;
@@ -6,9 +7,14 @@ class CommentModel {
   String? commentDate;
   bool? isLike;
 
-  CommentModel({this.userFirstName, this.commentDetail, this.commentDate});
+  CommentModel(
+      {this.commentid,
+      this.userFirstName,
+      this.commentDetail,
+      this.commentDate});
 
   CommentModel.fromJson(Map<String, dynamic> json) {
+    commentid = json['Comment_id'];
     userFirstName = json['User_first_name'];
     userLastName = json['User_last_name'];
     userProfile = json['Image_profile'];
@@ -19,6 +25,7 @@ class CommentModel {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
+    data['Comment_id'] = commentid;
     data['User_first_name'] = userFirstName;
     data['User_last_name'] = userLastName;
     data['Image_profile'] = userProfile;

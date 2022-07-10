@@ -21,6 +21,7 @@ import 'package:project/utility/alert_dialog.dart';
 import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_api.dart';
 import 'package:project/utility/my_style.dart';
+import 'package:project/widgets/buildListview_landmark.dart';
 import 'package:project/widgets/comment_listview.dart';
 import 'package:resize/resize.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -293,6 +294,29 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
         debugPrint('บันทึกข้อมูลสำเร็จ');
       } else {
         debugPrint('บันทึกข้อมูลล้มเหลว');
+      }
+    });
+  }
+
+  Future<void> likeComment(int id, int commentid) async {
+    String urllikeComment =
+        '${MyConstant().domain}/application/like_comment.php';
+    FormData likeComment = FormData.fromMap(
+      {
+        "id": id,
+        "Comment_id": commentid,
+        "User_id": userid,
+        "Landmark_id": widget.landmarkModel.landmarkId,
+      },
+    );
+    await Dio().post(urllikeComment, data: likeComment).then((value) {
+      var result = json.decode(value.data);
+      debugPrint('like Comment == $result');
+      String success = result['success'];
+      if (success == '1') {
+        debugPrint('กดไลค์สำเร็จ');
+      } else {
+        debugPrint('กดไลค์ล้มเหลว');
       }
     });
   }
@@ -607,22 +631,29 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
           information(),
           isProvinceLoading
               ? SliverToBoxAdapter(
-                  child: Container(
-                    width: screenwidth,
-                    height: 12.vh,
-                    child: const Center(
-                      child: CupertinoActivityIndicator(
-                        animating: true,
-                        radius: 15,
-                      ),
-                    ),
-                  ),
+                  child: Container(),
                 )
+
+              // ? SliverToBoxAdapter(
+              //     child: Container(
+              //       width: screenwidth,
+              //       height: 8.vh,
+              //       child: const Center(
+              //         child: CupertinoActivityIndicator(
+              //           animating: true,
+              //           radius: 15,
+              //         ),
+              //       ),
+              //     ),
+              //   )
               : landmarkProvince.isEmpty
                   ? SliverToBoxAdapter(
                       child: Container(),
                     )
-                  : buildListviewlandmark(landmarkProvince, index),
+                  : BuildListviewLandmark(
+                      screenwidth: screenwidth,
+                      listLandmark: landmarkProvince,
+                      index: index),
           landmarktype.isEmpty
               ? SliverToBoxAdapter(
                   child: Container(),
@@ -630,33 +661,34 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
               : SliverToBoxAdapter(
                   child: Container(
                     width: screenwidth,
-                    height: 12.vh,
+                    height: 8.vh,
                     child: landmarktype.isNotEmpty
                         ? Column(
                             children: [
                               Padding(
-                                padding: EdgeInsets.only(bottom: 7.h, top: 7.h),
+                                padding:
+                                    EdgeInsets.only(bottom: 1.vh, top: 1.vh),
                                 child: Divider(
                                   color: Colors.grey.shade200,
-                                  thickness: 1.0,
+                                  thickness: 10.0,
                                 ),
                               ),
                               Container(
                                 margin:
-                                    EdgeInsets.only(left: 20.w, bottom: 5.h),
+                                    EdgeInsets.only(left: 20.w, bottom: 0.5.vh),
                                 width: 100.vw,
                                 child: const Text(
                                   'แหล่งท่องเที่ยวประเภทเดียวกัน',
                                   style: TextStyle(color: Colors.black54),
                                 ),
                               ),
-                              Padding(
-                                padding: EdgeInsets.only(bottom: 7.h, top: 7.h),
-                                child: Divider(
-                                  color: Colors.grey.shade200,
-                                  thickness: 1.0,
-                                ),
-                              ),
+                              // Padding(
+                              //   padding: EdgeInsets.only(bottom: 1.vh, top: 1.vh),
+                              //   child: Divider(
+                              //     color: Colors.grey.shade200,
+                              //     thickness: 1.0,
+                              //   ),
+                              // ),
                             ],
                           )
                         : Container(),
@@ -666,7 +698,10 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
               ? SliverToBoxAdapter(
                   child: Container(),
                 )
-              : buildListviewlandmark(landmarktype, index),
+              : BuildListviewLandmark(
+                  screenwidth: screenwidth,
+                  listLandmark: landmarktype,
+                  index: index),
           commentBar(context),
           isLoading
               ? const SliverToBoxAdapter(
@@ -698,6 +733,12 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                       index: index,
                       moreComment: moreComment,
                       commentdate: commentdate,
+                      onLike: () {
+                        setState(() {
+                          debugPrint('กดไลค์แล้ว');
+                          likeComment(1, commentModels[index].commentid!);
+                        });
+                      },
                     ),
           commentModels.length > 3
               ? commentMore()
@@ -710,160 +751,6 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
             ),
           )
         ],
-      ),
-    );
-  }
-
-  SliverToBoxAdapter buildListviewlandmark(
-      List<LandmarkModel> listLandmark, int index) {
-    return SliverToBoxAdapter(
-      child: Container(
-        width: screenwidth,
-        height: 26.vh,
-        child: ListView.builder(
-          itemCount: listLandmark.length,
-          scrollDirection: Axis.horizontal,
-          itemBuilder: (context, index) {
-            return Container(
-              width: 40.vw,
-              //  height: 10 .vh,
-              margin: EdgeInsets.only(left: 1.5.vw, right: 1.5.vw),
-              child: GestureDetector(
-                onTap: () {
-                  debugPrint('you click index $index');
-                  MaterialPageRoute route = MaterialPageRoute(
-                    builder: (context) => LandmarkDetail(
-                      landmarkModel: listLandmark[index],
-                    ),
-                  );
-                  Navigator.push(context, route).then((value) {
-                    // readlandmark();
-                    // widget.getPreferences();
-                    SystemChrome.setPreferredOrientations([
-                      DeviceOrientation.portraitUp,
-                    ]);
-                  });
-                },
-                // ignore: avoid_unnecessary_containers
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  //  elevation: 5,
-                  //  color: Colors.grey[300],
-                  child: Column(
-                    // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Card(
-                        semanticContainer: true,
-                        clipBehavior: Clip.antiAliasWithSaveLayer,
-                        child: CachedNetworkImage(
-                          width: screenwidth,
-                          height: Platform.isIOS ? 14.vh : 16.vh,
-                          imageUrl: listLandmark[index].imagePath!,
-                          progressIndicatorBuilder:
-                              (context, url, downloadProgress) =>
-                                  MyStyle().showProgress(),
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
-                          fit: BoxFit.cover,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5.0),
-                        ),
-                        elevation: 5,
-                        margin: const EdgeInsets.all(0),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 5, left: 10),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            MyStyle().mySizebox(),
-                            Text(
-                              listLandmark[index].landmarkName!,
-                              style: const TextStyle(
-                                color: Colors.black54,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14.0,
-                                fontFamily: 'FC-Minimal-Regular',
-                              ),
-                              textAlign: TextAlign.start,
-                            ),
-
-                            Text(
-                              'จังหวัด ${listLandmark[index].provinceName}',
-                              style: const TextStyle(
-                                color: Colors.black45,
-                                fontSize: 12.0,
-                                fontFamily: 'FC-Minimal-Regular',
-                              ),
-                            ),
-
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(Icons.star,
-                                        size: 15,
-                                        color: listLandmark[index]
-                                                    .landmarkScore! >=
-                                                1
-                                            ? Colors.orange
-                                            : Colors.grey),
-                                    Icon(Icons.star,
-                                        size: 15,
-                                        color: listLandmark[index]
-                                                    .landmarkScore! >=
-                                                2
-                                            ? Colors.orange
-                                            : Colors.grey),
-                                    Icon(Icons.star,
-                                        size: 15,
-                                        color: listLandmark[index]
-                                                    .landmarkScore! >=
-                                                3
-                                            ? Colors.orange
-                                            : Colors.grey),
-                                    Icon(Icons.star,
-                                        size: 15,
-                                        color: listLandmark[index]
-                                                    .landmarkScore! >=
-                                                4
-                                            ? Colors.orange
-                                            : Colors.grey),
-                                    Icon(Icons.star,
-                                        size: 15,
-                                        color: listLandmark[index]
-                                                    .landmarkScore! ==
-                                                5
-                                            ? Colors.orange
-                                            : Colors.grey),
-                                  ],
-                                ),
-                                Text(
-                                  'View ${listLandmark[index].landmarkView}',
-                                  style: const TextStyle(
-                                    color: Colors.black45,
-                                    fontSize: 12.0,
-                                    fontFamily: 'FC-Minimal-Regular',
-                                  ),
-                                ),
-                              ],
-                            ),
-                            //SizedBox(height: screenhight * 0.01,)
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
       ),
     );
   }
@@ -1177,31 +1064,32 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                   clipBehavior: Clip.antiAliasWithSaveLayer,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5.0),
-                    side: const BorderSide(
-                      color: Colors.black54,
-                    ),
+                    // side: const BorderSide(
+                    //   color: Colors.black54,
+                    // ),
                   ),
                   elevation: 5,
                   child: Container(
                     width: screenwidth,
                     padding: const EdgeInsets.all(15.0),
-                    child: const Text(
+                    child: Text(
                       'ดูในแผนที่',
+                      style: TextStyle(color: Colors.black54, fontSize: 12.sp),
                       textAlign: TextAlign.center,
                     ),
                   ),
                 ),
               ),
             ),
-            landmarkProvince.isEmpty
-                ? Container()
-                : Padding(
-                    padding: const EdgeInsets.only(bottom: 10, top: 10),
-                    child: Divider(
-                      color: Colors.grey.shade200,
-                      thickness: 10.0,
-                    ),
-                  ),
+            // landmarkProvince.isEmpty
+            //     ? Container()
+            //     : Padding(
+            //         padding: const EdgeInsets.only(bottom: 10, top: 10),
+            //         child: Divider(
+            //           color: Colors.grey.shade200,
+            //           thickness: 10.0,
+            //         ),
+            //       ),
             // Padding(
             //   padding: EdgeInsets.only(left: 20.0, right: 10, bottom: 5.h),
             //   child: Row(
@@ -1245,20 +1133,21 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                 ? Column(
                     children: [
                       Container(
-                        margin: EdgeInsets.only(left: 20.w, bottom: 5.h),
+                        margin: EdgeInsets.only(
+                            left: 20.w, bottom: 2.vh, top: 2.vh),
                         width: 100.vw,
                         child: const Text(
                           'แหล่งท่องเที่ยวจังหวัดเดียวกัน',
                           style: TextStyle(color: Colors.black54),
                         ),
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 7.h, top: 7.h),
-                        child: Divider(
-                          color: Colors.grey.shade200,
-                          thickness: 1.0,
-                        ),
-                      ),
+                      // Padding(
+                      //   padding: EdgeInsets.only(bottom: 7.h, top: 7.h),
+                      //   child: Divider(
+                      //     color: Colors.grey.shade200,
+                      //     thickness: 1.0,
+                      //   ),
+                      // ),
                     ],
                   )
                 : Container(),
