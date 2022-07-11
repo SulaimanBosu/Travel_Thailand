@@ -82,7 +82,6 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
     getPreferences();
     // getLocation();
     isLoad();
-    readComment();
     delaydialog();
     _refreshComment();
     recommentlandmark();
@@ -185,6 +184,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
       setState(() {
         favorites(2);
         logLandmarkview();
+        readComment();
       });
     });
   }
@@ -298,7 +298,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
     });
   }
 
-  Future<void> likeComment(int id, int commentid) async {
+  Future<void> likeAnddeleteComment(int id, int commentid) async {
     String urllikeComment =
         '${MyConstant().domain}/application/like_comment.php';
     FormData likeComment = FormData.fromMap(
@@ -315,8 +315,12 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
       String success = result['success'];
       if (success == '1') {
         debugPrint('กดไลค์สำเร็จ');
+      } else if (success == '0') {
+        debugPrint('ยกเลิกกดไลค์สำเร็จ');
+      } else if (success == '2') {
+        debugPrint('ลบ Comment สำเร็จ');
       } else {
-        debugPrint('กดไลค์ล้มเหลว');
+        debugPrint('ล้มเหลว');
       }
     });
   }
@@ -326,12 +330,13 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
     FormData getcomment = FormData.fromMap(
       {
         "Landmark_id": widget.landmarkModel.landmarkId,
+        "User_id": userid,
       },
     );
     try {
       await Dio().post(urlcomment, data: getcomment).then((value) {
         var result = json.decode(value.data);
-        debugPrint('data == $result');
+        debugPrint('Comment Data == $result');
         commentModels.clear();
         commentdate.clear();
         for (var map in result) {
@@ -344,9 +349,9 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
               if (commentModel.userFirstName != null) {
                 String date = MyApi().difference(commentModel.commentDate!);
                 commentdate.add(date);
-                debugPrint(
-                    'UserComment ========= ${commentModel.userFirstName}');
-                debugPrint('CommentDate ========= $date');
+                // debugPrint(
+                //     'UserComment ========= ${commentModel.userFirstName}');
+                // debugPrint('CommentDate ========= $date');
               }
             },
           );
@@ -733,12 +738,11 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                       index: index,
                       moreComment: moreComment,
                       commentdate: commentdate,
-                      onLike: () {
-                        setState(() {
-                          debugPrint('กดไลค์แล้ว');
-                          likeComment(1, commentModels[index].commentid!);
-                        });
+                      onLike: (value) {
+                        debugPrint('Value ======= ${value.toString()}');
+                        likeAnddeleteComment(value[0], value[1]);
                       },
+                      userid: userid!,
                     ),
           commentModels.length > 3
               ? commentMore()

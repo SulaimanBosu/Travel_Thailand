@@ -69,7 +69,7 @@ class BuildListviewLandmark extends StatelessWidget {
                         clipBehavior: Clip.antiAliasWithSaveLayer,
                         child: CachedNetworkImage(
                           width: screenwidth,
-                          height: 27.vw,
+                          height:22.vw,
                           imageUrl: listLandmark[index].imagePath!,
                           progressIndicatorBuilder:
                               (context, url, downloadProgress) =>

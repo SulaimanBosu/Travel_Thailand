@@ -9,12 +9,17 @@ import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
 import 'package:resize/resize.dart';
 
+typedef ListVoidFunc = void Function(List);
+
 class CommentListview extends StatefulWidget {
   final List<CommentModel> commentModels;
   final List<String> commentdate;
   final int index;
   final bool moreComment;
-  final VoidCallback onLike;
+  final ListVoidFunc onLike;
+  final String userid;
+  // final IntVoidFunc onLike;
+
   const CommentListview({
     Key? key,
     required this.commentModels,
@@ -22,6 +27,7 @@ class CommentListview extends StatefulWidget {
     required this.moreComment,
     required this.commentdate,
     required this.onLike,
+    required this.userid,
   }) : super(key: key);
 
   @override
@@ -32,12 +38,14 @@ class _CommentListviewState extends State<CommentListview> {
   late double screenwidth;
   late double screenhight;
   List<bool> isLike = [];
+  List<bool> datetime = [];
 
   @override
   void initState() {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
+
     super.initState();
   }
 
@@ -158,14 +166,37 @@ class _CommentListviewState extends State<CommentListview> {
                                       children: [
                                         Row(
                                           children: [
-                                            Text(
-                                              widget.commentdate[index],
-                                              overflow: TextOverflow.ellipsis,
-                                              style: TextStyle(
-                                                decoration:
-                                                    TextDecoration.underline,
-                                                color: Colors.black54,
-                                                fontSize: 9.0.sp,
+                                            InkWell(
+                                              onTap: () {
+                                                setState(() {
+                                                  widget.commentModels[index]
+                                                      .isDate = true;
+                                                  Future.delayed(
+                                                      const Duration(
+                                                          milliseconds: 5000),
+                                                      () {
+                                                    setState(() {
+                                                      widget
+                                                          .commentModels[index]
+                                                          .isDate = false;
+                                                    });
+                                                  });
+                                                });
+                                              },
+                                              child: Text(
+                                                widget.commentModels[index]
+                                                        .isDate!
+                                                    ? widget
+                                                        .commentModels[index]
+                                                        .commentDate!
+                                                    : widget.commentdate[index],
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(
+                                                  decoration:
+                                                      TextDecoration.underline,
+                                                  color: Colors.black54,
+                                                  fontSize: 9.0.sp,
+                                                ),
                                               ),
                                             ),
                                             SizedBox(
@@ -173,16 +204,36 @@ class _CommentListviewState extends State<CommentListview> {
                                             ),
                                             InkWell(
                                               onTap: () => setState(() {
-                                                 
                                                 if (widget.commentModels[index]
                                                         .isLike ==
                                                     true) {
                                                   widget.commentModels[index]
                                                       .isLike = false;
+                                                  widget.commentModels[index]
+                                                      .likeCount = (widget
+                                                          .commentModels[index]
+                                                          .likeCount! -
+                                                      1);
+                                                  List<int> like = [
+                                                    0,
+                                                    widget.commentModels[index]
+                                                        .commentid!
+                                                  ];
+                                                  widget.onLike(like);
                                                 } else {
                                                   widget.commentModels[index]
                                                       .isLike = true;
-                                                  widget.onLike();
+                                                  widget.commentModels[index]
+                                                      .likeCount = (widget
+                                                          .commentModels[index]
+                                                          .likeCount! +
+                                                      1);
+                                                  List<int> like = [
+                                                    1,
+                                                    widget.commentModels[index]
+                                                        .commentid!
+                                                  ];
+                                                  widget.onLike(like);
                                                 }
                                               }),
                                               child: Text(
@@ -203,32 +254,70 @@ class _CommentListviewState extends State<CommentListview> {
                                             SizedBox(
                                               width: screenwidth * 0.04,
                                             ),
-                                            InkWell(
-                                              onTap: (() {
-                                                MyAlertDialog().showAlertDialog(
-                                                    Icons
-                                                        .delete_forever_outlined,
-                                                    context,
-                                                    'ลบ',
-                                                    'คุณต้องการลบความคิดเห็นใช่หรือไม่',
-                                                    'ตกลง', () {
-                                                  Navigator.pop(context);
-                                                });
-                                              }),
-                                              child: Text(
-                                                'ลบ',
-                                                overflow: TextOverflow.ellipsis,
-                                                style: TextStyle(
-                                                  color: Colors.black54,
-                                                  fontSize: 10.sp,
-                                                ),
-                                              ),
-                                            ),
+                                            widget.userid ==
+                                                    widget.commentModels[index]
+                                                        .userid
+                                                ? InkWell(
+                                                    onTap: (() {
+                                                      MyAlertDialog().showAlertDialog(
+                                                          Icons
+                                                              .delete_forever_outlined,
+                                                          context,
+                                                          'ลบ',
+                                                          'คุณต้องการลบความคิดเห็นใช่หรือไม่',
+                                                          'ตกลง', () {
+                                                        List<int> delete = [
+                                                          2,
+                                                          widget
+                                                              .commentModels[
+                                                                  index]
+                                                              .commentid!
+                                                        ];
+                                                        widget.onLike(delete);
+                                                        setState(() {
+                                                          widget.commentModels
+                                                              .removeAt(index);
+                                                        });
+
+                                                        Navigator.pop(context);
+                                                      });
+                                                    }),
+                                                    child: Text(
+                                                      'ลบ',
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: TextStyle(
+                                                        color: Colors.black54,
+                                                        fontSize: 10.sp,
+                                                      ),
+                                                    ),
+                                                  )
+                                                : InkWell(
+                                                    onTap: (() {
+                                                      MyAlertDialog().showtDialog(
+                                                          context,
+                                                          Icons
+                                                              .error_outline_outlined,
+                                                          'ผิดพลาด',
+                                                          'ฟังก์ชันการตอบกลับ ยังไม่พร้อมใช้งาน เนื่องจากคนเขียนแอพขี้เกียจทำ');
+                                                      debugPrint(
+                                                          'คุณกดปุ่มตอบกลับ');
+                                                    }),
+                                                    child: Text(
+                                                      'ตอบกลับ',
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: TextStyle(
+                                                        color: Colors.black54,
+                                                        fontSize: 10.sp,
+                                                      ),
+                                                    ),
+                                                  ),
                                           ],
                                         ),
 
-                                        widget.commentModels[index].isLike ==
-                                                true
+                                        widget.commentModels[index].likeCount !=
+                                                0
                                             ? Padding(
                                                 padding: const EdgeInsets.only(
                                                     right: 10),
@@ -238,11 +327,11 @@ class _CommentListviewState extends State<CommentListview> {
                                                       padding:
                                                           const EdgeInsets.only(
                                                               right: 3),
-                                                      child: const Text(
-                                                        '1',
+                                                      child: Text(
+                                                        '${widget.commentModels[index].likeCount}',
                                                         overflow: TextOverflow
                                                             .ellipsis,
-                                                        style: TextStyle(
+                                                        style: const TextStyle(
                                                           fontWeight:
                                                               FontWeight.bold,
                                                           color: Colors.black54,

@@ -281,24 +281,11 @@ class _RecommendState extends State<Recommend> {
                       child: buildHead(),
                     ),
                   ),
-            // !isLoading
-            //     ? SliverToBoxAdapter(
-            //         child: Container(
-            //           margin: EdgeInsets.only(top: 4.vh, bottom: 4.vh),
-            //           child: Divider(
-            //             color: Colors.grey.shade200,
-            //             thickness: 10,
-            //           ),
-            //         ),
-            //       )
-            //     : SliverToBoxAdapter(
-            //         child: Container(),
-            //       ),
             !isLoading
                 ? SliverToBoxAdapter(
                     child: Container(
                         width: screenwidth,
-                       height: 8.vh,
+                        height: 9.vh,
                         child: Column(
                           children: [
                             Padding(
@@ -309,22 +296,58 @@ class _RecommendState extends State<Recommend> {
                               ),
                             ),
                             Container(
-                                margin:
-                                    EdgeInsets.only(left: 20.w, bottom: 1.0.vh),
-                                width: 100.vw,
-                                child: const Text(
-                                  'แหล่งท่องเที่ยวประเภทเดียวกัน',
-                                  style: TextStyle(color: Colors.black54),
-                                ),
+                              margin:
+                                  EdgeInsets.only(left: 20.w, bottom: 1.0.vh),
+                              width: 100.vw,
+                              child: Text(
+                                'หมวดหมู',
+                                style: TextStyle(
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16.sp),
                               ),
-                           
+                            ),
                           ],
                         )),
                   )
                 : SliverToBoxAdapter(
                     child: Container(),
                   ),
-            landmarktype.isEmpty
+            !isLoading
+                ? buildlist()
+                : SliverToBoxAdapter(
+                    child: Container(),
+                  ),
+            !isLoading
+                ? SliverToBoxAdapter(
+                    child: Container(
+                        width: screenwidth,
+                        height: 8.vh,
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(bottom: 7.h, top: 7.h),
+                              child: Divider(
+                                color: Colors.grey.shade200,
+                                thickness: 1.0,
+                              ),
+                            ),
+                            Container(
+                              margin:
+                                  EdgeInsets.only(left: 20.w, bottom: 1.0.vh),
+                              width: 100.vw,
+                              child: const Text(
+                                'แหล่งท่องเที่ยวประเภทเดียวกัน',
+                                style: TextStyle(color: Colors.black54),
+                              ),
+                            ),
+                          ],
+                        )),
+                  )
+                : SliverToBoxAdapter(
+                    child: Container(),
+                  ),
+            landmarktype.isEmpty || isLoading
                 ? SliverToBoxAdapter(
                     child: Container(),
                   )
@@ -500,5 +523,114 @@ class _RecommendState extends State<Recommend> {
               );
             },
           );
+  }
+
+  Widget buildlist() {
+    List<String> itemList = [
+      'ทะเล',
+      'ภูเขา',
+      'น้ำตก',
+      'อ่างเก็บน้ำ',
+      'คาเฟ่',
+    ];
+    List<String> imageList = [
+      'images/beach-icon.png',
+      'images/mountain-icon.png',
+      'images/waterfall-icon.png',
+      'images/dam-icon.png',
+      'images/cafe-icon.png',
+    ];
+    List<String> itemList2 = [
+      'อุทยานแห่งชาติ',
+      'เดินป่า',
+      'แคมป์ปิ้ง',
+      'ประวัติศาสตร์',
+      'มัสยิด/วัด'
+    ];
+    List<String> imageList2 = [
+      'images/national-park-icon.png',
+      'images/trekking-icon.png',
+      'images/camping-icon.png',
+      'images/history-icon.png',
+      'images/masjid-icon.png'
+    ];
+    return SliverToBoxAdapter(
+      child: Container(
+        //color: Colors.white,
+        width: screenwidth,
+        height: 40.vh,
+        child: ListView.builder(
+          itemCount: 5,
+          scrollDirection: Axis.horizontal,
+          itemBuilder: (context, index) {
+            return Column(
+              children: [
+                Container(
+                  //width: 40.vw,
+                  //  height: 10 .vh,
+                  margin: EdgeInsets.only(left: 2.vw, right: 2.vw),
+                  child: GestureDetector(
+                      onTap: () {
+                        debugPrint('you click index $index');
+                      },
+                      child: Column(
+                        children: [
+                          CircleAvatar(
+                            radius: 40,
+                            backgroundColor: Colors.white,
+                            child: Padding(
+                              padding: const EdgeInsets.all(2), // Border radius
+                              child: ClipOval(
+                                child: SizedBox.fromSize(
+                                  size:
+                                      const Size.fromRadius(39), // Image radius
+                                  child: Image.asset(imageList[index]),
+                                ),
+                              ),
+                            ),
+                          ),
+                          MyStyle().mySizebox(),
+                          Text(itemList[index])
+                        ],
+                      )),
+                ),
+                SizedBox(
+                  height: 3.vh,
+                ),
+                Container(
+                  //width: 40.vw,
+                  //  height: 10 .vh,
+                  margin: EdgeInsets.only(left: 2.vw, right: 2.vw),
+                  child: GestureDetector(
+                      onTap: () {
+                        debugPrint('you click index $index');
+                      },
+                      child: Column(
+                        children: [
+                          CircleAvatar(
+                            radius: 40,
+                            backgroundColor: Colors.white,
+                            child: Padding(
+                              padding: const EdgeInsets.all(2), // Border radius
+                              child: ClipOval(
+                                child: SizedBox.fromSize(
+                                  size:
+                                      const Size.fromRadius(39), // Image radius
+                                  child: Image.asset(imageList2[index]),
+                                ),
+                              ),
+                            ),
+                          ),
+                          MyStyle().mySizebox(),
+                          Text(itemList2[index])
+                        ],
+                      )),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
   }
 }

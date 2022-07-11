@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:resize/resize.dart';
 
 class MyAlertDialog {
   showcupertinoDialog(
@@ -53,7 +54,7 @@ class MyAlertDialog {
           children: [
             Row(
               children: [
-                Icon(icon, color: Colors.redAccent),
+                Icon(icon, color: Colors.black54),
                 const SizedBox(
                   width: 5,
                 ),
@@ -129,9 +130,9 @@ class MyAlertDialog {
                 ),
                 Text(
                   textTitle,
-                  style: const TextStyle(
+                  style:  TextStyle(
                     overflow: TextOverflow.clip,
-                    fontSize: 18.0,
+                    fontSize: 18.0 .sp,
                     color: Colors.black45,
                     fontFamily: 'FC-Minimal-Regular',
                   ),
@@ -150,11 +151,11 @@ class MyAlertDialog {
         ),
         content: Text(
           textContent,
-          style: const TextStyle(
+          style: TextStyle(
             overflow: TextOverflow.clip,
-            fontSize: 18.0,
+            fontSize: 14.0 .sp,
             color: Colors.black45,
-            fontFamily: 'FC-Minimal-Regular',
+            //fontFamily: 'FC-Minimal-Regular',
           ),
           textAlign: TextAlign.center,
         ),
