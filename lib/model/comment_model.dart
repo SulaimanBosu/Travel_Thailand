@@ -30,7 +30,7 @@ class CommentModel {
     commentDate = json['Comment_date'];
     isLike = json['isLike'];
     likeCount = json['LikeCount'];
-    isDate = json['isDate'];
+    isDate = false;
   }
 
   Map<String, dynamic> toJson() {
@@ -44,7 +44,7 @@ class CommentModel {
     data['Comment_date'] = commentDate;
     data['isLike'] = isLike;
     data['LikeCount'] = likeCount;
-    data['isDate'] = isDate;
+    data['false'] = isDate;
     return data;
   }
 }

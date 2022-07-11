@@ -15,9 +15,9 @@ class MyAlertDialog {
                   child: CupertinoAlertDialog(
               content: Text(
                 textContent,
-                style: const TextStyle(
+                style: TextStyle(
                   overflow: TextOverflow.clip,
-                  fontSize: 20.0,
+                  fontSize: 20.0 .sp,
                   color: Colors.black45,
                   fontFamily: 'FC-Minimal-Regular',
                 ),
@@ -40,50 +40,22 @@ class MyAlertDialog {
   }
 
   showAlertDialog(
-    IconData icon,
+
     BuildContext context,
-    String textTitle,
     String textContent,
-    String textButton,
+    String textButtonYes,
+    String textButtonNo,
     VoidCallback onPressedYes,
   ) {
     showCupertinoModalPopup<void>(
       context: context,
       builder: (BuildContext context) => CupertinoAlertDialog(
-        title: Column(
-          children: [
-            Row(
-              children: [
-                Icon(icon, color: Colors.black54),
-                const SizedBox(
-                  width: 5,
-                ),
-                Text(
-                  textTitle,
-                  style: const TextStyle(
-                    overflow: TextOverflow.clip,
-                    fontSize: 18.0,
-                    color: Colors.black45,
-                    fontFamily: 'FC-Minimal-Regular',
-                  ),
-                ),
-              ],
-            ),
-            const Divider(
-              thickness: 1,
-              height: 5,
-              color: Colors.black54,
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-          ],
-        ),
+        
         content: Text(
           textContent,
-          style: const TextStyle(
+          style: TextStyle(
             overflow: TextOverflow.clip,
-            fontSize: 18.0,
+            fontSize: 18.0.sp,
             color: Colors.black45,
             fontFamily: 'FC-Minimal-Regular',
           ),
@@ -94,16 +66,16 @@ class MyAlertDialog {
               // isDefaultAction: true,
               onPressed: onPressedYes,
               child: Text(
-                textButton,
+                textButtonYes,
                 style: const TextStyle(color: Colors.red),
               )),
           CupertinoDialogAction(
             onPressed: () {
               Navigator.pop(context);
             },
-            child: const Text(
-              'ยกเลิก',
-              style: TextStyle(color: Colors.red),
+            child:  Text(
+              textButtonNo,
+              style: const TextStyle(color: Colors.red),
             ),
           )
         ],
@@ -113,49 +85,19 @@ class MyAlertDialog {
 
   showtDialog(
     BuildContext context,
-    IconData icon,
-    String textTitle,
     String textContent,
   ) {
     showCupertinoModalPopup<void>(
       context: context,
       builder: (BuildContext context) => CupertinoAlertDialog(
-        title: Column(
-          children: [
-            Row(
-              children: [
-                Icon(icon),
-                const SizedBox(
-                  width: 5,
-                ),
-                Text(
-                  textTitle,
-                  style:  TextStyle(
-                    overflow: TextOverflow.clip,
-                    fontSize: 18.0 .sp,
-                    color: Colors.black45,
-                    fontFamily: 'FC-Minimal-Regular',
-                  ),
-                ),
-              ],
-            ),
-            const Divider(
-              thickness: 1,
-              height: 5,
-              color: Colors.black54,
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-          ],
-        ),
+    
         content: Text(
           textContent,
           style: TextStyle(
             overflow: TextOverflow.clip,
-            fontSize: 14.0 .sp,
+            fontSize: 18.0.sp,
             color: Colors.black45,
-            //fontFamily: 'FC-Minimal-Regular',
+            fontFamily: 'FC-Minimal-Regular',
           ),
           textAlign: TextAlign.center,
         ),

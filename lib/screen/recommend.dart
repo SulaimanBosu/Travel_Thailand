@@ -8,10 +8,12 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:location/location.dart';
 import 'package:project/model/landmark_model.dart';
 import 'package:project/model/province_model.dart';
 import 'package:project/screen/landmark_detail.dart';
+import 'package:project/screen/landmark_search.dart';
 import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
 import 'package:project/widgets/buildListview_landmark.dart';
@@ -281,73 +283,76 @@ class _RecommendState extends State<Recommend> {
                       child: buildHead(),
                     ),
                   ),
-            !isLoading
+            !isLoading && !search
                 ? SliverToBoxAdapter(
                     child: Container(
-                        width: screenwidth,
-                        height: 9.vh,
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(bottom: 7.h, top: 7.h),
-                              child: Divider(
-                                color: Colors.grey.shade200,
-                                thickness: 1.0,
-                              ),
-                            ),
-                            Container(
-                              margin:
-                                  EdgeInsets.only(left: 20.w, bottom: 1.0.vh),
-                              width: 100.vw,
-                              child: Text(
-                                'หมวดหมู',
-                                style: TextStyle(
-                                    color: Colors.black54,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16.sp),
-                              ),
-                            ),
-                          ],
-                        )),
+                      margin: EdgeInsets.only(left: 5.vw),
+                      alignment: Alignment.bottomLeft,
+                      width: 10.vw,
+                      height: 6.vh,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'images/category-icon.png',
+                            scale: 2.5.vw,
+                            color: Colors.red,
+                          ),
+                          SizedBox(
+                            width: 1.vw,
+                          ),
+                          Text(
+                            'หมวดหมู่',
+                            style: TextStyle(
+                                color: Colors.black54,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14.sp),
+                          ),
+                        ],
+                      ),
+                    ),
                   )
                 : SliverToBoxAdapter(
                     child: Container(),
                   ),
-            !isLoading
+            !isLoading && !search
                 ? buildlist()
                 : SliverToBoxAdapter(
                     child: Container(),
                   ),
-            !isLoading
+            !isLoading && !search
                 ? SliverToBoxAdapter(
-                    child: Container(
-                        width: screenwidth,
-                        height: 8.vh,
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(bottom: 7.h, top: 7.h),
-                              child: Divider(
-                                color: Colors.grey.shade200,
-                                thickness: 1.0,
-                              ),
-                            ),
-                            Container(
-                              margin:
-                                  EdgeInsets.only(left: 20.w, bottom: 1.0.vh),
-                              width: 100.vw,
-                              child: const Text(
-                                'แหล่งท่องเที่ยวประเภทเดียวกัน',
-                                style: TextStyle(color: Colors.black54),
-                              ),
-                            ),
-                          ],
-                        )),
+                    child: Padding(
+                      padding: EdgeInsets.only(bottom: 0.2.vh, top: 1.vh),
+                      child: Divider(
+                        color: Colors.grey.shade300,
+                        thickness: 10.0,
+                      ),
+                    ),
                   )
                 : SliverToBoxAdapter(
                     child: Container(),
                   ),
-            landmarktype.isEmpty || isLoading
+            !isLoading && !search
+                ? SliverToBoxAdapter(
+                    child: Container(
+                      width: screenwidth,
+                      height: 8.vh,
+                      child: Container(
+                        alignment: Alignment.centerLeft,
+                        margin: EdgeInsets.only(left: 20.w, bottom: 1.0.vh),
+                        width: 100.vw,
+                        child: const Text(
+                          'แหล่งท่องเที่ยวประเภทเดียวกัน',
+                          style: TextStyle(color: Colors.black54),
+                        ),
+                      ),
+                    ),
+                  )
+                : SliverToBoxAdapter(
+                    child: Container(),
+                  ),
+            landmarktype.isEmpty || isLoading || search
                 ? SliverToBoxAdapter(
                     child: Container(),
                   )
@@ -355,6 +360,37 @@ class _RecommendState extends State<Recommend> {
                     screenwidth: screenwidth,
                     listLandmark: landmarktype,
                     index: index),
+            !isLoading && !search
+                ? SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.only(bottom: 2.vh, top: 2.vh),
+                      child: Divider(
+                        color: Colors.grey.shade300,
+                        thickness: 10.0,
+                      ),
+                    ),
+                  )
+                : SliverToBoxAdapter(
+                    child: Container(),
+                  ),
+            !isLoading && !search
+                ? SliverToBoxAdapter(
+                    child: Container(
+                      width: screenwidth,
+                      height: 4.5.vh,
+                      child: Container(
+                        margin: EdgeInsets.only(left: 20.w, bottom: 1.0.vh),
+                        width: 100.vw,
+                        child: const Text(
+                          'แหล่งท่องเที่ยวแนะนำ',
+                          style: TextStyle(color: Colors.black54),
+                        ),
+                      ),
+                    ),
+                  )
+                : SliverToBoxAdapter(
+                    child: Container(),
+                  ),
             isLoading
                 ? SliverToBoxAdapter(
                     child: Container(
@@ -526,39 +562,11 @@ class _RecommendState extends State<Recommend> {
   }
 
   Widget buildlist() {
-    List<String> itemList = [
-      'ทะเล',
-      'ภูเขา',
-      'น้ำตก',
-      'อ่างเก็บน้ำ',
-      'คาเฟ่',
-    ];
-    List<String> imageList = [
-      'images/beach-icon.png',
-      'images/mountain-icon.png',
-      'images/waterfall-icon.png',
-      'images/dam-icon.png',
-      'images/cafe-icon.png',
-    ];
-    List<String> itemList2 = [
-      'อุทยานแห่งชาติ',
-      'เดินป่า',
-      'แคมป์ปิ้ง',
-      'ประวัติศาสตร์',
-      'มัสยิด/วัด'
-    ];
-    List<String> imageList2 = [
-      'images/national-park-icon.png',
-      'images/trekking-icon.png',
-      'images/camping-icon.png',
-      'images/history-icon.png',
-      'images/masjid-icon.png'
-    ];
     return SliverToBoxAdapter(
       child: Container(
         //color: Colors.white,
         width: screenwidth,
-        height: 40.vh,
+        height: 62.vw,
         child: ListView.builder(
           itemCount: 5,
           scrollDirection: Axis.horizontal,
@@ -572,25 +580,34 @@ class _RecommendState extends State<Recommend> {
                   child: GestureDetector(
                       onTap: () {
                         debugPrint('you click index $index');
+                        Route route = MaterialPageRoute(
+                          builder: (context) => LandmarkSearch(
+                            search: itemList[index],
+                            type: 'type',
+                            provinceModel: widget.provinceModel,
+                          ),
+                        );
+                        Navigator.pushAndRemoveUntil(
+                            context, route, (route) => true);
                       },
                       child: Column(
                         children: [
                           CircleAvatar(
-                            radius: 40,
+                            radius: 35,
                             backgroundColor: Colors.white,
                             child: Padding(
                               padding: const EdgeInsets.all(2), // Border radius
                               child: ClipOval(
                                 child: SizedBox.fromSize(
                                   size:
-                                      const Size.fromRadius(39), // Image radius
+                                      const Size.fromRadius(34), // Image radius
                                   child: Image.asset(imageList[index]),
                                 ),
                               ),
                             ),
                           ),
-                          MyStyle().mySizebox(),
-                          Text(itemList[index])
+                          SizedBox(height: 1.vh,),
+                          Text(itemList[index],)
                         ],
                       )),
                 ),
@@ -604,24 +621,33 @@ class _RecommendState extends State<Recommend> {
                   child: GestureDetector(
                       onTap: () {
                         debugPrint('you click index $index');
+                        Route route = MaterialPageRoute(
+                          builder: (context) => LandmarkSearch(
+                            search: itemList2[index],
+                            type: 'type',
+                            provinceModel: widget.provinceModel,
+                          ),
+                        );
+                        Navigator.pushAndRemoveUntil(
+                            context, route, (route) => true);
                       },
                       child: Column(
                         children: [
                           CircleAvatar(
-                            radius: 40,
+                            radius: 35,
                             backgroundColor: Colors.white,
                             child: Padding(
                               padding: const EdgeInsets.all(2), // Border radius
                               child: ClipOval(
                                 child: SizedBox.fromSize(
                                   size:
-                                      const Size.fromRadius(39), // Image radius
-                                  child: Image.asset(imageList2[index]),
+                                      const Size.fromRadius(34), // Image radius
+                                  child: Image.asset(imageList2[index],),
                                 ),
                               ),
                             ),
                           ),
-                          MyStyle().mySizebox(),
+                         SizedBox(height: 1.vh,),
                           Text(itemList2[index])
                         ],
                       )),

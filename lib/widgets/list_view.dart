@@ -293,7 +293,8 @@ class _ListviewState extends State<Listview> {
                                 Expanded(
                                   //flex: 1,
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       OutlinedButton(
                                         style: OutlinedButton.styleFrom(
@@ -355,11 +356,10 @@ class _ListviewState extends State<Listview> {
                                         onPressed: () {
                                           if (widget.userId.isEmpty) {
                                             MyAlertDialog().showAlertDialog(
-                                              Icons.error_outline_outlined,
                                               context,
-                                              'กรุณาเข้าสู่ระบบ',
                                               'กรุณาเข้าสู่ระบบก่อนที่จะให้ Appนำทางไปยังแหล่งท่องเที่ยว',
                                               'ตกลง',
+                                              'ยกเลิก',
                                               () {
                                                 Navigator.pop(context);
                                                 MaterialPageRoute route =

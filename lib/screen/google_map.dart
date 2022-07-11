@@ -202,11 +202,10 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
                         onPressed: () {
                           if (widget.userId.isEmpty) {
                             MyAlertDialog().showAlertDialog(
-                              Icons.error_outline_outlined,
                               context,
-                              'กรุณาเข้าสู่ระบบ',
                               'กรุณาเข้าสู่ระบบก่อนที่จะให้ Appนำทางไปยังแหล่งท่องเที่ยว',
                               'ตกลง',
+                              'ยกเลิก',
                               () {
                                 Navigator.pop(context);
                                 MaterialPageRoute route = MaterialPageRoute(
@@ -423,11 +422,10 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
                       Navigator.pop(context);
                       if (widget.userId.isEmpty) {
                         MyAlertDialog().showAlertDialog(
-                          Icons.error_outline_outlined,
                           context,
-                          'กรุณาเข้าสู่ระบบ',
                           'กรุณาเข้าสู่ระบบก่อนที่จะให้ Appนำทางไปยังแหล่งท่องเที่ยว',
                           'ตกลง',
+                          'ยกเลิก',
                           () {
                             Navigator.pop(context);
                             MaterialPageRoute route = MaterialPageRoute(

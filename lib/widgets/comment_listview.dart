@@ -115,7 +115,7 @@ class _CommentListviewState extends State<CommentListview> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Card(
-                                    color: Colors.grey.shade100,
+                                    color: Colors.grey.shade200,
                                     semanticContainer: true,
                                     clipBehavior: Clip.antiAliasWithSaveLayer,
                                     shape: RoundedRectangleBorder(
@@ -124,7 +124,7 @@ class _CommentListviewState extends State<CommentListview> {
                                         color: Colors.grey.shade200,
                                       ),
                                     ),
-                                    elevation: 1,
+                                    elevation: 5,
                                     child: Container(
                                       margin: const EdgeInsets.all(10),
                                       child: Column(
@@ -139,7 +139,7 @@ class _CommentListviewState extends State<CommentListview> {
                                             style: TextStyle(
                                               // decoration: TextDecoration.underline,
 
-                                              fontSize: 9.0.sp,
+                                              fontSize: 10.0.sp,
                                               fontWeight: FontWeight.bold,
                                               textBaseline:
                                                   TextBaseline.ideographic,
@@ -147,6 +147,9 @@ class _CommentListviewState extends State<CommentListview> {
                                               // fontStyle: FontStyle.italic,
                                               //fontFamily: 'FC-Minimal-Regular',
                                             ),
+                                          ),
+                                          SizedBox(
+                                            height: 0.5.vh,
                                           ),
                                           Text(
                                             '${widget.commentModels[index].commentDetail}',
@@ -259,13 +262,12 @@ class _CommentListviewState extends State<CommentListview> {
                                                         .userid
                                                 ? InkWell(
                                                     onTap: (() {
-                                                      MyAlertDialog().showAlertDialog(
-                                                          Icons
-                                                              .delete_forever_outlined,
-                                                          context,
-                                                          'ลบ',
-                                                          'คุณต้องการลบความคิดเห็นใช่หรือไม่',
-                                                          'ตกลง', () {
+                                                      MyAlertDialog()
+                                                          .showAlertDialog(
+                                                              context,
+                                                              'คุณต้องการลบความคิดเห็นใช่หรือไม่',
+                                                              'ใช่',
+                                                              'ไม่', () {
                                                         List<int> delete = [
                                                           2,
                                                           widget
@@ -296,9 +298,6 @@ class _CommentListviewState extends State<CommentListview> {
                                                     onTap: (() {
                                                       MyAlertDialog().showtDialog(
                                                           context,
-                                                          Icons
-                                                              .error_outline_outlined,
-                                                          'ผิดพลาด',
                                                           'ฟังก์ชันการตอบกลับ ยังไม่พร้อมใช้งาน เนื่องจากคนเขียนแอพขี้เกียจทำ');
                                                       debugPrint(
                                                           'คุณกดปุ่มตอบกลับ');

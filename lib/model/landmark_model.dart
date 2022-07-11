@@ -66,3 +66,31 @@ class LandmarkModel {
     return data;
   }
 }
+    List<String> itemList = [
+      'ทะเล',
+      'ภูเขา',
+      'น้ำตก',
+      'อ่างเก็บน้ำ/เขื่อน',
+      'คาเฟ่',
+    ];
+    List<String> imageList = [
+      'images/beach-icon.png',
+      'images/mountain-icon.png',
+      'images/waterfall-icon.png',
+      'images/dam-icon.png',
+      'images/cafe-icon.png',
+    ];
+    List<String> itemList2 = [
+      'อุทยานแห่งชาติ',
+      'เดินป่า',
+      'แคมป์ปิ้ง',
+      'ประวัติศาสตร์/เมืองโบราณ',
+      'มัสยิด/วัด'
+    ];
+    List<String> imageList2 = [
+      'images/national-park-icon.png',
+      'images/trekking-icon.png',
+      'images/camping-icon.png',
+      'images/history-icon.png',
+      'images/masjid-icon.png'
+    ];

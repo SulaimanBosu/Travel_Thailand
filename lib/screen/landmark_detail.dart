@@ -272,8 +272,8 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
         score = 0;
       });
       debugPrint("ดาวน์โหลดไม่สำเร็จ: $error");
-      MyAlertDialog().showtDialog(context, Icons.error_outline, 'ล้มเหลว',
-          'ไม่พบการเชื่อมต่อเครือข่ายอินเตอร์เน็ต');
+      MyAlertDialog()
+          .showtDialog(context, 'ไม่พบการเชื่อมต่อเครือข่ายอินเตอร์เน็ต');
     }
   }
 
@@ -483,19 +483,38 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                             isSendicon = !isSendicon;
                           });
                         },
-                        icon: Icon(
-                          Icons.camera_alt_outlined,
-                          size: screenwidth * 0.08,
-                          color: Colors.black54,
+                        icon: Padding(
+                          padding: const EdgeInsets.only(left:5.0),
+                          child: ClipOval(
+                                child: SizedBox.fromSize(
+                                  size: const Size.fromRadius(16), // Image radius
+                                  child: CachedNetworkImage(
+                                    imageUrl: MyConstant().domain + profile!,
+                                    progressIndicatorBuilder:
+                                        (context, url, downloadProgress) =>
+                                            MyStyle().showProgress(),
+                                    errorWidget: (context, url, error) =>
+                                        Image.asset('images/iconprofile.png'),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              
+                            
+                          ),
                         ),
+                        //  Icon(
+                        //   Icons.camera_alt_outlined,
+                        //   size: screenwidth * 0.08,
+                        //   color: Colors.black54,
+                        // ),
                       ),
                     ),
                   ),
                   Expanded(
-                    flex: 7,
+                    flex: 5,
                     child: Container(
                       padding:
-                          const EdgeInsets.only(bottom: 25, left: 5, right: 15),
+                          const EdgeInsets.only(bottom: 25, right: 15),
                       color: Colors.white,
                       child: TextField(
                         // buildCounter: (
@@ -573,11 +592,10 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                             onTap: () {
                               if (userid!.isEmpty) {
                                 MyAlertDialog().showAlertDialog(
-                                  Icons.error_outline_outlined,
                                   context,
-                                  'กรุณาเข้าสู่ระบบ',
                                   'ไม่อนุญาติให้ผู้ใช้ที่ไม่ได้ลงทะเบียน เข้ามาแสดงความคิดเห็น',
                                   'ตกลง',
+                                  'ยกเลิก',
                                   () {
                                     Navigator.pop(context);
                                     MaterialPageRoute route = MaterialPageRoute(
@@ -846,15 +864,15 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
           children: [
             Container(
               margin: const EdgeInsets.only(
-                  top: 10, left: 10, right: 10, bottom: 5),
+                  top: 10, left: 20, right: 10, bottom: 5),
               child: Text(
                 commentModel.userFirstName == null
                     ? 'ความคิดเห็นทั้งหมด (0)'
                     : 'ความคิดเห็นทั้งหมด (${commentModels.length})',
                 style: TextStyle(
                   color: Colors.black54,
-                  fontSize: 14.0.sp,
-                  fontFamily: 'FC-Minimal-Regular',
+                  fontSize: 12.0.sp,
+                  //fontFamily: 'FC-Minimal-Regular',
                 ),
                 textAlign: TextAlign.start,
               ),
@@ -873,11 +891,10 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                 onPressed: () {
                   if (userid!.isEmpty) {
                     MyAlertDialog().showAlertDialog(
-                      Icons.error_outline_outlined,
                       context,
-                      'กรุณาเข้าสู่ระบบ',
                       'กรุณาเข้าสู่ระบบก่อนที่จะให้คะแนนแหล่งเที่ยว',
                       'ตกลง',
+                      'ยกเลิก',
                       () {
                         Navigator.pop(context);
                         MaterialPageRoute route = MaterialPageRoute(
@@ -1008,14 +1025,14 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                       borderRadius: BorderRadius.circular(5.0),
                     ),
                     elevation: 5,
-                    child: const Padding(
-                      padding: EdgeInsets.only(
+                    child: Padding(
+                      padding: const EdgeInsets.only(
                           left: 10.0, right: 10, bottom: 10, top: 10),
                       child: Text(
                         'รายละเอียด',
                         style: TextStyle(
                           color: Colors.black54,
-                          fontSize: 24.0,
+                          fontSize: 22.0.sp,
                           fontFamily: 'FC-Minimal-Regular',
                         ),
                         textAlign: TextAlign.left,
@@ -1025,9 +1042,9 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                   MyStyle().mySizebox(),
                   Text(
                     '\t\t\t\t${widget.landmarkModel.landmarkDetail!}',
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Colors.black54,
-                      fontSize: 18.0,
+                      fontSize: 16.0.sp,
                       fontFamily: 'FC-Minimal-Regular',
                     ),
                     //textAlign: TextAlign.left,
@@ -1230,11 +1247,10 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                             onPressed: () {
                               if (userid!.isEmpty) {
                                 MyAlertDialog().showAlertDialog(
-                                  Icons.error_outline_outlined,
                                   context,
-                                  'กรุณาเข้าสู่ระบบ',
                                   'กรุณาเข้าสู่ระบบก่อนที่จะเพิ่มรายการโปรด',
                                   'ตกลง',
+                                  'ยกเลิก',
                                   () {
                                     Navigator.pop(context);
                                     MaterialPageRoute route = MaterialPageRoute(

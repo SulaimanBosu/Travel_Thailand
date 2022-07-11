@@ -68,7 +68,7 @@ class MyStyle {
     // fontWeight: FontWeight.bold,
     color: Colors.black54,
     // fontStyle: FontStyle.italic,
-    fontFamily: 'FC-Minimal-Regular',
+   // fontFamily: 'FC-Minimal-Regular',
   );
 
   TextStyle text2 = const TextStyle(
