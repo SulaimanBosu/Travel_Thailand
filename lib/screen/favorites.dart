@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'package:blurry_modal_progress_hud/blurry_modal_progress_hud.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:progress_indicators/progress_indicators.dart';
 import 'package:project/model/landmark_model.dart';
 import 'package:project/model/province_model.dart';
 import 'package:project/utility/myConstant.dart';
@@ -10,6 +12,7 @@ import 'package:project/widgets/card_view.dart';
 import 'package:project/widgets/drawer.dart';
 import 'package:project/widgets/search.dart';
 import 'package:project/widgets/sliverAppBar.dart';
+import 'package:resize/resize.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Favorites extends StatefulWidget {
@@ -56,8 +59,6 @@ class _FavoritesState extends State<Favorites> {
       });
     });
   }
-
-
 
   Future<void> getPreferences() async {
     preferences = await SharedPreferences.getInstance();
@@ -131,110 +132,126 @@ class _FavoritesState extends State<Favorites> {
   Widget build(BuildContext context) {
     screenwidth = MediaQuery.of(context).size.width;
     screenhight = MediaQuery.of(context).size.height;
-    return Scaffold(
-      key: scaffoldKey,
-      endDrawer: search
-          ? null
-          : isLoading
-              ? null
-              : MyDrawer().showDrawer(context, profile!, name!, lastname!,
-                  email!, widget.provinceModel),
-      body: SafeArea(
-        child: CustomScrollView(
-          shrinkWrap: true,
-          primary: false,
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            search
-                ? SliverToBoxAdapter(child: Container())
-                : isLoading
-                    ? SliverappBar().appbar(
-                        context,
-                        screenwidth,
-                        userid!,
-                        scaffoldKey,
-                        true,
-                        (() => setState(() {
-                              search = true;
-                            })),
-                        search,
-                      )
-                    : SliverappBar().appbar(
-                        context,
-                        screenwidth,
-                        userid!,
-                        scaffoldKey,
-                        false,
-                        (() => setState(() {
-                              search = true;
-                            })),
-                        search,
+    return BlurryModalProgressHUD(
+      inAsyncCall: isLoading,
+      blurEffectIntensity: 4,
+      progressIndicator: Material(
+        type: MaterialType.transparency,
+        child: JumpingDotsProgressIndicator(
+          color: Colors.red,
+          fontSize: 80.0.sp,
+        ),
+      ),
+      dismissible: false,
+      opacity: 0.4,
+      color: Colors.black38,
+      child: Scaffold(
+        key: scaffoldKey,
+        endDrawer: search
+            ? null
+            : isLoading
+                ? null
+                : MyDrawer().showDrawer(context, profile!, name!, lastname!,
+                    email!, widget.provinceModel),
+        body: SafeArea(
+          child: CustomScrollView(
+            shrinkWrap: true,
+            primary: false,
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              search
+                  ? SliverToBoxAdapter(child: Container())
+                  : isLoading
+                      ? SliverappBar().appbar(
+                          context,
+                          screenwidth,
+                          userid!,
+                          scaffoldKey,
+                          true,
+                          (() => setState(() {
+                                search = true;
+                              })),
+                          search,
+                        )
+                      : SliverappBar().appbar(
+                          context,
+                          screenwidth,
+                          userid!,
+                          scaffoldKey,
+                          false,
+                          (() => setState(() {
+                                search = true;
+                              })),
+                          search,
+                        ),
+              CupertinoSliverRefreshControl(
+                onRefresh: _refreshData,
+              ),
+              isLoading
+                  ? SliverToBoxAdapter(
+                      child: Container(
+                        // width: MediaQuery.of(context).size.width,
+                        // height: MediaQuery.of(context).size.height * 0.7,
+                        // child: MyStyle().progress(context),
                       ),
-            CupertinoSliverRefreshControl(
-              onRefresh: _refreshData,
-            ),
-            isLoading
-                ? SliverToBoxAdapter(
-                    child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height * 0.7,
-                        child: MyStyle().progress(context)),
-                  )
-                : landmark.landmarkId == null
-                    ? !search
-                        ? SliverToBoxAdapter(
-                            child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: MediaQuery.of(context).size.height * 0.7,
-                              child: const Center(
-                                child: Text(
-                                  'ไม่พบแหล่งท่องเที่ยว',
-                                  style: TextStyle(
-                                    color: Colors.black54,
-                                    fontSize: 24.0,
-                                    fontFamily: 'FC-Minimal-Regular',
+                    )
+                  : landmark.landmarkId == null
+                      ? !search
+                          ? SliverToBoxAdapter(
+                              child: Container(
+                                width: MediaQuery.of(context).size.width,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.7,
+                                child: const Center(
+                                  child: Text(
+                                    'ไม่พบแหล่งท่องเที่ยว',
+                                    style: TextStyle(
+                                      color: Colors.black54,
+                                      fontSize: 24.0,
+                                      fontFamily: 'FC-Minimal-Regular',
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          )
-                        : SliverToBoxAdapter(
-                            child: Container(
-                                alignment: Alignment.topCenter,
-                                color: Colors.amber,
-                                width: MediaQuery.of(context).size.width,
-                                height: MediaQuery.of(context).size.height,
-                                child: Search(
-                                  onClose: () {
-                                    setState(() {
-                                      search = false;
-                                    });
-                                  },
-                                )),
-                          )
-                    : search
-                        ? SliverToBoxAdapter(
-                            child: Container(
-                                alignment: Alignment.topCenter,
-                                color: Colors.amber,
-                                width: MediaQuery.of(context).size.width,
-                                height: MediaQuery.of(context).size.height,
-                                child: Search(
-                                  onClose: () {
-                                    setState(() {
-                                      search = false;
-                                    });
-                                  },
-                                )),
-                          )
-                        : SliverGrid.extent(
-                            maxCrossAxisExtent: 265,
-                            mainAxisSpacing: 20,
-                            crossAxisSpacing: 10,
-                            childAspectRatio: 1,
-                            children: landmarkCards,
-                          )
-          ],
+                            )
+                          : SliverToBoxAdapter(
+                              child: Container(
+                                  alignment: Alignment.topCenter,
+                                  color: Colors.white,
+                                  width: MediaQuery.of(context).size.width,
+                                  height: MediaQuery.of(context).size.height,
+                                  child: Search(
+                                    onClose: () {
+                                      setState(() {
+                                        search = false;
+                                      });
+                                    },
+                                  )),
+                            )
+                      : search
+                          ? SliverToBoxAdapter(
+                              child: Container(
+                                  alignment: Alignment.topCenter,
+                                  color: Colors.white,
+                                  width: MediaQuery.of(context).size.width,
+                                  height: MediaQuery.of(context).size.height,
+                                  child: Search(
+                                    onClose: () {
+                                      setState(() {
+                                        search = false;
+                                      });
+                                    },
+                                  )),
+                            )
+                          : SliverGrid.extent(
+                              maxCrossAxisExtent: 265,
+                              mainAxisSpacing: 20,
+                              crossAxisSpacing: 10,
+                              childAspectRatio: 1,
+                              children: landmarkCards,
+                            )
+            ],
+          ),
         ),
       ),
     );

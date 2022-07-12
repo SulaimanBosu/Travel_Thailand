@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:progress_indicators/progress_indicators.dart';
 import 'package:project/ProfilePage/profile.dart';
 import 'package:project/widgets/popover.dart';
 import 'package:resize/resize.dart';
@@ -58,17 +59,17 @@ class MyStyle {
   }
 
   TextStyle mainTitle = TextStyle(
-    fontSize: 12.0 .sp,
+    fontSize: 12.0.sp,
     fontWeight: FontWeight.bold,
     color: Colors.black54,
   );
 
   TextStyle mainH2Title = TextStyle(
-    fontSize: 10 .sp,
+    fontSize: 10.sp,
     // fontWeight: FontWeight.bold,
     color: Colors.black54,
     // fontStyle: FontStyle.italic,
-   // fontFamily: 'FC-Minimal-Regular',
+    // fontFamily: 'FC-Minimal-Regular',
   );
 
   TextStyle text2 = const TextStyle(
@@ -98,9 +99,9 @@ class MyStyle {
         ),
       );
 
-  SizedBox mySizebox() => const SizedBox(
+  SizedBox mySizebox() => SizedBox(
         width: 8.0,
-        height: 16.0,
+        height: 1.5.vh,
       );
 
   Widget titleCenter(BuildContext context, String string) {
@@ -352,7 +353,7 @@ class MyStyle {
     Navigator.pushAndRemoveUntil(context, route, (route) => onback);
   }
 
-  void bottomSheet(BuildContext context, String item,String item2, profile,
+  void bottomSheet(BuildContext context, String item, String item2, profile,
       VoidCallback onselect, String title) {
     showModalBottomSheet<int>(
       backgroundColor: Colors.transparent,
@@ -464,7 +465,7 @@ class MyStyle {
                         mainAxisSize: MainAxisSize.max,
                         // ignore: prefer_const_literals_to_create_immutables
                         children: [
-                           Padding(
+                          Padding(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 16.0,
                             ),
@@ -541,6 +542,13 @@ class MyStyle {
     );
   }
 
+  Widget jumpingProgress(BuildContext context) {
+    return JumpingDotsProgressIndicator(
+      color: Colors.red,
+      fontSize: 40.0.sp,
+    );
+  }
+
   Widget progress(BuildContext context) {
     return Container(
         child: Stack(
@@ -585,10 +593,10 @@ class MyStyle {
                 ),
                 Container(
                   margin: const EdgeInsets.only(top: 5.0),
-                  child: const Center(
-                    child: Text(
+                  child: Center(
+                    child: JumpingText(
                       'ดาวน์โหลด...',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 18.0,
                         color: Colors.black45,
                         fontFamily: 'FC-Minimal-Regular',

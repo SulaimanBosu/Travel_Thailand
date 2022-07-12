@@ -352,6 +352,7 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
                             debugPrint('Account');
                           }
                         },
+                        color: Colors.black,
                       ),
                     ),
                   ],

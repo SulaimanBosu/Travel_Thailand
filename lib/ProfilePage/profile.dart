@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:progress_indicators/progress_indicators.dart';
 import 'package:project/ProfilePage/edit_profile.dart';
 import 'package:project/model/province_model.dart';
 import 'package:project/model/user_model.dart';
@@ -19,6 +20,7 @@ import 'package:project/widgets/popup_menu.dart';
 import 'package:project/widgets/sliverAppBar.dart';
 import 'package:resize/resize.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:slidable_button/slidable_button.dart';
 import 'package:user_profile_avatar/user_profile_avatar.dart';
 
 class Profile extends StatefulWidget {
@@ -93,216 +95,221 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     screenwidth = MediaQuery.of(context).size.width;
     screenhight = MediaQuery.of(context).size.height;
-    return
-        // BlurryModalProgressHUD(
-        //   inAsyncCall: isLoading,
-        //   blurEffectIntensity: 2,
-        //   progressIndicator: const CupertinoActivityIndicator(
-        //     animating: true,
-        //     radius: 15,
-        //   ),
-        //   dismissible: false,
-        //   opacity: 0.3,
-        //   color: Colors.white,
-        //   child:
-        Scaffold(
-      backgroundColor: Colors.white,
-      key: scaffoldKey,
-      endDrawer: isLoading
-          ? null
-          : MyDrawer().showDrawer(
-              context, file, name, lastname, email, widget.provinceModel),
-      body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            SliverAppBar(
-              backgroundColor: Colors.white,
-              actions: [
-                PopupMenu(
-                  onselect: (value) {
-                    setState(() {
-                      switch (value) {
-                        case 1:
-                          MyStyle().routeToWidget(
-                              context, const HomeScreen(index: 0), true);
-                          break;
-                        case 2:
-                          MyStyle().routeToWidget(
-                              context, const HomeScreen(index: 4), true);
-                          break;
-                        case 3:
-                          MyStyle().routeToWidget(
-                              context, const HomeScreen(index: 2), true);
-                          break;
-                        case 4:
-                          MyStyle().routeToWidget(context, const Login(), true);
-                          break;
-                        default:
-                          MyStyle().routeToWidget(
-                              context, const HomeScreen(index: 0), true);
-                      }
-
-                      debugPrint('ItemMenu ==== ${value.toString()}');
-                    });
-                  },
-                  item: [
-                    PopupMenuItem<int>(
-                      value: 1,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: const [
-                          Icon(
-                            Icons.home_outlined,
-                            color: Colors.black54,
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Text('หน้าแรก'),
-                        ],
-                      ),
-                    ),
-                    PopupMenuItem<int>(
-                      value: 2,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: const [
-                          Icon(
-                            MdiIcons.accountDetails,
-                            color: Colors.black54,
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Text('โปรไฟล์'),
-                        ],
-                      ),
-                    ),
-                    PopupMenuItem<int>(
-                      value: 3,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: const [
-                          Icon(
-                            Icons.settings,
-                            color: Colors.black54,
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Text('การตั้งค่า'),
-                        ],
-                      ),
-                    ),
-                    PopupMenuItem<int>(
-                      value: 4,
-                      child: Column(
-                        children: [
-                          const Divider(thickness: 1),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Icon(
-                                name == '' || name.isEmpty
-                                    ? Icons.login_outlined
-                                    : Icons.logout_rounded,
-                                color: Colors.red,
-                              ),
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                name == '' || name.isEmpty
-                                    ? 'เข้าสู่ระบบ'
-                                    : 'ออกจากระบบ',
-                                style: const TextStyle(color: Colors.red),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            isLoading
-                ? SliverToBoxAdapter(
-                    child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height * 0.84,
-                        child: MyStyle().progress(context)),
-                  )
-                : onData == false
-                    ? SliverToBoxAdapter(
-                        child: Container(
-                          alignment: Alignment.center,
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height * 0.7,
-                          child: const Login(),
-                        ),
-                      )
-                    : SliverToBoxAdapter(
-                        child: SingleChildScrollView(
-                          child: Stack(
-                            children: [
-                              Column(
-                                children: [
-                                  //  const SizedBox(height: 10,),
-                                  InkWell(
-                                    onTap: () {
-                                      _bottomSheet();
-                                      // navigateSecondPage(const EditProfile());
-                                      // _bottomSheet();
-                                      // showBottomsheet();
-                                      // navigateSecondPage(const EditImagePage());
-                                    },
-                                    child: Stack(
-                                      children: [
-                                        showImageCoverPage(
-                                          context,
-                                        ),
-                                        userprofile(),
-                                      ],
-                                    ),
-                                  ),
-                                  buildUserInfoDisplay(
-                                    name + ' ' + lastname,
-                                    'ชื่อ - สกุล',
-                                    const EditProfile(),
-                                  ),
-                                  buildUserInfoDisplay(
-                                    phone,
-                                    'เบอร์โทร',
-                                    const EditProfile(),
-                                  ),
-                                  buildUserInfoDisplay(
-                                    gender,
-                                    'เพศ',
-                                    const EditProfile(),
-                                  ),
-                                  buildUserInfoDisplay(
-                                    email,
-                                    'อีเมลล์',
-                                    const EditProfile(),
-                                  ),
-                                  signOutMenu(context),
-                                ],
-                              ),
-
-                              // Column(
-                              //   mainAxisAlignment: MainAxisAlignment.end,
-                              //   children: [
-                              //     signOutMenu(context),
-                              //   ],
-                              // ),
-                            ],
-                          ),
-                        ),
-                      )
-          ],
+    return BlurryModalProgressHUD(
+      inAsyncCall: isLoading,
+      blurEffectIntensity: 4,
+      progressIndicator: Material(
+        type: MaterialType.transparency,
+        child: JumpingDotsProgressIndicator(
+          color: Colors.red,
+          fontSize: 80.0.sp,
         ),
-        //       ),
+      ),
+      dismissible: false,
+      opacity: 0.4,
+      color: Colors.black38,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        key: scaffoldKey,
+        endDrawer: isLoading
+            ? null
+            : MyDrawer().showDrawer(
+                context, file, name, lastname, email, widget.provinceModel),
+        body: SafeArea(
+          child: CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                backgroundColor: Colors.white,
+                actions: [
+                  PopupMenu(
+                    onselect: (value) {
+                      setState(() {
+                        switch (value) {
+                          case 1:
+                            MyStyle().routeToWidget(
+                                context, const HomeScreen(index: 0), true);
+                            break;
+                          case 2:
+                            MyStyle().routeToWidget(
+                                context, const HomeScreen(index: 4), true);
+                            break;
+                          case 3:
+                            MyStyle().routeToWidget(
+                                context, const HomeScreen(index: 2), true);
+                            break;
+                          case 4:
+                            MyStyle()
+                                .routeToWidget(context, const Login(), true);
+                            break;
+                          default:
+                            MyStyle().routeToWidget(
+                                context, const HomeScreen(index: 0), true);
+                        }
+
+                        debugPrint('ItemMenu ==== ${value.toString()}');
+                      });
+                    },
+                    item: [
+                      PopupMenuItem<int>(
+                        value: 1,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: const [
+                            Icon(
+                              Icons.home_outlined,
+                              color: Colors.black54,
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Text('หน้าแรก'),
+                          ],
+                        ),
+                      ),
+                      PopupMenuItem<int>(
+                        value: 2,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: const [
+                            Icon(
+                              MdiIcons.accountDetails,
+                              color: Colors.black54,
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Text('โปรไฟล์'),
+                          ],
+                        ),
+                      ),
+                      PopupMenuItem<int>(
+                        value: 3,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: const [
+                            Icon(
+                              Icons.settings,
+                              color: Colors.black54,
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Text('การตั้งค่า'),
+                          ],
+                        ),
+                      ),
+                      PopupMenuItem<int>(
+                        value: 4,
+                        child: Column(
+                          children: [
+                            const Divider(thickness: 1),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Icon(
+                                  name == '' || name.isEmpty
+                                      ? Icons.login_outlined
+                                      : Icons.logout_rounded,
+                                  color: Colors.red,
+                                ),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  name == '' || name.isEmpty
+                                      ? 'เข้าสู่ระบบ'
+                                      : 'ออกจากระบบ',
+                                  style: const TextStyle(color: Colors.red),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              isLoading
+                  ? SliverToBoxAdapter(
+                      child: Container(
+                          // width: MediaQuery.of(context).size.width,
+                          // height: MediaQuery.of(context).size.height * 0.84,
+                          // child: MyStyle().progress(context),
+                          ),
+                    )
+                  : onData == false
+                      ? SliverToBoxAdapter(
+                          child: Container(
+                            alignment: Alignment.center,
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height * 0.7,
+                            child: const Login(),
+                          ),
+                        )
+                      : SliverToBoxAdapter(
+                          child: SingleChildScrollView(
+                            child: Stack(
+                              children: [
+                                Column(
+                                  children: [
+                                    //  const SizedBox(height: 10,),
+                                    InkWell(
+                                      onTap: () {
+                                        _bottomSheet();
+                                        // navigateSecondPage(const EditProfile());
+                                        // _bottomSheet();
+                                        // showBottomsheet();
+                                        // navigateSecondPage(const EditImagePage());
+                                      },
+                                      child: Stack(
+                                        children: [
+                                          showImageCoverPage(
+                                            context,
+                                          ),
+                                          userprofile(),
+                                        ],
+                                      ),
+                                    ),
+                                    buildUserInfoDisplay(
+                                      name + ' ' + lastname,
+                                      'ชื่อ - สกุล',
+                                      const EditProfile(),
+                                    ),
+                                    buildUserInfoDisplay(
+                                      phone,
+                                      'เบอร์โทร',
+                                      const EditProfile(),
+                                    ),
+                                    buildUserInfoDisplay(
+                                      gender,
+                                      'เพศ',
+                                      const EditProfile(),
+                                    ),
+                                    buildUserInfoDisplay(
+                                      email,
+                                      'อีเมลล์',
+                                      const EditProfile(),
+                                    ),
+                                   // slideToLogout(),
+                                    signOutMenu(context),
+                                  ],
+                                ),
+
+                                // Column(
+                                //   mainAxisAlignment: MainAxisAlignment.end,
+                                //   children: [
+                                //     signOutMenu(context),
+                                //   ],
+                                // ),
+                              ],
+                            ),
+                          ),
+                        )
+            ],
+          ),
+          //       ),
+        ),
       ),
     );
   }
@@ -395,7 +402,7 @@ class _ProfileState extends State<Profile> {
               height: 1,
             ),
             Container(
-              width: 95 .vw,
+              width: 95.vw,
               height: screenhight * 0.055,
               decoration: const BoxDecoration(
                 border: Border(
@@ -415,7 +422,7 @@ class _ProfileState extends State<Profile> {
                     },
                     child: Text(
                       getValue,
-                      style:  TextStyle(fontSize: 14 .sp, height: 1.4),
+                      style: TextStyle(fontSize: 14.sp, height: 1.4),
                     ),
                   ),
                   InkWell(
@@ -434,6 +441,61 @@ class _ProfileState extends State<Profile> {
           ],
         ),
       );
+
+  Widget slideToLogout() {
+    return Column(
+      children: [
+        SizedBox(
+          height: 15.vh,
+        ),
+        HorizontalSlidableButton(
+          border: Border.all(width: 1, color: Colors.black45),
+          tristate: true,
+          initialPosition: SlidableButtonPosition.start,
+          isRestart: true,
+          // disabledColor: Colors.blue,
+          borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+          width: 95.vw,
+          height: 7.vh,
+          buttonWidth: 60.0,
+          color: Colors.grey.shade200,
+          buttonColor: const Color(0xffd60000),
+          dismissible: true,
+          label: const Center(
+              child: Icon(
+            Icons.power_settings_new,
+            color: Colors.white,
+            size: 40.0,
+            semanticLabel: 'Text to announce in accessibility modes',
+          )),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Text(
+                  'Slide to Logout',
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontSize: 20.0,
+                    fontFamily: 'FC-Minimal-Regular',
+                  ),
+                ),
+              ],
+            ),
+          ),
+          onChanged: (position) {
+            if (position == SlidableButtonPosition.end) {
+              signOutProcess(context);
+            }
+          },
+        ),
+        SizedBox(
+          height: 3.vh,
+        ),
+      ],
+    );
+  }
 
   Widget signOutMenu(BuildContext context) {
     return Padding(

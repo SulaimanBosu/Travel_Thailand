@@ -57,7 +57,7 @@ class BuildListviewLandmark extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                       side: BorderSide.none),
-                 // margin: const EdgeInsets.only(bottom: 5.0),
+                  // margin: const EdgeInsets.only(bottom: 5.0),
 
                   //  elevation: 5,
                   //  color: Colors.grey[300],
@@ -69,7 +69,7 @@ class BuildListviewLandmark extends StatelessWidget {
                         clipBehavior: Clip.antiAliasWithSaveLayer,
                         child: CachedNetworkImage(
                           width: screenwidth,
-                          height:13.mv,
+                          height: 13.mv,
                           imageUrl: listLandmark[index].imagePath!,
                           progressIndicatorBuilder:
                               (context, url, downloadProgress) =>
@@ -90,13 +90,16 @@ class BuildListviewLandmark extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            MyStyle().mySizebox(),
+                            SizedBox(
+                              width: 8.0,
+                              height: 1.5.vh,
+                            ),
                             Text(
                               listLandmark[index].landmarkName!,
                               style: TextStyle(
                                 color: Colors.black54,
                                 fontWeight: FontWeight.bold,
-                                fontSize: 14.0.sp,
+                                fontSize: 13.0.sp,
                                 fontFamily: 'FC-Minimal-Regular',
                               ),
                               textAlign: TextAlign.start,
@@ -106,7 +109,7 @@ class BuildListviewLandmark extends StatelessWidget {
                               'จังหวัด ${listLandmark[index].provinceName}',
                               style: TextStyle(
                                 color: Colors.black45,
-                                fontSize: 12.0.sp,
+                                fontSize: 11.0.sp,
                                 fontFamily: 'FC-Minimal-Regular',
                               ),
                             ),
@@ -157,7 +160,7 @@ class BuildListviewLandmark extends StatelessWidget {
                                   'View ${listLandmark[index].landmarkView}',
                                   style: TextStyle(
                                     color: Colors.black45,
-                                    fontSize: 10.0.sp,
+                                    fontSize: 9.0.sp,
                                     fontFamily: 'FC-Minimal-Regular',
                                   ),
                                 ),

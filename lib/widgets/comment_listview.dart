@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:project/model/comment_model.dart';
+import 'package:project/screen/login.dart';
 import 'package:project/utility/alert_dialog.dart';
 import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
@@ -206,39 +207,74 @@ class _CommentListviewState extends State<CommentListview> {
                                               width: screenwidth * 0.025,
                                             ),
                                             InkWell(
-                                              onTap: () => setState(() {
-                                                if (widget.commentModels[index]
-                                                        .isLike ==
-                                                    true) {
-                                                  widget.commentModels[index]
-                                                      .isLike = false;
-                                                  widget.commentModels[index]
-                                                      .likeCount = (widget
-                                                          .commentModels[index]
-                                                          .likeCount! -
-                                                      1);
-                                                  List<int> like = [
-                                                    0,
-                                                    widget.commentModels[index]
-                                                        .commentid!
-                                                  ];
-                                                  widget.onLike(like);
+                                              onTap: () {
+                                                if (widget.userid.isEmpty) {
+                                                  MyAlertDialog()
+                                                      .showAlertDialog(
+                                                    context,
+                                                    'กรุณาเข้าสู่ระบบ',
+                                                    'ตกลง',
+                                                    'ยกเลิก',
+                                                    () {
+                                                      Navigator.pop(context);
+                                                      MaterialPageRoute route =
+                                                          MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            const Login(),
+                                                      );
+                                                      Navigator.push(
+                                                              context, route)
+                                                          .then((value) {});
+                                                    },
+                                                  );
                                                 } else {
-                                                  widget.commentModels[index]
-                                                      .isLike = true;
-                                                  widget.commentModels[index]
-                                                      .likeCount = (widget
+                                                  setState(() {
+                                                    if (widget
+                                                            .commentModels[
+                                                                index]
+                                                            .isLike ==
+                                                        true) {
+                                                      widget
                                                           .commentModels[index]
-                                                          .likeCount! +
-                                                      1);
-                                                  List<int> like = [
-                                                    1,
-                                                    widget.commentModels[index]
-                                                        .commentid!
-                                                  ];
-                                                  widget.onLike(like);
+                                                          .isLike = false;
+                                                      widget
+                                                          .commentModels[index]
+                                                          .likeCount = (widget
+                                                              .commentModels[
+                                                                  index]
+                                                              .likeCount! -
+                                                          1);
+                                                      List<int> like = [
+                                                        0,
+                                                        widget
+                                                            .commentModels[
+                                                                index]
+                                                            .commentid!
+                                                      ];
+                                                      widget.onLike(like);
+                                                    } else {
+                                                      widget
+                                                          .commentModels[index]
+                                                          .isLike = true;
+                                                      widget
+                                                          .commentModels[index]
+                                                          .likeCount = (widget
+                                                              .commentModels[
+                                                                  index]
+                                                              .likeCount! +
+                                                          1);
+                                                      List<int> like = [
+                                                        1,
+                                                        widget
+                                                            .commentModels[
+                                                                index]
+                                                            .commentid!
+                                                      ];
+                                                      widget.onLike(like);
+                                                    }
+                                                  });
                                                 }
-                                              }),
+                                              },
                                               child: Text(
                                                 'ถูกใจ',
                                                 overflow: TextOverflow.ellipsis,
@@ -295,13 +331,39 @@ class _CommentListviewState extends State<CommentListview> {
                                                     ),
                                                   )
                                                 : InkWell(
-                                                    onTap: (() {
-                                                      MyAlertDialog().showtDialog(
+                                                    onTap: () {
+                                                      if (widget
+                                                          .userid.isEmpty) {
+                                                        MyAlertDialog()
+                                                            .showAlertDialog(
                                                           context,
-                                                          'ฟังก์ชันการตอบกลับ ยังไม่พร้อมใช้งาน เนื่องจากคนเขียนแอพขี้เกียจทำ');
-                                                      debugPrint(
-                                                          'คุณกดปุ่มตอบกลับ');
-                                                    }),
+                                                          'กรุณาเข้าสู่ระบบ',
+                                                          'ตกลง',
+                                                          'ยกเลิก',
+                                                          () {
+                                                            Navigator.pop(
+                                                                context);
+                                                            MaterialPageRoute
+                                                                route =
+                                                                MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  const Login(),
+                                                            );
+                                                            Navigator.push(
+                                                                    context,
+                                                                    route)
+                                                                .then(
+                                                                    (value) {});
+                                                          },
+                                                        );
+                                                      } else {
+                                                        MyAlertDialog().showtDialog(
+                                                            context,
+                                                            'ฟังก์ชันการตอบกลับ ยังไม่พร้อมใช้งาน เนื่องจากคนเขียนแอพขี้เกียจทำ');
+                                                        debugPrint(
+                                                            'คุณกดปุ่มตอบกลับ');
+                                                      }
+                                                    },
                                                     child: Text(
                                                       'ตอบกลับ',
                                                       overflow:

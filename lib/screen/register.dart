@@ -97,6 +97,7 @@ class _RegisterState extends State<Register> {
             icon: MdiIcons.facebookMessenger,
             iconSize: 30,
             onPressed: () => debugPrint('facebookMessenger'),
+            color: Colors.black,
           ),
         ],
         centerTitle: true,
@@ -720,12 +721,13 @@ class _RegisterState extends State<Register> {
           FormData formDataCoverPage = FormData.fromMap(map);
           await Dio().post(url, data: formDataCoverPage).then((value) {
             debugPrint('coverPagefile ==>> $value');
-            urlCoverPage = '/application/backend/imageCoverPage/$imageCoverPageName';
+            urlCoverPage =
+                '/application/backend/imageCoverPage/$imageCoverPageName';
           });
         }
-        uploadData(context, urlImage,urlCoverPage);
+        uploadData(context, urlImage, urlCoverPage);
       } else {
-        uploadData(context, urlImage,urlCoverPage);
+        uploadData(context, urlImage, urlCoverPage);
       }
     } catch (e) {
       debugPrint('อัพโหลดไม่สำเร็จ === ${e.toString()}');
@@ -742,7 +744,8 @@ class _RegisterState extends State<Register> {
     String imageProfile,
     String imageCoverPage,
   ) async {
-    debugPrint('imageCoverPage>>>>>>>>>>>>>>>>>>>>>>>> === ${imageCoverPage.toString()}');
+    debugPrint(
+        'imageCoverPage>>>>>>>>>>>>>>>>>>>>>>>> === ${imageCoverPage.toString()}');
     String url = '${MyConstant().domain}/application/registerdata_post.php';
     FormData formData = FormData.fromMap(
       {

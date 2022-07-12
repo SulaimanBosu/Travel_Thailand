@@ -457,6 +457,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.2.4"
+  progress_indicators:
+    dependency: "direct main"
+    description:
+      name: progress_indicators
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
   resize:
     dependency: "direct main"
     description:
@@ -546,6 +553,20 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
+  slidable_button:
+    dependency: "direct main"
+    description:
+      name: slidable_button
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0+1"
+  slider_side_menu:
+    dependency: "direct main"
+    description:
+      name: slider_side_menu
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.0"
   source_span:
     dependency: transitive
     description:

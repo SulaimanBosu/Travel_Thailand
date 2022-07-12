@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui';
+import 'package:blurry_modal_progress_hud/blurry_modal_progress_hud.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,10 +13,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:location/location.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:progress_indicators/progress_indicators.dart';
 import 'package:project/model/comment_model.dart';
 import 'package:project/model/landmark_model.dart';
 import 'package:project/screen/full_image.dart';
 import 'package:project/screen/google_map.dart';
+import 'package:project/screen/home_screen.dart';
 import 'package:project/screen/login.dart';
 import 'package:project/utility/alert_dialog.dart';
 import 'package:project/utility/myConstant.dart';
@@ -25,6 +28,7 @@ import 'package:project/widgets/buildListview_landmark.dart';
 import 'package:project/widgets/comment_listview.dart';
 import 'package:resize/resize.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:slider_side_menu/slider_side_menu.dart';
 
 class LandmarkDetail extends StatefulWidget {
   const LandmarkDetail({
@@ -336,7 +340,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
     try {
       await Dio().post(urlcomment, data: getcomment).then((value) {
         var result = json.decode(value.data);
-        debugPrint('Comment Data == $result');
+        // debugPrint('Comment Data == $result');
         commentModels.clear();
         commentdate.clear();
         for (var map in result) {
@@ -407,7 +411,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
       );
       await Dio().post(urlFavorites, data: getFavorites).then((value) {
         var result = json.decode(value.data);
-        debugPrint('Comment == $result');
+        debugPrint('addComment == $result');
         String success = result['success'];
         if (success == '1') {
           setState(() {
@@ -442,22 +446,38 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
   Widget build(BuildContext context) {
     screenwidth = MediaQuery.of(context).size.width;
     screenhight = MediaQuery.of(context).size.height;
-    return Scaffold(
-      bottomSheet: buildBottomSheet(),
-      backgroundColor: Colors.white,
-      body: isLocation
-          ? Stack(
-              children: [
-                bodywidget(context),
-                const Center(
-                  child: CupertinoActivityIndicator(
-                    animating: true,
-                    radius: 15,
-                  ),
-                ),
-              ],
-            )
-          : bodywidget(context),
+    return BlurryModalProgressHUD(
+      inAsyncCall: isLocation,
+      blurEffectIntensity: 4,
+      progressIndicator: Material(
+        type: MaterialType.transparency,
+        child: JumpingDotsProgressIndicator(
+          color: Colors.red,
+          fontSize: 80.0.sp,
+        ),
+      ),
+      dismissible: false,
+      opacity: 0.4,
+      color: Colors.black38,
+      child: Scaffold(
+        bottomSheet: buildBottomSheet(),
+        backgroundColor: Colors.white,
+        body:
+            //  isLocation
+            //     ? Stack(
+            //         children: [
+            //           bodywidget(context),
+            //           const Center(
+            //             child: CupertinoActivityIndicator(
+            //               animating: true,
+            //               radius: 15,
+            //             ),
+            //           ),
+            //         ],
+            //       )
+            //     :
+            bodywidget(context),
+      ),
     );
   }
 
@@ -476,45 +496,47 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                 children: [
                   Expanded(
                     flex: 1,
-                    child: Container(
-                      child: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            isSendicon = !isSendicon;
-                          });
-                        },
-                        icon: Padding(
-                          padding: const EdgeInsets.only(left:5.0),
+                    child: InkWell(
+                      onTap: () {
+                        MaterialPageRoute route = MaterialPageRoute(
+                            builder: (value) => const HomeScreen(
+                                  index: 4,
+                                ));
+                        Navigator.push(context, route);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: CircleAvatar(
+                          foregroundColor: Colors.black45,
+                          backgroundColor: Colors.black45,
+                          radius: 21,
                           child: ClipOval(
-                                child: SizedBox.fromSize(
-                                  size: const Size.fromRadius(16), // Image radius
-                                  child: CachedNetworkImage(
-                                    imageUrl: MyConstant().domain + profile!,
-                                    progressIndicatorBuilder:
-                                        (context, url, downloadProgress) =>
-                                            MyStyle().showProgress(),
-                                    errorWidget: (context, url, error) =>
-                                        Image.asset('images/iconprofile.png'),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              
-                            
+                            child: SizedBox.fromSize(
+                              size: const Size.fromRadius(20), // Image radius
+                              child: CachedNetworkImage(
+                                imageUrl: MyConstant().domain + profile!,
+                                progressIndicatorBuilder:
+                                    (context, url, downloadProgress) =>
+                                        MyStyle().showProgress(),
+                                errorWidget: (context, url, error) =>
+                                    Image.asset('images/iconprofile.png'),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
                           ),
                         ),
-                        //  Icon(
-                        //   Icons.camera_alt_outlined,
-                        //   size: screenwidth * 0.08,
-                        //   color: Colors.black54,
-                        // ),
                       ),
                     ),
+                    //  Icon(
+                    //   Icons.camera_alt_outlined,
+                    //   size: screenwidth * 0.08,
+                    //   color: Colors.black54,
+                    // ),
                   ),
                   Expanded(
                     flex: 5,
                     child: Container(
-                      padding:
-                          const EdgeInsets.only(bottom: 25, right: 15),
+                      padding: const EdgeInsets.only(bottom: 25, right: 15),
                       color: Colors.white,
                       child: TextField(
                         // buildCounter: (
@@ -528,6 +550,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                         //   semanticsLabel: 'character count',
                         // ),
                         controller: textfieldControler,
+                        autofocus: false,
                         onChanged: (value) {
                           textComment = value.trim();
                           if (value.isNotEmpty) {
@@ -1012,46 +1035,79 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                 thickness: 10.0,
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(
-                  left: 10.0, right: 10, bottom: 10, top: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Card(
-                    semanticContainer: true,
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    elevation: 5,
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          left: 10.0, right: 10, bottom: 10, top: 10),
-                      child: Text(
-                        'รายละเอียด',
+            Stack(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(
+                      left: 10.0, right: 10, bottom: 10, top: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Card(
+                        semanticContainer: true,
+                        clipBehavior: Clip.antiAliasWithSaveLayer,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                        ),
+                        elevation: 5,
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              left: 10.0, right: 10, bottom: 10, top: 10),
+                          child: Text(
+                            'รายละเอียด',
+                            style: TextStyle(
+                              color: Colors.black54,
+                              fontSize: 22.0.sp,
+                              fontFamily: 'FC-Minimal-Regular',
+                            ),
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
+                      ),
+                      MyStyle().mySizebox(),
+                      Text(
+                        '\t\t\t\t${widget.landmarkModel.landmarkDetail!}',
                         style: TextStyle(
                           color: Colors.black54,
-                          fontSize: 22.0.sp,
+                          fontSize: 16.0.sp,
                           fontFamily: 'FC-Minimal-Regular',
                         ),
-                        textAlign: TextAlign.left,
+                        //textAlign: TextAlign.left,
                       ),
-                    ),
+                    ],
                   ),
-                  MyStyle().mySizebox(),
-                  Text(
-                    '\t\t\t\t${widget.landmarkModel.landmarkDetail!}',
-                    style: TextStyle(
-                      color: Colors.black54,
-                      fontSize: 16.0.sp,
-                      fontFamily: 'FC-Minimal-Regular',
-                    ),
-                    //textAlign: TextAlign.left,
-                  ),
-                ],
-              ),
+                ),
+                // SliderSideMenu(
+                //   direction :Direction.RTL,
+                //   childrenData: [
+                //     MenuItem(
+                //         const Icon(
+                //           Icons.thumb_up,
+                //           color: Colors.white,
+                //         ),
+                //         const Text(
+                //           "ถูกใจ",
+                //           style: TextStyle(color: Colors.white),
+                //         ),
+                //         onPressed: () {}),
+                //     MenuItem(
+                //         const Icon(
+                //           Icons.thumb_down,
+                //           color: Colors.white,
+                //         ),
+                //         const Text(
+                //           "ไม่ถูกใจ",
+                //           style: TextStyle(color: Colors.white),
+                //           textAlign: TextAlign.center,
+                //         ),
+                //         onPressed: () {})
+                //   ],
+                //   description: "Sample tooltip message",
+                //   parentStartColor: Colors.red,
+                // )
+              ],
             ),
+
             InkWell(
               onTap: () {
                 if (lat == 0 && lng == 0) {

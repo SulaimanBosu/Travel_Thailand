@@ -250,7 +250,7 @@ class _LandmarkSearchState extends State<LandmarkSearch> {
                           } else {
                             debugPrint('Account');
                           }
-                        },
+                        }, color: Colors.black,
                       ),
                     ),
                   ],

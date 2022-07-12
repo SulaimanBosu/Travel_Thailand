@@ -12,6 +12,9 @@ import 'package:project/utility/my_style.dart';
 import 'package:project/utility/signout_process.dart';
 import 'package:project/widgets/icon_button.dart';
 import 'package:project/widgets/popup_menu.dart';
+import 'package:resize/resize.dart';
+import 'package:slidable_button/slidable_button.dart';
+import 'package:slider_side_menu/slider_side_menu.dart';
 
 class MyDrawer {
   int indexValue = 0;
@@ -503,7 +506,56 @@ class MyDrawer {
               Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  signOutMenu(context),
+                  HorizontalSlidableButton(
+                    border: Border.all(
+                        width: 1,
+                        color: Colors
+                            .black45 //                   <--- border width here
+                        ),
+                    tristate: true,
+                    initialPosition: SlidableButtonPosition.start,
+                    isRestart: true,
+                    disabledColor: Colors.blue,
+                    borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                    width: 65.vw,
+                    height: 7.vh,
+                    buttonWidth: 60.0,
+                    color: Colors.grey.shade200,
+                    buttonColor: const Color(0xffd60000),
+                    dismissible: true,
+                    label: const Center(
+                        child: Icon(
+                      Icons.power_settings_new,
+                      color: Colors.white,
+                      size: 40.0,
+                      semanticLabel: 'Text to announce in accessibility modes',
+                    )),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Text(
+                            'Slide to Logout',
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontSize: 20.0,
+                              fontFamily: 'FC-Minimal-Regular',
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    onChanged: (position) {
+                      if (position == SlidableButtonPosition.end) {
+                        signOutProcess(context);
+                      }
+                    },
+                  ),
+                  SizedBox(
+                    height: 5.vh,
+                  ),
+                  // signOutMenu(context),
                 ],
               ),
             ],

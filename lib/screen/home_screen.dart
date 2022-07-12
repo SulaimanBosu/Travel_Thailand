@@ -1,10 +1,12 @@
 import 'dart:convert';
 
+import 'package:blurry_modal_progress_hud/blurry_modal_progress_hud.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:progress_indicators/progress_indicators.dart';
 import 'package:project/model/province_model.dart';
 import 'package:project/model/user_model.dart';
 import 'package:project/screen/favorites.dart';
@@ -15,6 +17,7 @@ import 'package:project/ProfilePage/profile.dart';
 import 'package:project/screen/recommend.dart';
 import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
+import 'package:resize/resize.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -179,11 +182,26 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return !isDelay
-        ? Scaffold(
-            body: Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-                child: MyStyle().progress(context)),
+        ? BlurryModalProgressHUD(
+            inAsyncCall: !isDelay,
+            blurEffectIntensity: 4,
+            progressIndicator: Material(
+              type: MaterialType.transparency,
+              child: JumpingDotsProgressIndicator(
+                color: Colors.red,
+                fontSize: 80.0.sp,
+              ),
+            ),
+            dismissible: false,
+            opacity: 0.4,
+            color: Colors.black38,
+            child: Scaffold(
+              body: Container(
+                // width: MediaQuery.of(context).size.width,
+                // height: MediaQuery.of(context).size.height,
+                // child: MyStyle().progress(context),
+              ),
+            ),
           )
         : Scaffold(
             body: listwidgets[indexPage],

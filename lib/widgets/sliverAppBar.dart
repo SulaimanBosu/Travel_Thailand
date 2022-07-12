@@ -8,6 +8,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:project/model/landmark_model.dart';
 import 'package:project/screen/landmark_detail.dart';
 import 'package:project/screen/login.dart';
+import 'package:project/utility/alert_dialog.dart';
 import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
 import 'package:project/widgets/icon_button.dart';
@@ -16,16 +17,16 @@ typedef StringVoidFunc = void Function(String);
 
 class SliverappBar {
   Widget appbar(
-      BuildContext context,
-      double screenwidth,
-      String? userid,
-      var scaffoldKey,
-      bool isLoading,
-      VoidCallback onPressed,
-      bool search,
-     // VoidCallback onTap,
-      // StringVoidFunc onValueChanged,
-     ) {
+    BuildContext context,
+    double screenwidth,
+    String? userid,
+    var scaffoldKey,
+    bool isLoading,
+    VoidCallback onPressed,
+    bool search,
+    // VoidCallback onTap,
+    // StringVoidFunc onValueChanged,
+  ) {
     TextEditingController textControllor = TextEditingController();
     return SliverAppBar(
       backgroundColor: Colors.white,
@@ -129,7 +130,7 @@ class SliverappBar {
                   } else {
                     debugPrint('search');
                   }
-                }),
+                }, color: Colors.black,),
         search
             ? Container()
             : CircleButton(
@@ -140,12 +141,14 @@ class SliverappBar {
                     if (userid == '') {
                       MyStyle().routeToWidget(context, const Login(), true);
                     } else {
+                      MyAlertDialog().showtDialog(context,
+                          'ปุ่มยังไม่พร้อมใช้งาน เนื่องจากคนเขียนแอพขี้เกียจทำ รอไปก่อนน่ะ');
                       debugPrint('facebookMessenger');
                     }
                   } else {
                     debugPrint('facebookMessenger');
                   }
-                }),
+                }, color: Colors.black,),
         search
             ? Container()
             : CircleButton(
@@ -161,7 +164,7 @@ class SliverappBar {
                   } else {
                     debugPrint('Account');
                   }
-                },
+                },color: Colors.black,
               )
       ],
     );
