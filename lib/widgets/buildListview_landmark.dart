@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:project/model/landmark_model.dart';
+import 'package:project/model/province_model.dart';
 import 'package:project/screen/landmark_detail.dart';
 import 'package:project/utility/my_style.dart';
 import 'package:resize/resize.dart';
@@ -28,7 +29,7 @@ class BuildListviewLandmark extends StatelessWidget {
         width: screenwidth,
         height: 22.vh,
         child: ListView.builder(
-          itemCount: listLandmark.length,
+          itemCount: listLandmark.length <= 10 ? listLandmark.length : 10,
           scrollDirection: Axis.horizontal,
           itemBuilder: (context, index) {
             return Container(

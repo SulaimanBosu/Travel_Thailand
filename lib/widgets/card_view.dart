@@ -82,7 +82,7 @@ class _CardViewState extends State<CardView> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 3 .vh,),
+                    SizedBox(height: 2.5 .vh,),
                     Text(
                       widget.landmarkModel.landmarkName!,
                       style:  TextStyle(

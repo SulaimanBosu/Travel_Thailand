@@ -38,3 +38,5 @@ class ProvinceModel {
     return data;
   }
 }
+
+ List<ProvinceModel> provinceModel = [];

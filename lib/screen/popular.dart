@@ -111,13 +111,13 @@ class _PopularState extends State<Popular> {
   // }
 
   Future<void> readlandmark() async {
-    // Location location = Location();
-    // LocationData locationData = await location.getLocation();
-    // location.enableBackgroundMode(enable: true);
-    // lat1 = locationData.latitude!;
-    // lng1 = locationData.longitude!;
-    lat1 = 13.602098;
-    lng1 = 100.624933;
+    Location location = Location();
+    LocationData locationData = await location.getLocation();
+    location.enableBackgroundMode(enable: true);
+    lat1 = locationData.latitude!;
+    lng1 = locationData.longitude!;
+    // lat1 = 13.602098;
+    // lng1 = 100.624933;
 
     debugPrint('latitude ============ ${lat1.toString()}');
     debugPrint('longitude ============ ${lng1.toString()}');
@@ -196,8 +196,13 @@ class _PopularState extends State<Popular> {
             ? null
             : isLoading
                 ? null
-                : MyDrawer().showDrawer(context, profile!, name!, lastname!,
-                    email!, widget.provinceModel),
+                : MyDrawer().showDrawer(
+                    context,
+                    profile!,
+                    name!,
+                    lastname!,
+                    email!,
+                  ),
         body: SafeArea(
           child: CustomScrollView(
             shrinkWrap: true,
@@ -235,10 +240,10 @@ class _PopularState extends State<Popular> {
               isLoading
                   ? SliverToBoxAdapter(
                       child: Container(
-                        // width: MediaQuery.of(context).size.width,
-                        // height: MediaQuery.of(context).size.height * 0.7,
-                        // child: MyStyle().progress(context),
-                      ),
+                          // width: MediaQuery.of(context).size.width,
+                          // height: MediaQuery.of(context).size.height * 0.7,
+                          // child: MyStyle().progress(context),
+                          ),
                     )
                   : popularlandmarks.isEmpty
                       ? !search

@@ -181,8 +181,13 @@ class _LandmarkState extends State<Landmark> {
             ? null
             : isLoading
                 ? null
-                : MyDrawer().showDrawer(context, profile!, name!, lastname!,
-                    email!, widget.provinceModel),
+                : MyDrawer().showDrawer(
+                    context,
+                    profile!,
+                    name!,
+                    lastname!,
+                    email!,
+                  ),
         body: SafeArea(
           child: CustomScrollView(
             shrinkWrap: true,
@@ -220,10 +225,10 @@ class _LandmarkState extends State<Landmark> {
               isLoading
                   ? SliverToBoxAdapter(
                       child: Container(
-                        // width: MediaQuery.of(context).size.width,
-                        // height: MediaQuery.of(context).size.height * 0.7,
-                        // child: MyStyle().progress(context),
-                      ),
+                          // width: MediaQuery.of(context).size.width,
+                          // height: MediaQuery.of(context).size.height * 0.7,
+                          // child: MyStyle().progress(context),
+                          ),
                     )
                   : landmarks.isEmpty
                       ? !search

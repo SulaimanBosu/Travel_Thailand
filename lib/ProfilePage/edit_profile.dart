@@ -8,10 +8,12 @@ import 'package:path/path.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:progress_indicators/progress_indicators.dart';
 import 'package:project/ProfilePage/profile.dart';
 import 'package:project/model/user_model.dart';
 import 'package:project/screen/home_screen.dart';
 import 'package:project/screen/login.dart';
+import 'package:project/utility/alert_dialog.dart';
 import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
 import 'package:project/widgets/popover.dart';
@@ -153,7 +155,9 @@ class _EditProfileState extends State<EditProfile> {
                     routeToSignIn(context, const HomeScreen(index: 4));
                     break;
                   case 3:
-                    routeToSignIn(context, const HomeScreen(index: 2));
+                    MyAlertDialog().showtDialog(context,
+                        'ปุ่มยังไม่พร้อมใช้งาน เนื่องจากคนเขียนแอพขี้เกียจทำ รอไปก่อนน่ะ');
+                    //routeToSignIn(context, const HomeScreen(index: 2));
                     break;
                   case 4:
                     routeToSignIn(context, const Login());
@@ -397,8 +401,16 @@ class _EditProfileState extends State<EditProfile> {
                     progressIndicatorBuilder:
                         (context, url, downloadProgress) =>
                             MyStyle().showProgress(),
-                    errorWidget: (context, url, error) =>
-                        Image.asset('images/iconprofile.png'),
+                    errorWidget: (context, url, error) => Container(
+                      color: Colors.grey.shade300,
+                      child: Container(
+                          margin: EdgeInsets.all(15.vw),
+                          child: Text(
+                            'ไม่มีรูปหน้าปก',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 14.sp),
+                          )),
+                    ),
                     fit: BoxFit.cover,
                   ),
             shape: const RoundedRectangleBorder(
@@ -431,8 +443,8 @@ class _EditProfileState extends State<EditProfile> {
               ),
             )),
           ),
-          right: 7 .vw,
-          bottom: 14 .vh,
+          right: 7.vw,
+          bottom: 14.vh,
         ),
       ],
     );
@@ -668,13 +680,13 @@ class _EditProfileState extends State<EditProfile> {
         setState(() => imageProfile = File(path));
         if (imageProfile != null) {
           final fileName = basename(imageProfile!.path);
-         setState(() => debugPrint('ชื่อรูปภาพ $fileName'));
+          setState(() => debugPrint('ชื่อรูปภาพ $fileName'));
         }
       } else {
         setState(() => coverPagefile = File(path));
         if (coverPagefile != null) {
           final fileName = basename(coverPagefile!.path);
-        setState(() =>  debugPrint('ชื่อรูปภาพ $fileName'));
+          setState(() => debugPrint('ชื่อรูปภาพ $fileName'));
         }
       }
     } catch (e) {
@@ -1261,10 +1273,10 @@ class _EditProfileState extends State<EditProfile> {
                 ),
                 Container(
                   margin: const EdgeInsets.only(top: 5.0),
-                  child: const Center(
-                    child: Text(
+                  child: Center(
+                    child: JumpingText(
                       'กำลังอัพเดต...',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 18.0,
                         color: Colors.black45,
                         fontFamily: 'FC-Minimal-Regular',

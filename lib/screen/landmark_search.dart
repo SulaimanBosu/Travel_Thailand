@@ -15,11 +15,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 class LandmarkSearch extends StatefulWidget {
   const LandmarkSearch({
     Key? key,
-    required this.provinceModel,
     required this.type,
     required this.search,
   }) : super(key: key);
-  final List<ProvinceModel> provinceModel;
   final String type;
   final String search;
   @override
@@ -191,8 +189,13 @@ class _LandmarkSearchState extends State<LandmarkSearch> {
       key: scaffoldKey,
       endDrawer: isLoading
           ? null
-          : MyDrawer().showDrawer(context, profile!, name!, lastname!, email!,
-              widget.provinceModel),
+          : MyDrawer().showDrawer(
+              context,
+              profile!,
+              name!,
+              lastname!,
+              email!,
+            ),
       body: SafeArea(
         child: CustomScrollView(
           shrinkWrap: true,
@@ -250,7 +253,8 @@ class _LandmarkSearchState extends State<LandmarkSearch> {
                           } else {
                             debugPrint('Account');
                           }
-                        }, color: Colors.black,
+                        },
+                        color: Colors.black,
                       ),
                     ),
                   ],

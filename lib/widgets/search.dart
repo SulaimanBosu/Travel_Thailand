@@ -292,8 +292,13 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
       key: scaffoldKey,
       endDrawer: isLoading
           ? null
-          : MyDrawer().showDrawer(context, profile!, name!, lastname!, email!,
-              widget.provinceModel),
+          : MyDrawer().showDrawer(
+              context,
+              profile!,
+              name!,
+              lastname!,
+              email!,
+            ),
       body: SafeArea(
         child: CustomScrollView(
           shrinkWrap: true,

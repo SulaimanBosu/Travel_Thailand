@@ -13,12 +13,14 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:path/path.dart';
+import 'package:progress_indicators/progress_indicators.dart';
 import 'package:project/model/user_model.dart';
 import 'package:project/screen/login.dart';
 import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
 import 'package:project/widgets/icon_button.dart';
 import 'package:project/widgets/popover.dart';
+import 'package:resize/resize.dart';
 
 class Register extends StatefulWidget {
   const Register({Key? key}) : super(key: key);
@@ -316,7 +318,7 @@ class _RegisterState extends State<Register> {
           width: MediaQuery.of(context).size.width * 1,
           height: MediaQuery.of(context).size.height * 0.25,
           child: Card(
-            color: Colors.red,
+            color: Colors.grey.shade200,
             semanticContainer: true,
             clipBehavior: Clip.antiAliasWithSaveLayer,
             child: coverPagefile != null
@@ -324,7 +326,24 @@ class _RegisterState extends State<Register> {
                     coverPagefile!,
                     fit: BoxFit.cover,
                   )
-                : Image.asset('images/addimages1.png'),
+                : InkWell(
+                    onTap: () {
+                      setState(() {
+                        isProfile = false;
+                      });
+                      _bottomSheet(context);
+                    },
+                    child: Container(
+                      color: Colors.grey.shade300,
+                      child: Container(
+                          margin: EdgeInsets.all(15.vw),
+                          child: Text(
+                            'เพิ่มรูปภาพหน้าปก',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 14.sp),
+                          )),
+                    ),
+                  ),
             shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(20),
@@ -1174,10 +1193,10 @@ class _RegisterState extends State<Register> {
                 ),
                 Container(
                   margin: const EdgeInsets.only(top: 5.0),
-                  child: const Center(
-                    child: Text(
+                  child: Center(
+                    child: JumpingText(
                       'กำลังสมัครสมาชิก...',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 18.0,
                         color: Colors.black45,
                         fontFamily: 'FC-Minimal-Regular',

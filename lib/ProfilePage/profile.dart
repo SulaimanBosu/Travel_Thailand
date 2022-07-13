@@ -11,6 +11,7 @@ import 'package:project/model/province_model.dart';
 import 'package:project/model/user_model.dart';
 import 'package:project/screen/home_screen.dart';
 import 'package:project/screen/login.dart';
+import 'package:project/utility/alert_dialog.dart';
 import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
 import 'package:project/utility/signout_process.dart';
@@ -114,119 +115,150 @@ class _ProfileState extends State<Profile> {
         endDrawer: isLoading
             ? null
             : MyDrawer().showDrawer(
-                context, file, name, lastname, email, widget.provinceModel),
+                context,
+                file,
+                name,
+                lastname,
+                email,
+              ),
         body: SafeArea(
           child: CustomScrollView(
             slivers: [
               SliverAppBar(
                 backgroundColor: Colors.white,
                 actions: [
-                  PopupMenu(
-                    onselect: (value) {
-                      setState(() {
-                        switch (value) {
-                          case 1:
-                            MyStyle().routeToWidget(
-                                context, const HomeScreen(index: 0), true);
-                            break;
-                          case 2:
-                            MyStyle().routeToWidget(
-                                context, const HomeScreen(index: 4), true);
-                            break;
-                          case 3:
-                            MyStyle().routeToWidget(
-                                context, const HomeScreen(index: 2), true);
-                            break;
-                          case 4:
-                            MyStyle()
-                                .routeToWidget(context, const Login(), true);
-                            break;
-                          default:
-                            MyStyle().routeToWidget(
-                                context, const HomeScreen(index: 0), true);
-                        }
+                  Container(
+                    margin: const EdgeInsets.all(6.0),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade200,
+                      shape: BoxShape.circle,
+                    ),
+                    child: IconButton(
+                      onPressed: () {
+                        MyAlertDialog().showtDialog(context,
+                            'ปุ่มยังไม่พร้อมใช้งาน เนื่องจากคนเขียนแอพขี้เกียจทำ รอไปก่อนน่ะ');
+                      },
+                      icon: const Icon(
+                        Icons.notifications,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.all(6.0),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade200,
+                      shape: BoxShape.circle,
+                    ),
+                    child: PopupMenu(
+                      onselect: (value) {
+                        setState(() {
+                          switch (value) {
+                            case 1:
+                              MyStyle().routeToWidget(
+                                  context, const HomeScreen(index: 0), true);
+                              break;
+                            case 2:
+                              MyStyle().routeToWidget(
+                                  context, const HomeScreen(index: 4), true);
+                              break;
+                            case 3:
+                              MyAlertDialog().showtDialog(context,
+                                  'ปุ่มยังไม่พร้อมใช้งาน เนื่องจากคนเขียนแอพขี้เกียจทำ รอไปก่อนน่ะ');
+                              // MyStyle().routeToWidget(
+                              //     context, const HomeScreen(index: 2), true);
+                              break;
+                            case 4:
+                              MyStyle()
+                                  .routeToWidget(context, const Login(), true);
+                              break;
+                            default:
+                              MyStyle().routeToWidget(
+                                  context, const HomeScreen(index: 0), true);
+                          }
 
-                        debugPrint('ItemMenu ==== ${value.toString()}');
-                      });
-                    },
-                    item: [
-                      PopupMenuItem<int>(
-                        value: 1,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: const [
-                            Icon(
-                              Icons.home_outlined,
-                              color: Colors.black54,
-                            ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Text('หน้าแรก'),
-                          ],
+                          debugPrint('ItemMenu ==== ${value.toString()}');
+                        });
+                      },
+                      item: [
+                        PopupMenuItem<int>(
+                          value: 1,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: const [
+                              Icon(
+                                Icons.home_outlined,
+                                color: Colors.black54,
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Text('หน้าแรก'),
+                            ],
+                          ),
                         ),
-                      ),
-                      PopupMenuItem<int>(
-                        value: 2,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: const [
-                            Icon(
-                              MdiIcons.accountDetails,
-                              color: Colors.black54,
-                            ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Text('โปรไฟล์'),
-                          ],
+                        PopupMenuItem<int>(
+                          value: 2,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: const [
+                              Icon(
+                                MdiIcons.accountDetails,
+                                color: Colors.black54,
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Text('โปรไฟล์'),
+                            ],
+                          ),
                         ),
-                      ),
-                      PopupMenuItem<int>(
-                        value: 3,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: const [
-                            Icon(
-                              Icons.settings,
-                              color: Colors.black54,
-                            ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Text('การตั้งค่า'),
-                          ],
+                        PopupMenuItem<int>(
+                          value: 3,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: const [
+                              Icon(
+                                Icons.settings,
+                                color: Colors.black54,
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Text('การตั้งค่า'),
+                            ],
+                          ),
                         ),
-                      ),
-                      PopupMenuItem<int>(
-                        value: 4,
-                        child: Column(
-                          children: [
-                            const Divider(thickness: 1),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Icon(
-                                  name == '' || name.isEmpty
-                                      ? Icons.login_outlined
-                                      : Icons.logout_rounded,
-                                  color: Colors.red,
-                                ),
-                                const SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                  name == '' || name.isEmpty
-                                      ? 'เข้าสู่ระบบ'
-                                      : 'ออกจากระบบ',
-                                  style: const TextStyle(color: Colors.red),
-                                ),
-                              ],
-                            ),
-                          ],
+                        PopupMenuItem<int>(
+                          value: 4,
+                          child: Column(
+                            children: [
+                              const Divider(thickness: 1),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Icon(
+                                    name == '' || name.isEmpty
+                                        ? Icons.login_outlined
+                                        : Icons.logout_rounded,
+                                    color: Colors.red,
+                                  ),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+                                  Text(
+                                    name == '' || name.isEmpty
+                                        ? 'เข้าสู่ระบบ'
+                                        : 'ออกจากระบบ',
+                                    style: const TextStyle(color: Colors.red),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -291,7 +323,7 @@ class _ProfileState extends State<Profile> {
                                       'อีเมลล์',
                                       const EditProfile(),
                                     ),
-                                   // slideToLogout(),
+                                    // slideToLogout(),
                                     signOutMenu(context),
                                   ],
                                 ),
@@ -367,8 +399,16 @@ class _ProfileState extends State<Profile> {
             imageUrl: MyConstant().domain + imageCoverPage,
             progressIndicatorBuilder: (context, url, downloadProgress) =>
                 MyStyle().showProgress(),
-            errorWidget: (context, url, error) =>
-                Image.asset('images/iconprofile.png'),
+            errorWidget: (context, url, error) => Container(
+              color: Colors.grey.shade300,
+              child: Container(
+                  margin: EdgeInsets.all(15.vw),
+                  child: Text(
+                    'ไม่มีรูปหน้าปก',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 14.sp),
+                  )),
+            ),
             fit: BoxFit.cover,
           ),
           shape: const RoundedRectangleBorder(

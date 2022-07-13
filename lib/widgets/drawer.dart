@@ -24,7 +24,6 @@ class MyDrawer {
     String name,
     String lastname,
     String email,
-    List<ProvinceModel> province,
   ) =>
       Drawer(
         // shape: const RoundedRectangleBorder(
@@ -309,7 +308,7 @@ class MyDrawer {
                                       ),
                                     ),
                                     children: [
-                                      itemListregian(context, province),
+                                      itemListregian(context),
                                     ],
                                   ),
                                 ),
@@ -344,7 +343,9 @@ class MyDrawer {
                                       ),
                                     ),
                                     children: [
-                                      itemListCategory(context, province),
+                                      itemListCategory(
+                                        context,
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -376,7 +377,7 @@ class MyDrawer {
                                         ),
                                       ),
                                       onTap: () {
-                                        buildBottomPicker(context, province);
+                                        buildBottomPicker(context);
                                       },
                                     ),
                                     ListTile(
@@ -563,7 +564,9 @@ class MyDrawer {
         ),
       );
 
-  Widget itemListCategory(BuildContext context, List<ProvinceModel> province) {
+  Widget itemListCategory(
+    BuildContext context,
+  ) {
     return Card(
       margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
       // shadowColor: Colors.red,
@@ -592,8 +595,7 @@ class MyDrawer {
             onTap: () {
               Navigator.pop(context);
               Route route = MaterialPageRoute(
-                builder: (context) => LandmarkSearch(
-                  provinceModel: province,
+                builder: (context) => const LandmarkSearch(
                   search: 'ทะเล',
                   type: 'type',
                 ),
@@ -617,8 +619,7 @@ class MyDrawer {
             onTap: () {
               Navigator.pop(context);
               Route route = MaterialPageRoute(
-                builder: (context) => LandmarkSearch(
-                  provinceModel: province,
+                builder: (context) => const LandmarkSearch(
                   search: 'ภูเขา',
                   type: 'type',
                 ),
@@ -642,8 +643,7 @@ class MyDrawer {
             onTap: () {
               Navigator.pop(context);
               Route route = MaterialPageRoute(
-                builder: (context) => LandmarkSearch(
-                  provinceModel: province,
+                builder: (context) => const LandmarkSearch(
                   search: 'น้ำตก',
                   type: 'type',
                 ),
@@ -667,8 +667,7 @@ class MyDrawer {
             onTap: () {
               Navigator.pop(context);
               Route route = MaterialPageRoute(
-                builder: (context) => LandmarkSearch(
-                  provinceModel: province,
+                builder: (context) => const LandmarkSearch(
                   search: 'อ่างเก็บน้ำ/เขื่อน',
                   type: 'type',
                 ),
@@ -693,8 +692,7 @@ class MyDrawer {
             onTap: () {
               Navigator.pop(context);
               Route route = MaterialPageRoute(
-                builder: (context) => LandmarkSearch(
-                  provinceModel: province,
+                builder: (context) => const LandmarkSearch(
                   search: 'คาเฟ่',
                   type: 'type',
                 ),
@@ -718,8 +716,7 @@ class MyDrawer {
             onTap: () {
               Navigator.pop(context);
               Route route = MaterialPageRoute(
-                builder: (context) => LandmarkSearch(
-                  provinceModel: province,
+                builder: (context) => const LandmarkSearch(
                   search: 'อุทยานแห่งชาติ',
                   type: 'type',
                 ),
@@ -743,8 +740,7 @@ class MyDrawer {
             onTap: () {
               Navigator.pop(context);
               Route route = MaterialPageRoute(
-                builder: (context) => LandmarkSearch(
-                  provinceModel: province,
+                builder: (context) => const LandmarkSearch(
                   search: 'เดินป่า',
                   type: 'type',
                 ),
@@ -768,8 +764,7 @@ class MyDrawer {
             onTap: () {
               Navigator.pop(context);
               Route route = MaterialPageRoute(
-                builder: (context) => LandmarkSearch(
-                  provinceModel: province,
+                builder: (context) => const LandmarkSearch(
                   search: 'แคมป์ปิ้ง',
                   type: 'type',
                 ),
@@ -793,8 +788,7 @@ class MyDrawer {
             onTap: () {
               Navigator.pop(context);
               Route route = MaterialPageRoute(
-                builder: (context) => LandmarkSearch(
-                  provinceModel: province,
+                builder: (context) => const LandmarkSearch(
                   search: 'ประวัติศาสตร์/เมืองโบราณ',
                   type: 'type',
                 ),
@@ -818,8 +812,7 @@ class MyDrawer {
             onTap: () {
               Navigator.pop(context);
               Route route = MaterialPageRoute(
-                builder: (context) => LandmarkSearch(
-                  provinceModel: province,
+                builder: (context) => const LandmarkSearch(
                   search: 'มัสยิด/วัด',
                   type: 'type',
                 ),
@@ -832,7 +825,7 @@ class MyDrawer {
     );
   }
 
-  Widget itemListregian(BuildContext context, List<ProvinceModel> province) {
+  Widget itemListregian(BuildContext context,) {
     return Card(
       margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
       // shadowColor: Colors.red,
@@ -861,8 +854,7 @@ class MyDrawer {
             onTap: () {
               Navigator.pop(context);
               Route route = MaterialPageRoute(
-                builder: (context) => LandmarkSearch(
-                  provinceModel: province,
+                builder: (context) => const LandmarkSearch(
                   search: '1',
                   type: 'region',
                 ),
@@ -886,8 +878,7 @@ class MyDrawer {
             onTap: () {
               Navigator.pop(context);
               Route route = MaterialPageRoute(
-                builder: (context) => LandmarkSearch(
-                  provinceModel: province,
+                builder: (context) => const LandmarkSearch(
                   search: '2',
                   type: 'region',
                 ),
@@ -911,8 +902,7 @@ class MyDrawer {
             onTap: () {
               Navigator.pop(context);
               Route route = MaterialPageRoute(
-                builder: (context) => LandmarkSearch(
-                  provinceModel: province,
+                builder: (context) => const LandmarkSearch(
                   search: '3',
                   type: 'region',
                 ),
@@ -936,8 +926,7 @@ class MyDrawer {
             onTap: () {
               Navigator.pop(context);
               Route route = MaterialPageRoute(
-                builder: (context) => LandmarkSearch(
-                  provinceModel: province,
+                builder: (context) => const LandmarkSearch(
                   search: '4',
                   type: 'region',
                 ),
@@ -962,8 +951,7 @@ class MyDrawer {
             onTap: () {
               Navigator.pop(context);
               Route route = MaterialPageRoute(
-                builder: (context) => LandmarkSearch(
-                  provinceModel: province,
+                builder: (context) => const LandmarkSearch(
                   search: '5',
                   type: 'region',
                 ),
@@ -987,8 +975,7 @@ class MyDrawer {
             onTap: () {
               Navigator.pop(context);
               Route route = MaterialPageRoute(
-                builder: (context) => LandmarkSearch(
-                  provinceModel: province,
+                builder: (context) => const LandmarkSearch(
                   search: '6',
                   type: 'region',
                 ),
@@ -1001,7 +988,9 @@ class MyDrawer {
     );
   }
 
-  Future buildBottomPicker(BuildContext context, List<ProvinceModel> province) {
+  Future buildBottomPicker(
+    BuildContext context,
+  ) {
     return showCupertinoModalPopup<void>(
       barrierDismissible: true,
       useRootNavigator: true,
@@ -1023,10 +1012,10 @@ class MyDrawer {
               height: 70,
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
-                child: head(context, province),
+                child: head(context, provinceModel),
               ),
             ),
-            _buildBottomPicker(province),
+            _buildBottomPicker(provinceModel),
           ],
         );
       },
@@ -1069,7 +1058,6 @@ class MyDrawer {
             Navigator.pop(context);
             Route route = MaterialPageRoute(
                 builder: (context) => LandmarkSearch(
-                      provinceModel: province,
                       search: '${province[indexValue].provinceName}',
                       type: 'province',
                     ));

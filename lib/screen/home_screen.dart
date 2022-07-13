@@ -39,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
   late int indexPage;
   bool isDelay = false;
   late ProvinceModel model;
-  List<ProvinceModel> provinceModel = [];
+ 
 
   @override
   void initState() {

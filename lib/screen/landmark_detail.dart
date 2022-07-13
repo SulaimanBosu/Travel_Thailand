@@ -16,9 +16,11 @@ import 'package:path_provider/path_provider.dart';
 import 'package:progress_indicators/progress_indicators.dart';
 import 'package:project/model/comment_model.dart';
 import 'package:project/model/landmark_model.dart';
+import 'package:project/model/province_model.dart';
 import 'package:project/screen/full_image.dart';
 import 'package:project/screen/google_map.dart';
 import 'package:project/screen/home_screen.dart';
+import 'package:project/screen/landmark_search.dart';
 import 'package:project/screen/login.dart';
 import 'package:project/utility/alert_dialog.dart';
 import 'package:project/utility/myConstant.dart';
@@ -699,7 +701,8 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                   : BuildListviewLandmark(
                       screenwidth: screenwidth,
                       listLandmark: landmarkProvince,
-                      index: index),
+                      index: index,
+                    ),
           landmarktype.isEmpty
               ? SliverToBoxAdapter(
                   child: Container(),
@@ -723,9 +726,50 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                                 margin:
                                     EdgeInsets.only(left: 20.w, bottom: 0.5.vh),
                                 width: 100.vw,
-                                child: const Text(
-                                  'แหล่งท่องเที่ยวประเภทเดียวกัน',
-                                  style: TextStyle(color: Colors.black54),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'แหล่งท่องเที่ยวประเภทเดียวกัน',
+                                      style: TextStyle(
+                                          color: Colors.black54,
+                                          fontSize: 12.sp),
+                                    ),
+                                    InkWell(
+                                      onTap: () {
+                                        Route route = MaterialPageRoute(
+                                          builder: (context) => LandmarkSearch(
+                                            search: widget.landmarkModel.type!,
+                                            type: 'type',
+                                          ),
+                                        );
+                                        Navigator.pushAndRemoveUntil(
+                                            context, route, (route) => true);
+                                      },
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            'เพิ่มเติม',
+                                            style: TextStyle(
+                                                // decoration: TextDecoration.underline,
+                                                // decorationColor:Colors.black54,
+                                                fontFamily:
+                                                    'FC-Minimal-Regular',
+                                                color: Colors.red,
+                                                fontSize: 14.sp,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          const Icon(
+                                            Icons.keyboard_arrow_right,
+                                            color: Colors.red,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                               // Padding(
@@ -747,7 +791,8 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
               : BuildListviewLandmark(
                   screenwidth: screenwidth,
                   listLandmark: landmarktype,
-                  index: index),
+                  index: index,
+                ),
           commentBar(context),
           isLoading
               ? const SliverToBoxAdapter(
@@ -1213,9 +1258,46 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                         margin: EdgeInsets.only(
                             left: 20.w, bottom: 2.vh, top: 2.vh),
                         width: 100.vw,
-                        child: const Text(
-                          'แหล่งท่องเที่ยวจังหวัดเดียวกัน',
-                          style: TextStyle(color: Colors.black54),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'แหล่งท่องเที่ยวจังหวัดเดียวกัน',
+                              style: TextStyle(
+                                  color: Colors.black54, fontSize: 12.sp),
+                            ),
+                            InkWell(
+                              onTap: () {
+                                Route route = MaterialPageRoute(
+                                  builder: (context) => LandmarkSearch(
+                                    search: widget.landmarkModel.provinceName!,
+                                    type: 'province',
+                                  ),
+                                );
+                                Navigator.pushAndRemoveUntil(
+                                    context, route, (route) => true);
+                              },
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'เพิ่มเติม',
+                                    style: TextStyle(
+                                        // decoration: TextDecoration.underline,
+                                        // decorationColor:Colors.black54,
+                                        fontFamily: 'FC-Minimal-Regular',
+                                        color: Colors.red,
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  const Icon(
+                                    Icons.keyboard_arrow_right,
+                                    color: Colors.red,
+                                  )
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       // Padding(

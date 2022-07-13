@@ -37,7 +37,8 @@ class _RecommendState extends State<Recommend> {
   late LandmarkModel landmark = LandmarkModel();
   List<Widget> landmarkCards = [];
   List<LandmarkModel> imgList = [];
-  List<LandmarkModel> landmarktype = [];
+  List<LandmarkModel> landmarktypebeach = [];
+  List<LandmarkModel> landmarktypemountain = [];
   int _current = 0;
   bool isLoadingpage = true;
   double minScele = 1.0;
@@ -82,34 +83,31 @@ class _RecommendState extends State<Recommend> {
   Future<void> recommentlandmark() async {
     String url = '${MyConstant().domain}/application/get_type.php';
 
-    // FormData formDataProvince = FormData.fromMap(
-    //   {
-    //     "id": 'province',
-    //     "Province_name": landmark.provinceName,
-    //   },
-    // );
+    FormData formData = FormData.fromMap(
+      {
+        "id": 'Type',
+        "Type": 'ภูเขา',
+      },
+    );
 
     try {
-      // await Dio().post(url, data: formDataProvince).then((value) {
-      //   var result = json.decode(value.data);
-      //   //debugPrint('data == $result');
-      //   for (var map in result) {
-      //     LandmarkModel landmark = LandmarkModel.fromJson(map);
-      //     setState(
-      //       () {
-      //         if (landmark.landmarkId != widget.landmark.landmarkId) {
-      //           landmarkProvince.add(landmark);
-      //           isProvinceLoading = false;
-      //         }
-      //       },
-      //     );
-      //   }
-      // });
+      await Dio().post(url, data: formData).then((value) {
+        var result = json.decode(value.data);
+        //debugPrint('data == $result');
+        for (var map in result) {
+          LandmarkModel landmark = LandmarkModel.fromJson(map);
+          setState(
+            () {
+              landmarktypemountain.add(landmark);
+            },
+          );
+        }
+      });
 
       FormData formDatatype = FormData.fromMap(
         {
           "id": 'Type',
-          "Type": 'ภูเขา',
+          "Type": 'ทะเล',
         },
       );
 
@@ -120,7 +118,7 @@ class _RecommendState extends State<Recommend> {
           LandmarkModel landmark = LandmarkModel.fromJson(map);
           setState(
             () {
-              landmarktype.add(landmark);
+              landmarktypebeach.add(landmark);
             },
           );
         }
@@ -211,9 +209,12 @@ class _RecommendState extends State<Recommend> {
     setState(() {
       isLoading = true;
       landmarkCards.clear();
+      landmarktypebeach.clear();
+      landmarktypemountain.clear();
       imgList.clear();
       index = 0;
       readlandmark();
+      recommentlandmark();
     });
   }
 
@@ -246,7 +247,6 @@ class _RecommendState extends State<Recommend> {
                     name!,
                     lastname!,
                     email!,
-                    widget.provinceModel,
                   ),
         body: SafeArea(
           child: CustomScrollView(
@@ -300,7 +300,7 @@ class _RecommendState extends State<Recommend> {
                       ),
                     ),
 
-              // isLoading ||
+              isLoading ||
               search
                   ? SliverToBoxAdapter(
                       child: Container(),
@@ -308,44 +308,44 @@ class _RecommendState extends State<Recommend> {
                   : buildRegionCard(context),
 
               //!isLoading &&
-              !search
-                  ? SliverToBoxAdapter(
-                      child: Container(
-                        margin: EdgeInsets.only(left: 5.vw, bottom: 5.vw),
-                        alignment: Alignment.bottomLeft,
-                        width: 10.vw,
-                        height: 6.vh,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              'images/category-icon.png',
-                              scale: 2.5.vw,
-                              color: Colors.red,
-                            ),
-                            SizedBox(
-                              width: 1.vw,
-                            ),
-                            Text(
-                              'หมวดหมู่',
-                              style: TextStyle(
-                                  color: Colors.black54,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14.sp),
-                            ),
-                          ],
-                        ),
-                      ),
-                    )
-                  : SliverToBoxAdapter(
-                      child: Container(),
-                    ),
-              // !isLoading &&
-              !search
-                  ? buildlist()
-                  : SliverToBoxAdapter(
-                      child: Container(),
-                    ),
+              // !search
+              //     ? SliverToBoxAdapter(
+              //         child: Container(
+              //           margin: EdgeInsets.only(left: 5.vw, bottom: 5.vw),
+              //           alignment: Alignment.bottomLeft,
+              //           width: 10.vw,
+              //           height: 6.vh,
+              //           child: Row(
+              //             crossAxisAlignment: CrossAxisAlignment.center,
+              //             children: [
+              //               Image.asset(
+              //                 'images/category-icon.png',
+              //                 scale: 2.5.vw,
+              //                 color: Colors.red,
+              //               ),
+              //               SizedBox(
+              //                 width: 1.vw,
+              //               ),
+              //               Text(
+              //                 'หมวดหมู่',
+              //                 style: TextStyle(
+              //                     color: Colors.black54,
+              //                     fontWeight: FontWeight.bold,
+              //                     fontSize: 14.sp),
+              //               ),
+              //             ],
+              //           ),
+              //         ),
+              //       )
+              //     : SliverToBoxAdapter(
+              //         child: Container(),
+              //       ),
+              // // !isLoading &&
+              // !search
+              //     ? buildlist()
+              //     : SliverToBoxAdapter(
+              //         child: Container(),
+              //       ),
 
               // !isLoading && !search
               //     ? SliverToBoxAdapter(
@@ -369,14 +369,53 @@ class _RecommendState extends State<Recommend> {
                         child: Container(
                           alignment: Alignment.centerLeft,
                           margin: EdgeInsets.only(
-                              left: 20.w, bottom: 1.0.vh, top: 1.0.vh),
+                              left: 20.w,
+                              bottom: 1.0.vh,
+                              top: 1.0.vh,
+                              right: 5.w),
                           width: 100.vw,
-                          child: Text(
-                            'แหล่งท่องเที่ยวประเภทเดียวกัน',
-                            style: TextStyle(
-                                color: Colors.black54,
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.bold),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'อยากเที่ยวทะเลต้องที่นี่เลย..',
+                                style: TextStyle(
+                                    color: Colors.black54,
+                                    fontSize: 13.sp,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  Route route = MaterialPageRoute(
+                                    builder: (context) => const LandmarkSearch(
+                                      search: 'ทะเล',
+                                      type: 'type',
+                                    ),
+                                  );
+                                  Navigator.pushAndRemoveUntil(
+                                      context, route, (route) => true);
+                                },
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'เพิ่มเติม',
+                                      style: TextStyle(
+                                          // decoration: TextDecoration.underline,
+                                          // decorationColor:Colors.black54,
+                                          fontFamily: 'FC-Minimal-Regular',
+                                          color: Colors.red,
+                                          fontSize: 15.sp,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    const Icon(
+                                      Icons.keyboard_arrow_right,
+                                      color: Colors.red,
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -384,15 +423,103 @@ class _RecommendState extends State<Recommend> {
                   : SliverToBoxAdapter(
                       child: Container(),
                     ),
-              landmarktype.isEmpty || search
+              landmarktypebeach.isEmpty || search
                   //|| isLoading
                   ? SliverToBoxAdapter(
                       child: Container(),
                     )
                   : BuildListviewLandmark(
                       screenwidth: screenwidth,
-                      listLandmark: landmarktype,
-                      index: index),
+                      listLandmark: landmarktypebeach,
+                      index: index,
+                    ),
+              // !isLoading &&
+              !search
+                  ? SliverToBoxAdapter(
+                      child: Padding(
+                        padding: EdgeInsets.only(bottom: 2.vh, top: 2.vh),
+                        child: Divider(
+                          color: Colors.grey.shade300,
+                          thickness: 10.0,
+                        ),
+                      ),
+                    )
+                  : SliverToBoxAdapter(
+                      child: Container(),
+                    ),
+
+              !search
+                  ? SliverToBoxAdapter(
+                      child: Container(
+                        width: screenwidth,
+                        height: 8.vh,
+                        child: Container(
+                          alignment: Alignment.centerLeft,
+                          margin: EdgeInsets.only(
+                              left: 20.w,
+                              bottom: 0.0.vh,
+                              top: 0.0.vh,
+                              right: 5.w),
+                          width: 100.vw,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'แต่ถ้าอยากเที่ยวภูเขาต้องที่นี่เลย..',
+                                style: TextStyle(
+                                    color: Colors.black54,
+                                    fontSize: 13.sp,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  Route route = MaterialPageRoute(
+                                    builder: (context) => const LandmarkSearch(
+                                      search: 'ภูเขา',
+                                      type: 'type',
+                                    ),
+                                  );
+                                  Navigator.pushAndRemoveUntil(
+                                      context, route, (route) => true);
+                                },
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'เพิ่มเติม',
+                                      style: TextStyle(
+                                          // decoration: TextDecoration.underline,
+                                          // decorationColor:Colors.black54,
+                                          fontFamily: 'FC-Minimal-Regular',
+                                          color: Colors.red,
+                                          fontSize: 15.sp,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    const Icon(
+                                      Icons.keyboard_arrow_right,
+                                      color: Colors.red,
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                  : SliverToBoxAdapter(
+                      child: Container(),
+                    ),
+              landmarktypemountain.isEmpty || search
+                  //|| isLoading
+                  ? SliverToBoxAdapter(
+                      child: Container(),
+                    )
+                  : BuildListviewLandmark(
+                      screenwidth: screenwidth,
+                      listLandmark: landmarktypemountain,
+                      index: index,
+                    ),
               // !isLoading &&
               !search
                   ? SliverToBoxAdapter(
@@ -420,7 +547,7 @@ class _RecommendState extends State<Recommend> {
                             'แหล่งท่องเที่ยวแนะนำ',
                             style: TextStyle(
                                 color: Colors.black54,
-                                fontSize: 14.sp,
+                                fontSize: 13.sp,
                                 fontWeight: FontWeight.bold),
                           ),
                         ),
@@ -539,13 +666,13 @@ class _RecommendState extends State<Recommend> {
                   elevation: 5,
                   child: Container(
                     margin: EdgeInsets.only(
-                        left: 7.vw, right: 7.vw, top: 1.vh, bottom: 1.vh),
+                        left: 12.vw, right: 12.vw, top: 1.vh, bottom: 1.vh),
                     width: 50.vw,
                     height: 3.vh,
                     child: Text(
                       'แหล่งท่องเที่ยวแต่ละภูมิภาค',
                       style: TextStyle(
-                          fontSize: 14.sp,
+                          fontSize: 12.sp,
                           color: Colors.white,
                           fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
@@ -558,8 +685,7 @@ class _RecommendState extends State<Recommend> {
                     InkWell(
                       onTap: () {
                         Route route = MaterialPageRoute(
-                          builder: (context) => LandmarkSearch(
-                            provinceModel: widget.provinceModel,
+                          builder: (context) => const LandmarkSearch(
                             search: '1',
                             type: 'region',
                           ),
@@ -577,7 +703,7 @@ class _RecommendState extends State<Recommend> {
                           ),
                           Text(
                             'ภาคเหนือ',
-                            style: TextStyle(fontSize: 12.sp),
+                            style: TextStyle(fontSize: 11.sp),
                           )
                         ],
                       ),
@@ -585,8 +711,7 @@ class _RecommendState extends State<Recommend> {
                     InkWell(
                       onTap: () {
                         Route route = MaterialPageRoute(
-                          builder: (context) => LandmarkSearch(
-                            provinceModel: widget.provinceModel,
+                          builder: (context) => const LandmarkSearch(
                             search: '2',
                             type: 'region',
                           ),
@@ -604,7 +729,7 @@ class _RecommendState extends State<Recommend> {
                           ),
                           Text(
                             'ภาคใต้',
-                            style: TextStyle(fontSize: 12.sp),
+                            style: TextStyle(fontSize: 11.sp),
                           )
                         ],
                       ),
@@ -612,8 +737,7 @@ class _RecommendState extends State<Recommend> {
                     InkWell(
                       onTap: () {
                         Route route = MaterialPageRoute(
-                          builder: (context) => LandmarkSearch(
-                            provinceModel: widget.provinceModel,
+                          builder: (context) => const LandmarkSearch(
                             search: '3',
                             type: 'region',
                           ),
@@ -631,7 +755,7 @@ class _RecommendState extends State<Recommend> {
                           ),
                           Text(
                             'ภาคกลาง',
-                            style: TextStyle(fontSize: 12.sp),
+                            style: TextStyle(fontSize: 11.sp),
                           )
                         ],
                       ),
@@ -645,8 +769,7 @@ class _RecommendState extends State<Recommend> {
                     InkWell(
                       onTap: () {
                         Route route = MaterialPageRoute(
-                          builder: (context) => LandmarkSearch(
-                            provinceModel: widget.provinceModel,
+                          builder: (context) => const LandmarkSearch(
                             search: '4',
                             type: 'region',
                           ),
@@ -664,7 +787,7 @@ class _RecommendState extends State<Recommend> {
                           ),
                           Text(
                             'ภาคตะวันออก',
-                            style: TextStyle(fontSize: 12.sp),
+                            style: TextStyle(fontSize: 11.sp),
                           )
                         ],
                       ),
@@ -672,8 +795,7 @@ class _RecommendState extends State<Recommend> {
                     InkWell(
                       onTap: () {
                         Route route = MaterialPageRoute(
-                          builder: (context) => LandmarkSearch(
-                            provinceModel: widget.provinceModel,
+                          builder: (context) => const LandmarkSearch(
                             search: '5',
                             type: 'region',
                           ),
@@ -691,7 +813,7 @@ class _RecommendState extends State<Recommend> {
                           ),
                           Text(
                             'ภาคตะวันตก',
-                            style: TextStyle(fontSize: 12.sp),
+                            style: TextStyle(fontSize: 11.sp),
                           )
                         ],
                       ),
@@ -699,8 +821,7 @@ class _RecommendState extends State<Recommend> {
                     InkWell(
                       onTap: () {
                         Route route = MaterialPageRoute(
-                          builder: (context) => LandmarkSearch(
-                            provinceModel: widget.provinceModel,
+                          builder: (context) => const LandmarkSearch(
                             search: '6',
                             type: 'region',
                           ),
@@ -718,7 +839,7 @@ class _RecommendState extends State<Recommend> {
                           ),
                           Text(
                             'ภาคอีสาน',
-                            style: TextStyle(fontSize: 12.sp),
+                            style: TextStyle(fontSize: 11.sp),
                           )
                         ],
                       ),
@@ -840,7 +961,6 @@ class _RecommendState extends State<Recommend> {
                           builder: (context) => LandmarkSearch(
                             search: itemList[index],
                             type: 'type',
-                            provinceModel: widget.provinceModel,
                           ),
                         );
                         Navigator.pushAndRemoveUntil(
@@ -886,7 +1006,6 @@ class _RecommendState extends State<Recommend> {
                           builder: (context) => LandmarkSearch(
                             search: itemList2[index],
                             type: 'type',
-                            provinceModel: widget.provinceModel,
                           ),
                         );
                         Navigator.pushAndRemoveUntil(
