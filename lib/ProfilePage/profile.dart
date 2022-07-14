@@ -27,9 +27,8 @@ import 'package:user_profile_avatar/user_profile_avatar.dart';
 class Profile extends StatefulWidget {
   const Profile({
     Key? key,
-    required this.provinceModel,
   }) : super(key: key);
-  final List<ProvinceModel> provinceModel;
+
   @override
   State<Profile> createState() => _ProfileState();
 }
@@ -103,7 +102,7 @@ class _ProfileState extends State<Profile> {
         type: MaterialType.transparency,
         child: JumpingDotsProgressIndicator(
           color: Colors.red,
-          fontSize: 80.0.sp,
+          fontSize: 50.0.sp,
         ),
       ),
       dismissible: false,
@@ -124,144 +123,144 @@ class _ProfileState extends State<Profile> {
         body: SafeArea(
           child: CustomScrollView(
             slivers: [
-              SliverAppBar(
-                backgroundColor: Colors.white,
-                actions: [
-                  Container(
-                    margin: const EdgeInsets.all(6.0),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade200,
-                      shape: BoxShape.circle,
-                    ),
-                    child: IconButton(
-                      onPressed: () {
-                        MyAlertDialog().showtDialog(context,
-                            'ปุ่มยังไม่พร้อมใช้งาน เนื่องจากคนเขียนแอพขี้เกียจทำ รอไปก่อนน่ะ');
-                      },
-                      icon: const Icon(
-                        Icons.notifications,
-                        color: Colors.red,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.all(6.0),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade200,
-                      shape: BoxShape.circle,
-                    ),
-                    child: PopupMenu(
-                      onselect: (value) {
-                        setState(() {
-                          switch (value) {
-                            case 1:
-                              MyStyle().routeToWidget(
-                                  context, const HomeScreen(index: 0), true);
-                              break;
-                            case 2:
-                              MyStyle().routeToWidget(
-                                  context, const HomeScreen(index: 4), true);
-                              break;
-                            case 3:
-                              MyAlertDialog().showtDialog(context,
-                                  'ปุ่มยังไม่พร้อมใช้งาน เนื่องจากคนเขียนแอพขี้เกียจทำ รอไปก่อนน่ะ');
-                              // MyStyle().routeToWidget(
-                              //     context, const HomeScreen(index: 2), true);
-                              break;
-                            case 4:
-                              MyStyle()
-                                  .routeToWidget(context, const Login(), true);
-                              break;
-                            default:
-                              MyStyle().routeToWidget(
-                                  context, const HomeScreen(index: 0), true);
-                          }
+              // SliverAppBar(
+              //   backgroundColor: Colors.white,
+              //   actions: [
+              //     Container(
+              //       margin: const EdgeInsets.all(6.0),
+              //       decoration: BoxDecoration(
+              //         color: Colors.grey.shade200,
+              //         shape: BoxShape.circle,
+              //       ),
+              //       child: IconButton(
+              //         onPressed: () {
+              //           MyAlertDialog().showtDialog(context,
+              //               'ปุ่มยังไม่พร้อมใช้งาน เนื่องจากคนเขียนแอพขี้เกียจทำ รอไปก่อนน่ะ');
+              //         },
+              //         icon: const Icon(
+              //           Icons.notifications,
+              //           color: Colors.red,
+              //         ),
+              //       ),
+              //     ),
+              //     Container(
+              //       margin: const EdgeInsets.all(6.0),
+              //       decoration: BoxDecoration(
+              //         color: Colors.grey.shade200,
+              //         shape: BoxShape.circle,
+              //       ),
+              //       child: PopupMenu(
+              //         onselect: (value) {
+              //           setState(() {
+              //             switch (value) {
+              //               case 1:
+              //                 MyStyle().routeToWidget(
+              //                     context, const HomeScreen(index: 0), true);
+              //                 break;
+              //               case 2:
+              //                 MyStyle().routeToWidget(
+              //                     context, const HomeScreen(index: 4), true);
+              //                 break;
+              //               case 3:
+              //                 MyAlertDialog().showtDialog(context,
+              //                     'ปุ่มยังไม่พร้อมใช้งาน เนื่องจากคนเขียนแอพขี้เกียจทำ รอไปก่อนน่ะ');
+              //                 // MyStyle().routeToWidget(
+              //                 //     context, const HomeScreen(index: 2), true);
+              //                 break;
+              //               case 4:
+              //                 MyStyle()
+              //                     .routeToWidget(context, const Login(), true);
+              //                 break;
+              //               default:
+              //                 MyStyle().routeToWidget(
+              //                     context, const HomeScreen(index: 0), true);
+              //             }
 
-                          debugPrint('ItemMenu ==== ${value.toString()}');
-                        });
-                      },
-                      item: [
-                        PopupMenuItem<int>(
-                          value: 1,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: const [
-                              Icon(
-                                Icons.home_outlined,
-                                color: Colors.black54,
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text('หน้าแรก'),
-                            ],
-                          ),
-                        ),
-                        PopupMenuItem<int>(
-                          value: 2,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: const [
-                              Icon(
-                                MdiIcons.accountDetails,
-                                color: Colors.black54,
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text('โปรไฟล์'),
-                            ],
-                          ),
-                        ),
-                        PopupMenuItem<int>(
-                          value: 3,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: const [
-                              Icon(
-                                Icons.settings,
-                                color: Colors.black54,
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text('การตั้งค่า'),
-                            ],
-                          ),
-                        ),
-                        PopupMenuItem<int>(
-                          value: 4,
-                          child: Column(
-                            children: [
-                              const Divider(thickness: 1),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Icon(
-                                    name == '' || name.isEmpty
-                                        ? Icons.login_outlined
-                                        : Icons.logout_rounded,
-                                    color: Colors.red,
-                                  ),
-                                  const SizedBox(
-                                    width: 5,
-                                  ),
-                                  Text(
-                                    name == '' || name.isEmpty
-                                        ? 'เข้าสู่ระบบ'
-                                        : 'ออกจากระบบ',
-                                    style: const TextStyle(color: Colors.red),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+              //             debugPrint('ItemMenu ==== ${value.toString()}');
+              //           });
+              //         },
+              //         item: [
+              //           PopupMenuItem<int>(
+              //             value: 1,
+              //             child: Row(
+              //               mainAxisAlignment: MainAxisAlignment.start,
+              //               children: const [
+              //                 Icon(
+              //                   Icons.home_outlined,
+              //                   color: Colors.black54,
+              //                 ),
+              //                 SizedBox(
+              //                   width: 5,
+              //                 ),
+              //                 Text('หน้าแรก'),
+              //               ],
+              //             ),
+              //           ),
+              //           PopupMenuItem<int>(
+              //             value: 2,
+              //             child: Row(
+              //               mainAxisAlignment: MainAxisAlignment.start,
+              //               children: const [
+              //                 Icon(
+              //                   MdiIcons.accountDetails,
+              //                   color: Colors.black54,
+              //                 ),
+              //                 SizedBox(
+              //                   width: 5,
+              //                 ),
+              //                 Text('โปรไฟล์'),
+              //               ],
+              //             ),
+              //           ),
+              //           PopupMenuItem<int>(
+              //             value: 3,
+              //             child: Row(
+              //               mainAxisAlignment: MainAxisAlignment.start,
+              //               children: const [
+              //                 Icon(
+              //                   Icons.settings,
+              //                   color: Colors.black54,
+              //                 ),
+              //                 SizedBox(
+              //                   width: 5,
+              //                 ),
+              //                 Text('การตั้งค่า'),
+              //               ],
+              //             ),
+              //           ),
+              //           PopupMenuItem<int>(
+              //             value: 4,
+              //             child: Column(
+              //               children: [
+              //                 const Divider(thickness: 1),
+              //                 Row(
+              //                   mainAxisAlignment: MainAxisAlignment.start,
+              //                   children: [
+              //                     Icon(
+              //                       name == '' || name.isEmpty
+              //                           ? Icons.login_outlined
+              //                           : Icons.logout_rounded,
+              //                       color: Colors.red,
+              //                     ),
+              //                     const SizedBox(
+              //                       width: 5,
+              //                     ),
+              //                     Text(
+              //                       name == '' || name.isEmpty
+              //                           ? 'เข้าสู่ระบบ'
+              //                           : 'ออกจากระบบ',
+              //                       style: const TextStyle(color: Colors.red),
+              //                     ),
+              //                   ],
+              //                 ),
+              //               ],
+              //             ),
+              //           ),
+              //         ],
+              //       ),
+              //     ),
+              //   ],
+              // ),
               isLoading
                   ? SliverToBoxAdapter(
                       child: Container(
@@ -389,7 +388,7 @@ class _ProfileState extends State<Profile> {
       },
       child: Container(
         margin: const EdgeInsetsDirectional.only(
-            start: 10.0, end: 10.0, bottom: 90),
+            start: 10.0, end: 10.0, bottom: 90, top: 10),
         width: MediaQuery.of(context).size.width * 1,
         height: MediaQuery.of(context).size.height * 0.25,
         child: Card(
@@ -402,7 +401,7 @@ class _ProfileState extends State<Profile> {
             errorWidget: (context, url, error) => Container(
               color: Colors.grey.shade300,
               child: Container(
-                  margin: EdgeInsets.all(15.vw),
+                  margin: EdgeInsets.all(10.vw),
                   child: Text(
                     'ไม่มีรูปหน้าปก',
                     textAlign: TextAlign.center,

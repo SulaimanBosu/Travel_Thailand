@@ -18,9 +18,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 class Favorites extends StatefulWidget {
   const Favorites({
     Key? key,
-    required this.provinceModel,
   }) : super(key: key);
-  final List<ProvinceModel> provinceModel;
+
   @override
   State<Favorites> createState() => _FavoritesState();
 }
@@ -139,7 +138,7 @@ class _FavoritesState extends State<Favorites> {
         type: MaterialType.transparency,
         child: JumpingDotsProgressIndicator(
           color: Colors.red,
-          fontSize: 80.0.sp,
+          fontSize: 50.0.sp,
         ),
       ),
       dismissible: false,

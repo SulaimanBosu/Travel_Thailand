@@ -63,6 +63,8 @@ dependencies:
   progress_indicators: ^1.0.0
   slider_side_menu: ^0.1.0
   slidable_button: ^2.0.0+1
+  readmore: ^2.2.0
+  loadmore: ^2.0.1
 
     
 dev_dependencies:

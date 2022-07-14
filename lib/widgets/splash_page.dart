@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:project/model/landmark_model.dart';
 import 'package:project/screen/home_screen.dart';
 import 'package:project/screen/main_page.dart';
-import 'package:project/screen/recommend.dart';
 import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
 

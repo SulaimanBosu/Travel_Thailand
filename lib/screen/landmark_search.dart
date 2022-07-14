@@ -197,101 +197,109 @@ class _LandmarkSearchState extends State<LandmarkSearch> {
               email!,
             ),
       body: SafeArea(
-        child: CustomScrollView(
-          shrinkWrap: true,
-          primary: false,
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            SliverToBoxAdapter(
-              child: Container(
-                color: Colors.white,
-                width: MediaQuery.of(context).size.width,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: IconButton(
-                        icon: const Icon(Icons.arrow_back_ios),
-                        color: Colors.black54,
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                    ),
-                    Expanded(
-                      flex: 5,
-                      child: Text(
-                        typeprovince
-                            ? 'แหล่งท่องเที่ยวจังหวัด ${widget.search}'
-                            : typeregion
-                                ? 'แหล่งท่องเที่ยว$regionName'
-                                : 'แหล่งท่องเที่ยวประเภท${widget.search}',
-                        style: const TextStyle(
+        child: RawScrollbar(
+          minThumbLength: 100,
+          thumbColor: Colors.grey.shade300,
+          isAlwaysShown: false,
+          scrollbarOrientation: ScrollbarOrientation.right,
+          thickness: 5,
+          radius: const Radius.circular(5),
+          child: CustomScrollView(
+            shrinkWrap: true,
+            primary: false,
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              SliverToBoxAdapter(
+                child: Container(
+                  color: Colors.white,
+                  width: MediaQuery.of(context).size.width,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: IconButton(
+                          icon: const Icon(Icons.arrow_back_ios),
                           color: Colors.black54,
-                          fontSize: 20.0,
-                          fontFamily: 'FC-Minimal-Regular',
-                          // overflow:TextOverflow.fade,
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
                         ),
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center,
                       ),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: CircleButton(
-                        icon: MdiIcons.accountDetails,
-                        iconSize: 30,
-                        onPressed: () {
-                          if (!isLoading) {
-                            if (userid == '') {
-                              MyStyle()
-                                  .routeToWidget(context, const Login(), true);
+                      Expanded(
+                        flex: 5,
+                        child: Text(
+                          typeprovince
+                              ? 'แหล่งท่องเที่ยวจังหวัด ${widget.search}'
+                              : typeregion
+                                  ? 'แหล่งท่องเที่ยว$regionName'
+                                  : 'แหล่งท่องเที่ยวประเภท${widget.search}',
+                          style: const TextStyle(
+                            color: Colors.black54,
+                            fontSize: 20.0,
+                            fontFamily: 'FC-Minimal-Regular',
+                            // overflow:TextOverflow.fade,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: CircleButton(
+                          icon: MdiIcons.accountDetails,
+                          iconSize: 30,
+                          onPressed: () {
+                            if (!isLoading) {
+                              if (userid == '') {
+                                MyStyle().routeToWidget(
+                                    context, const Login(), true);
+                              } else {
+                                scaffoldKey.currentState!.openEndDrawer();
+                              }
                             } else {
-                              scaffoldKey.currentState!.openEndDrawer();
+                              debugPrint('Account');
                             }
-                          } else {
-                            debugPrint('Account');
-                          }
-                        },
-                        color: Colors.black,
+                          },
+                          color: Colors.black,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-            isLoading
-                ? SliverToBoxAdapter(
-                    child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height * 0.7,
-                        child: MyStyle().progress(context)),
-                  )
-                : landmark.landmarkId == null
-                    ? SliverToBoxAdapter(
-                        child: Container(
+              isLoading
+                  ? SliverToBoxAdapter(
+                      child: Container(
                           width: MediaQuery.of(context).size.width,
                           height: MediaQuery.of(context).size.height * 0.7,
-                          child: const Center(
-                            child: Text(
-                              'ไม่พบแหล่งท่องเที่ยว',
-                              style: TextStyle(
-                                color: Colors.black54,
-                                fontSize: 24.0,
-                                fontFamily: 'FC-Minimal-Regular',
+                          child: MyStyle().progress(context)),
+                    )
+                  : landmark.landmarkId == null
+                      ? SliverToBoxAdapter(
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height * 0.7,
+                            child: const Center(
+                              child: Text(
+                                'ไม่พบแหล่งท่องเที่ยว',
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  fontSize: 24.0,
+                                  fontFamily: 'FC-Minimal-Regular',
+                                ),
                               ),
                             ),
                           ),
+                        )
+                      : SliverGrid.extent(
+                          maxCrossAxisExtent: 265,
+                          mainAxisSpacing: 20,
+                          crossAxisSpacing: 10,
+                          children: landmarkCards,
                         ),
-                      )
-                    : SliverGrid.extent(
-                        maxCrossAxisExtent: 265,
-                        mainAxisSpacing: 20,
-                        crossAxisSpacing: 10,
-                        children: landmarkCards,
-                      ),
-          ],
+            ],
+          ),
         ),
       ),
     );

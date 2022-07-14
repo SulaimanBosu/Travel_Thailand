@@ -14,7 +14,6 @@ import 'package:project/screen/landmark.dart';
 import 'package:project/screen/main_page.dart';
 import 'package:project/screen/popular.dart';
 import 'package:project/ProfilePage/profile.dart';
-import 'package:project/screen/recommend.dart';
 import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
 import 'package:resize/resize.dart';
@@ -39,7 +38,6 @@ class _HomeScreenState extends State<HomeScreen> {
   late int indexPage;
   bool isDelay = false;
   late ProvinceModel model;
- 
 
   @override
   void initState() {
@@ -49,21 +47,11 @@ class _HomeScreenState extends State<HomeScreen> {
     indexPage = widget.index;
     delaydialog();
     province();
-    listwidgets.add(Recommend(
-      provinceModel: provinceModel,
-    ));
-    listwidgets.add(Popular(
-      provinceModel: provinceModel,
-    ));
-    listwidgets.add(Favorites(
-      provinceModel: provinceModel,
-    ));
-    listwidgets.add(Landmark(
-      provinceModel: provinceModel,
-    ));
-    listwidgets.add(Profile(
-      provinceModel: provinceModel,
-    ));
+    listwidgets.add(const MainPage());
+    listwidgets.add(const Popular());
+    listwidgets.add(const Favorites());
+    listwidgets.add(const Landmark());
+    listwidgets.add(const Profile());
     checkUser();
     super.initState();
   }
@@ -189,7 +177,7 @@ class _HomeScreenState extends State<HomeScreen> {
               type: MaterialType.transparency,
               child: JumpingDotsProgressIndicator(
                 color: Colors.red,
-                fontSize: 80.0.sp,
+                fontSize: 50.0.sp,
               ),
             ),
             dismissible: false,
@@ -197,10 +185,10 @@ class _HomeScreenState extends State<HomeScreen> {
             color: Colors.black38,
             child: Scaffold(
               body: Container(
-                // width: MediaQuery.of(context).size.width,
-                // height: MediaQuery.of(context).size.height,
-                // child: MyStyle().progress(context),
-              ),
+                  // width: MediaQuery.of(context).size.width,
+                  // height: MediaQuery.of(context).size.height,
+                  // child: MyStyle().progress(context),
+                  ),
             ),
           )
         : Scaffold(

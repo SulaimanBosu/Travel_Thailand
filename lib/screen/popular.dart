@@ -22,8 +22,8 @@ import 'package:resize/resize.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Popular extends StatefulWidget {
-  const Popular({Key? key, required this.provinceModel}) : super(key: key);
-  final List<ProvinceModel> provinceModel;
+  const Popular({Key? key,}) : super(key: key);
+
   @override
   State<Popular> createState() => _PopularState();
 }
@@ -184,7 +184,7 @@ class _PopularState extends State<Popular> {
         type: MaterialType.transparency,
         child: JumpingDotsProgressIndicator(
           color: Colors.red,
-          fontSize: 80.0.sp,
+          fontSize: 50.0.sp,
         ),
       ),
       dismissible: false,
@@ -204,119 +204,126 @@ class _PopularState extends State<Popular> {
                     email!,
                   ),
         body: SafeArea(
-          child: CustomScrollView(
-            shrinkWrap: true,
-            primary: false,
-            physics: const BouncingScrollPhysics(),
-            slivers: [
-              search
-                  ? SliverToBoxAdapter(child: Container())
-                  : isLoading
-                      ? SliverappBar().appbar(
-                          context,
-                          screenwidth,
-                          userid!,
-                          scaffoldKey,
-                          true,
-                          (() => setState(() {
-                                search = true;
-                              })),
-                          search,
-                        )
-                      : SliverappBar().appbar(
-                          context,
-                          screenwidth,
-                          userid!,
-                          scaffoldKey,
-                          false,
-                          (() => setState(() {
-                                search = true;
-                              })),
-                          search,
-                        ),
-              CupertinoSliverRefreshControl(
-                onRefresh: _refreshData,
-              ),
-              isLoading
-                  ? SliverToBoxAdapter(
-                      child: Container(
-                          // width: MediaQuery.of(context).size.width,
-                          // height: MediaQuery.of(context).size.height * 0.7,
-                          // child: MyStyle().progress(context),
+          child: RawScrollbar(
+            thumbColor: Colors.grey.shade300,
+            isAlwaysShown: false,
+            scrollbarOrientation: ScrollbarOrientation.right,
+            thickness: 5,
+            radius: const Radius.circular(5),
+            child: CustomScrollView(
+              shrinkWrap: true,
+              primary: false,
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                search
+                    ? SliverToBoxAdapter(child: Container())
+                    : isLoading
+                        ? SliverappBar().appbar(
+                            context,
+                            screenwidth,
+                            userid!,
+                            scaffoldKey,
+                            true,
+                            (() => setState(() {
+                                  search = true;
+                                })),
+                            search,
+                          )
+                        : SliverappBar().appbar(
+                            context,
+                            screenwidth,
+                            userid!,
+                            scaffoldKey,
+                            false,
+                            (() => setState(() {
+                                  search = true;
+                                })),
+                            search,
                           ),
-                    )
-                  : popularlandmarks.isEmpty
-                      ? !search
-                          ? SliverToBoxAdapter(
-                              child: Container(
-                                width: MediaQuery.of(context).size.width,
-                                height:
-                                    MediaQuery.of(context).size.height * 0.7,
-                                child: const Center(
-                                  child: Text(
-                                    'ไม่พบแหล่งท่องเที่ยว',
-                                    style: TextStyle(
-                                      color: Colors.black54,
-                                      fontSize: 24.0,
-                                      fontFamily: 'FC-Minimal-Regular',
+                CupertinoSliverRefreshControl(
+                  onRefresh: _refreshData,
+                ),
+                isLoading
+                    ? SliverToBoxAdapter(
+                        child: Container(
+                            // width: MediaQuery.of(context).size.width,
+                            // height: MediaQuery.of(context).size.height * 0.7,
+                            // child: MyStyle().progress(context),
+                            ),
+                      )
+                    : popularlandmarks.isEmpty
+                        ? !search
+                            ? SliverToBoxAdapter(
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.7,
+                                  child: const Center(
+                                    child: Text(
+                                      'ไม่พบแหล่งท่องเที่ยว',
+                                      style: TextStyle(
+                                        color: Colors.black54,
+                                        fontSize: 24.0,
+                                        fontFamily: 'FC-Minimal-Regular',
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            )
-                          : SliverToBoxAdapter(
-                              child: Container(
-                                  alignment: Alignment.topCenter,
-                                  color: Colors.white,
-                                  width: MediaQuery.of(context).size.width,
-                                  height: MediaQuery.of(context).size.height,
-                                  child: Search(
-                                    onClose: () {
-                                      setState(() {
-                                        search = false;
-                                      });
-                                    },
-                                  )),
-                            )
-                      : search
-                          ? SliverToBoxAdapter(
-                              child: Container(
-                                  alignment: Alignment.topCenter,
-                                  color: Colors.white,
-                                  width: MediaQuery.of(context).size.width,
-                                  height: MediaQuery.of(context).size.height,
-                                  child: Search(
-                                    onClose: () {
-                                      setState(() {
-                                        search = false;
-                                      });
-                                    },
-                                  )),
-                            )
-                          : Listview(
-                              landmarkModel: popularlandmarks,
-                              distances: distances,
-                              times: times,
-                              index: index,
-                              lat1: lat1,
-                              lng1: lng1,
-                              userId: userid!,
-                            )
-              // SliverToBoxAdapter(
-              //   child: popularlandmarks.isEmpty
-              //     ? Container(
-              //         width: MediaQuery.of(context).size.width,
-              //         height: MediaQuery.of(context).size.height * 0.78,
-              //         child: MyStyle().progress(context))
-              //     :
-              //   Container(
-              //     width: MediaQuery.of(context).size.width,
-              //     height: MediaQuery.of(context).size.height * 0.78,
-              //     // color: Colors.grey[400],
-              //     child: showListLandmark(),
-              //   ),
-              // )
-            ],
+                              )
+                            : SliverToBoxAdapter(
+                                child: Container(
+                                    alignment: Alignment.topCenter,
+                                    color: Colors.white,
+                                    width: MediaQuery.of(context).size.width,
+                                    height: MediaQuery.of(context).size.height,
+                                    child: Search(
+                                      onClose: () {
+                                        setState(() {
+                                          search = false;
+                                        });
+                                      },
+                                    )),
+                              )
+                        : search
+                            ? SliverToBoxAdapter(
+                                child: Container(
+                                    alignment: Alignment.topCenter,
+                                    color: Colors.white,
+                                    width: MediaQuery.of(context).size.width,
+                                    height: MediaQuery.of(context).size.height,
+                                    child: Search(
+                                      onClose: () {
+                                        setState(() {
+                                          search = false;
+                                        });
+                                      },
+                                    )),
+                              )
+                            : Listview(
+                                landmarkModel: popularlandmarks,
+                                distances: distances,
+                                times: times,
+                                index: index,
+                                lat1: lat1,
+                                lng1: lng1,
+                                userId: userid!, onLoadmore: () {  },
+                              )
+                // SliverToBoxAdapter(
+                //   child: popularlandmarks.isEmpty
+                //     ? Container(
+                //         width: MediaQuery.of(context).size.width,
+                //         height: MediaQuery.of(context).size.height * 0.78,
+                //         child: MyStyle().progress(context))
+                //     :
+                //   Container(
+                //     width: MediaQuery.of(context).size.width,
+                //     height: MediaQuery.of(context).size.height * 0.78,
+                //     // color: Colors.grey[400],
+                //     child: showListLandmark(),
+                //   ),
+                // )
+              ],
+            ),
           ),
         ),
       ),

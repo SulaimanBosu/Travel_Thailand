@@ -19,8 +19,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:location/location.dart';
 
 class Landmark extends StatefulWidget {
-  const Landmark({Key? key, required this.provinceModel}) : super(key: key);
-  final List<ProvinceModel> provinceModel;
+  const Landmark({
+    Key? key,
+  }) : super(key: key);
+
   @override
   State<Landmark> createState() => _LandmarkState();
 }
@@ -48,10 +50,13 @@ class _LandmarkState extends State<Landmark> {
   late double screenhight;
   bool isdata = false;
   bool search = false;
+  int limit = 10;
+  int offset = 0;
 
   @override
   void initState() {
-    readlandmark();
+    // readlandmark();
+    recommentlandmark(limit, offset);
     isLoad();
     // getLocation();
     getPreferences();
@@ -91,6 +96,61 @@ class _LandmarkState extends State<Landmark> {
     email = preferences.getString('Email')!;
   }
 
+  Future<void> recommentlandmark(int limit, int offset) async {
+    String url = '${MyConstant().domain}/application/get_landmark.php';
+    Location location = Location();
+    LocationData locationData = await location.getLocation();
+    //location.enableBackgroundMode(enable: true);
+    lat1 = locationData.latitude!;
+    lng1 = locationData.longitude!;
+    debugPrint('latitude ============ ${lat1.toString()}');
+    debugPrint('longitude ============ ${lng1.toString()}');
+
+    FormData formData = FormData.fromMap(
+      {
+        "Limit": limit,
+        "Offset": offset,
+      },
+    );
+
+    try {
+      await Dio().post(url, data: formData).then((value) {
+        var result = json.decode(value.data);
+        //debugPrint('data == $result');
+        for (var map in result) {
+          landmarkModel = LandmarkModel.fromJson(map);
+          setState(
+            () {
+              landmarks.add(landmarkModel);
+
+              // debugPrint('latitude ============ ${lat1.toString()}');
+              // debugPrint('longitude ============ ${lng1.toString()}');
+              lat2 = double.parse(landmarkModel.latitude!);
+              lng2 = double.parse(landmarkModel.longitude!);
+
+              distance = MyApi().calculateDistance(lat1, lng1, lat2, lng2);
+              var myFormat = NumberFormat('#0.00', 'en_US');
+              distanceString = myFormat.format(distance);
+              distances.add(distanceString);
+              time = MyApi().calculateTime(distance);
+              // debugPrint('time min ============ ${time.toString()}');
+              times.add(time);
+              isLoading = false;
+              isdata = true;
+              index++;
+            },
+          );
+        }
+      });
+    } catch (error) {
+      debugPrint("ดาวน์โหลดไม่สำเร็จ: $error");
+      MyStyle().showdialog(
+          context, 'ล้มเหลว', 'ไม่พบการเชื่อมต่อเครือข่ายอินเตอร์เน็ต');
+      isLoading = false;
+      isdata = true;
+    }
+  }
+
   Future<void> readlandmark() async {
     Location location = Location();
     LocationData locationData = await location.getLocation();
@@ -109,6 +169,7 @@ class _LandmarkState extends State<Landmark> {
           landmarkModel = LandmarkModel.fromJson(map);
           setState(() {
             landmarks.add(landmarkModel);
+
             // debugPrint('latitude ============ ${lat1.toString()}');
             // debugPrint('longitude ============ ${lng1.toString()}');
             lat2 = double.parse(landmarkModel.latitude!);
@@ -133,7 +194,6 @@ class _LandmarkState extends State<Landmark> {
           context, 'ล้มเหลว', 'ไม่พบการเชื่อมต่อเครือข่ายอินเตอร์เน็ต');
       isLoading = false;
       isdata = true;
-      //delaydialog();
     }
   }
 
@@ -154,7 +214,10 @@ class _LandmarkState extends State<Landmark> {
       distances.clear();
       times.clear();
       index = 0;
-      readlandmark();
+      limit = 10;
+      offset = 0;
+      recommentlandmark(limit, offset);
+      // readlandmark();
     });
   }
 
@@ -169,7 +232,7 @@ class _LandmarkState extends State<Landmark> {
         type: MaterialType.transparency,
         child: JumpingDotsProgressIndicator(
           color: Colors.red,
-          fontSize: 80.0.sp,
+          fontSize: 50.0.sp,
         ),
       ),
       dismissible: false,
@@ -189,105 +252,116 @@ class _LandmarkState extends State<Landmark> {
                     email!,
                   ),
         body: SafeArea(
-          child: CustomScrollView(
-            shrinkWrap: true,
-            primary: false,
-            physics: const BouncingScrollPhysics(),
-            slivers: [
-              search
-                  ? SliverToBoxAdapter(child: Container())
-                  : isLoading
-                      ? SliverappBar().appbar(
-                          context,
-                          screenwidth,
-                          userid!,
-                          scaffoldKey,
-                          true,
-                          (() => setState(() {
-                                search = true;
-                              })),
-                          search,
-                        )
-                      : SliverappBar().appbar(
-                          context,
-                          screenwidth,
-                          userid!,
-                          scaffoldKey,
-                          false,
-                          (() => setState(() {
-                                search = true;
-                              })),
-                          search,
-                        ),
-              CupertinoSliverRefreshControl(
-                onRefresh: _refreshData,
-              ),
-              isLoading
-                  ? SliverToBoxAdapter(
-                      child: Container(
-                          // width: MediaQuery.of(context).size.width,
-                          // height: MediaQuery.of(context).size.height * 0.7,
-                          // child: MyStyle().progress(context),
+          child: RawScrollbar(
+            thumbColor: Colors.grey.shade300,
+            isAlwaysShown: false,
+            scrollbarOrientation: ScrollbarOrientation.right,
+            thickness: 5,
+            radius: const Radius.circular(5),
+            child: CustomScrollView(
+              shrinkWrap: true,
+              primary: false,
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                search
+                    ? SliverToBoxAdapter(child: Container())
+                    : isLoading
+                        ? SliverappBar().appbar(
+                            context,
+                            screenwidth,
+                            userid!,
+                            scaffoldKey,
+                            true,
+                            (() => setState(() {
+                                  search = true;
+                                })),
+                            search,
+                          )
+                        : SliverappBar().appbar(
+                            context,
+                            screenwidth,
+                            userid!,
+                            scaffoldKey,
+                            false,
+                            (() => setState(() {
+                                  search = true;
+                                })),
+                            search,
                           ),
-                    )
-                  : landmarks.isEmpty
-                      ? !search
-                          ? SliverToBoxAdapter(
-                              child: Container(
-                                width: MediaQuery.of(context).size.width,
-                                height:
-                                    MediaQuery.of(context).size.height * 0.7,
-                                child: const Center(
-                                  child: Text(
-                                    'ไม่พบแหล่งท่องเที่ยว',
-                                    style: TextStyle(
-                                      color: Colors.black54,
-                                      fontSize: 24.0,
-                                      fontFamily: 'FC-Minimal-Regular',
+                CupertinoSliverRefreshControl(
+                  onRefresh: _refreshData,
+                ),
+                isLoading
+                    ? SliverToBoxAdapter(
+                        child: Container(
+                            // width: MediaQuery.of(context).size.width,
+                            // height: MediaQuery.of(context).size.height * 0.7,
+                            // child: MyStyle().progress(context),
+                            ),
+                      )
+                    : landmarks.isEmpty
+                        ? !search
+                            ? SliverToBoxAdapter(
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.7,
+                                  child: const Center(
+                                    child: Text(
+                                      'ไม่พบแหล่งท่องเที่ยว',
+                                      style: TextStyle(
+                                        color: Colors.black54,
+                                        fontSize: 24.0,
+                                        fontFamily: 'FC-Minimal-Regular',
+                                      ),
                                     ),
                                   ),
                                 ),
+                              )
+                            : SliverToBoxAdapter(
+                                child: Container(
+                                    alignment: Alignment.topCenter,
+                                    color: Colors.white,
+                                    width: MediaQuery.of(context).size.width,
+                                    height: MediaQuery.of(context).size.height,
+                                    child: Search(
+                                      onClose: () {
+                                        setState(() {
+                                          search = false;
+                                        });
+                                      },
+                                    )),
+                              )
+                        : search
+                            ? SliverToBoxAdapter(
+                                child: Container(
+                                    alignment: Alignment.topCenter,
+                                    color: Colors.white,
+                                    width: MediaQuery.of(context).size.width,
+                                    height: MediaQuery.of(context).size.height,
+                                    child: Search(
+                                      onClose: () {
+                                        setState(() {
+                                          search = false;
+                                        });
+                                      },
+                                    )),
+                              )
+                            : Listview(
+                                landmarkModel: landmarks,
+                                distances: distances,
+                                times: times,
+                                index: index,
+                                lat1: lat1,
+                                lng1: lng1,
+                                userId: userid!,
+                                onLoadmore: () {
+                                  offset = offset + limit;
+                                  recommentlandmark(limit, offset);
+                                },
                               ),
-                            )
-                          : SliverToBoxAdapter(
-                              child: Container(
-                                  alignment: Alignment.topCenter,
-                                  color: Colors.white,
-                                  width: MediaQuery.of(context).size.width,
-                                  height: MediaQuery.of(context).size.height,
-                                  child: Search(
-                                    onClose: () {
-                                      setState(() {
-                                        search = false;
-                                      });
-                                    },
-                                  )),
-                            )
-                      : search
-                          ? SliverToBoxAdapter(
-                              child: Container(
-                                  alignment: Alignment.topCenter,
-                                  color: Colors.white,
-                                  width: MediaQuery.of(context).size.width,
-                                  height: MediaQuery.of(context).size.height,
-                                  child: Search(
-                                    onClose: () {
-                                      setState(() {
-                                        search = false;
-                                      });
-                                    },
-                                  )),
-                            )
-                          : Listview(
-                              landmarkModel: landmarks,
-                              distances: distances,
-                              times: times,
-                              index: index,
-                              lat1: lat1,
-                              lng1: lng1,
-                              userId: userid!,
-                            ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

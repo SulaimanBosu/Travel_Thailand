@@ -16,6 +16,7 @@ import 'package:project/screen/login.dart';
 import 'package:project/utility/alert_dialog.dart';
 import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
+import 'package:project/utility/signout_process.dart';
 import 'package:project/widgets/popover.dart';
 import 'package:project/widgets/popup_menu.dart';
 import 'package:resize/resize.dart';
@@ -160,7 +161,7 @@ class _EditProfileState extends State<EditProfile> {
                     //routeToSignIn(context, const HomeScreen(index: 2));
                     break;
                   case 4:
-                    routeToSignIn(context, const Login());
+                    signOutProcess(context);
                     break;
                   default:
                     routeToSignIn(context, const HomeScreen(index: 0));
@@ -637,35 +638,35 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
-  void _showPicker(context) {
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext bc) {
-          return SafeArea(
-            child: Container(
-              child: Wrap(
-                children: [
-                  ListTile(
-                      leading: const Icon(Icons.photo_library),
-                      title: const Text('Photo Library'),
-                      onTap: () {
-                        getImage(ImageSource.gallery);
-                        Navigator.of(context).pop();
-                      }),
-                  ListTile(
-                    leading: const Icon(Icons.photo_camera),
-                    title: const Text('Camera'),
-                    onTap: () {
-                      getImage(ImageSource.camera);
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              ),
-            ),
-          );
-        });
-  }
+  // void _showPicker(context) {
+  //   showModalBottomSheet(
+  //       context: context,
+  //       builder: (BuildContext bc) {
+  //         return SafeArea(
+  //           child: Container(
+  //             child: Wrap(
+  //               children: [
+  //                 ListTile(
+  //                     leading: const Icon(Icons.photo_library),
+  //                     title: const Text('Photo Library'),
+  //                     onTap: () {
+  //                       getImage(ImageSource.gallery);
+  //                       Navigator.of(context).pop();
+  //                     }),
+  //                 ListTile(
+  //                   leading: const Icon(Icons.photo_camera),
+  //                   title: const Text('Camera'),
+  //                   onTap: () {
+  //                     getImage(ImageSource.camera);
+  //                     Navigator.of(context).pop();
+  //                   },
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         );
+  //       });
+  // }
 
   //ดึงรูปภาพจากมือถือมาใส่ในตัวแปร File
   Future<void> getImage(ImageSource imageSource) async {

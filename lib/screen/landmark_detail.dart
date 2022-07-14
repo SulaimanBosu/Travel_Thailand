@@ -7,6 +7,7 @@ import 'package:blurry_modal_progress_hud/blurry_modal_progress_hud.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -28,6 +29,7 @@ import 'package:project/utility/my_api.dart';
 import 'package:project/utility/my_style.dart';
 import 'package:project/widgets/buildListview_landmark.dart';
 import 'package:project/widgets/comment_listview.dart';
+import 'package:readmore/readmore.dart';
 import 'package:resize/resize.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:slider_side_menu/slider_side_menu.dart';
@@ -88,7 +90,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
     getPreferences();
     // getLocation();
     isLoad();
-    delaydialog();
+    delay();
     _refreshComment();
     recommentlandmark();
     debugPrint(widget.landmarkModel.imageid.toString());
@@ -185,7 +187,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
     );
   }
 
-  void delaydialog() {
+  void delay() {
     Future.delayed(const Duration(milliseconds: 150), () {
       setState(() {
         favorites(2);
@@ -365,8 +367,8 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
       });
     } catch (error) {
       debugPrint("ดาวน์โหลดไม่สำเร็จ: $error");
-      MyStyle().showdialog(
-          context, 'ล้มเหลว', 'ไม่พบการเชื่อมต่อเครือข่ายอินเตอร์เน็ต');
+      // MyStyle().showdialog(
+      //     context, 'ล้มเหลว', 'ไม่พบการเชื่อมต่อเครือข่ายอินเตอร์เน็ต');
       setState(
         () {
           isLoading = false;
@@ -455,7 +457,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
         type: MaterialType.transparency,
         child: JumpingDotsProgressIndicator(
           color: Colors.red,
-          fontSize: 80.0.sp,
+          fontSize: 50.0.sp,
         ),
       ),
       dismissible: false,
@@ -465,19 +467,6 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
         bottomSheet: buildBottomSheet(),
         backgroundColor: Colors.white,
         body:
-            //  isLocation
-            //     ? Stack(
-            //         children: [
-            //           bodywidget(context),
-            //           const Center(
-            //             child: CupertinoActivityIndicator(
-            //               animating: true,
-            //               radius: 15,
-            //             ),
-            //           ),
-            //         ],
-            //       )
-            //     :
             bodywidget(context),
       ),
     );
@@ -660,187 +649,202 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
   Widget bodywidget(BuildContext context) {
     return Container(
       color: Colors.white,
-      child: CustomScrollView(
-        shrinkWrap: true,
-        primary: false,
-        physics: const BouncingScrollPhysics(),
-        slivers: [
-          CupertinoSliverRefreshControl(
-            onRefresh: _refreshData,
-          ),
-          SliverToBoxAdapter(
-            child: Container(
-              color: Colors.white,
-              width: screenwidth,
-              height: screenhight * 0.48,
-              child: screenwidget(context),
+      child: RawScrollbar(
+        thumbColor:Colors.grey.shade300,
+        isAlwaysShown: false,
+        scrollbarOrientation: ScrollbarOrientation.right,
+        thickness: 5,
+        radius: const Radius.circular(5),
+        //mainAxisMargin :25 .vh,
+        //crossAxisMargin: 70,
+        child: CustomScrollView(
+          // keyboardDismissBehavior :ScrollViewKeyboardDismissBehavior.onDrag,
+          scrollBehavior: const ScrollBehavior(
+              androidOverscrollIndicator: AndroidOverscrollIndicator.glow),
+          dragStartBehavior: DragStartBehavior.start,
+          shrinkWrap: true,
+          primary: false,
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            CupertinoSliverRefreshControl(
+              onRefresh: _refreshData,
             ),
-          ),
-          information(),
-          isProvinceLoading
-              ? SliverToBoxAdapter(
-                  child: Container(),
-                )
+            SliverToBoxAdapter(
+              child: Container(
+                color: Colors.white,
+                width: screenwidth,
+                height: screenhight * 0.48,
+                child: screenwidget(context),
+              ),
+            ),
+            information(),
+            isProvinceLoading
+                ? SliverToBoxAdapter(
+                    child: Container(),
+                  )
 
-              // ? SliverToBoxAdapter(
-              //     child: Container(
-              //       width: screenwidth,
-              //       height: 8.vh,
-              //       child: const Center(
-              //         child: CupertinoActivityIndicator(
-              //           animating: true,
-              //           radius: 15,
-              //         ),
-              //       ),
-              //     ),
-              //   )
-              : landmarkProvince.isEmpty
-                  ? SliverToBoxAdapter(
-                      child: Container(),
-                    )
-                  : BuildListviewLandmark(
-                      screenwidth: screenwidth,
-                      listLandmark: landmarkProvince,
-                      index: index,
-                    ),
-          landmarktype.isEmpty
-              ? SliverToBoxAdapter(
-                  child: Container(),
-                )
-              : SliverToBoxAdapter(
-                  child: Container(
-                    width: screenwidth,
-                    height: 8.vh,
-                    child: landmarktype.isNotEmpty
-                        ? Column(
-                            children: [
-                              Padding(
-                                padding:
-                                    EdgeInsets.only(bottom: 1.vh, top: 1.vh),
-                                child: Divider(
-                                  color: Colors.grey.shade200,
-                                  thickness: 10.0,
+                // ? SliverToBoxAdapter(
+                //     child: Container(
+                //       width: screenwidth,
+                //       height: 8.vh,
+                //       child: const Center(
+                //         child: CupertinoActivityIndicator(
+                //           animating: true,
+                //           radius: 15,
+                //         ),
+                //       ),
+                //     ),
+                //   )
+                : landmarkProvince.isEmpty
+                    ? SliverToBoxAdapter(
+                        child: Container(),
+                      )
+                    : BuildListviewLandmark(
+                        screenwidth: screenwidth,
+                        listLandmark: landmarkProvince,
+                        index: index,
+                      ),
+            landmarktype.isEmpty
+                ? SliverToBoxAdapter(
+                    child: Container(),
+                  )
+                : SliverToBoxAdapter(
+                    child: Container(
+                      width: screenwidth,
+                      height: 8.vh,
+                      child: landmarktype.isNotEmpty
+                          ? Column(
+                              children: [
+                                Padding(
+                                  padding:
+                                      EdgeInsets.only(bottom: 1.vh, top: 1.vh),
+                                  child: Divider(
+                                    color: Colors.grey.shade200,
+                                    thickness: 10.0,
+                                  ),
                                 ),
-                              ),
-                              Container(
-                                margin:
-                                    EdgeInsets.only(left: 20.w, bottom: 0.5.vh),
-                                width: 100.vw,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'แหล่งท่องเที่ยวประเภทเดียวกัน',
-                                      style: TextStyle(
-                                          color: Colors.black54,
-                                          fontSize: 12.sp),
-                                    ),
-                                    InkWell(
-                                      onTap: () {
-                                        Route route = MaterialPageRoute(
-                                          builder: (context) => LandmarkSearch(
-                                            search: widget.landmarkModel.type!,
-                                            type: 'type',
-                                          ),
-                                        );
-                                        Navigator.pushAndRemoveUntil(
-                                            context, route, (route) => true);
-                                      },
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            'เพิ่มเติม',
-                                            style: TextStyle(
-                                                // decoration: TextDecoration.underline,
-                                                // decorationColor:Colors.black54,
-                                                fontFamily:
-                                                    'FC-Minimal-Regular',
-                                                color: Colors.red,
-                                                fontSize: 14.sp,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          const Icon(
-                                            Icons.keyboard_arrow_right,
-                                            color: Colors.red,
-                                          )
-                                        ],
+                                Container(
+                                  margin: EdgeInsets.only(
+                                      left: 20.w, bottom: 0.5.vh),
+                                  width: 100.vw,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'แหล่งท่องเที่ยวประเภทเดียวกัน',
+                                        style: TextStyle(
+                                            color: Colors.black54,
+                                            fontSize: 12.sp),
                                       ),
-                                    ),
-                                  ],
+                                      InkWell(
+                                        onTap: () {
+                                          Route route = MaterialPageRoute(
+                                            builder: (context) =>
+                                                LandmarkSearch(
+                                              search:
+                                                  widget.landmarkModel.type!,
+                                              type: 'type',
+                                            ),
+                                          );
+                                          Navigator.pushAndRemoveUntil(
+                                              context, route, (route) => true);
+                                        },
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              'เพิ่มเติม',
+                                              style: TextStyle(
+                                                  // decoration: TextDecoration.underline,
+                                                  // decorationColor:Colors.black54,
+                                                  fontFamily:
+                                                      'FC-Minimal-Regular',
+                                                  color: Colors.red,
+                                                  fontSize: 14.sp,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            const Icon(
+                                              Icons.keyboard_arrow_right,
+                                              color: Colors.red,
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
+                                // Padding(
+                                //   padding: EdgeInsets.only(bottom: 1.vh, top: 1.vh),
+                                //   child: Divider(
+                                //     color: Colors.grey.shade200,
+                                //     thickness: 1.0,
+                                //   ),
+                                // ),
+                              ],
+                            )
+                          : Container(),
+                    ),
+                  ),
+            isTypeLoading
+                ? SliverToBoxAdapter(
+                    child: Container(),
+                  )
+                : BuildListviewLandmark(
+                    screenwidth: screenwidth,
+                    listLandmark: landmarktype,
+                    index: index,
+                  ),
+            commentBar(context),
+            isLoading
+                ? const SliverToBoxAdapter(
+                    child: CupertinoActivityIndicator(
+                      animating: true,
+                      radius: 15,
+                    ),
+                  )
+                : commentModel.userFirstName == null
+                    ? SliverToBoxAdapter(
+                        child: Container(
+                          color: Colors.white,
+                          child: const Center(
+                            widthFactor: 3,
+                            heightFactor: 3,
+                            child: Text(
+                              'ไม่มี Comment',
+                              style: TextStyle(
+                                color: Colors.black54,
+                                fontSize: 18.0,
+                                fontFamily: 'FC-Minimal-Regular',
                               ),
-                              // Padding(
-                              //   padding: EdgeInsets.only(bottom: 1.vh, top: 1.vh),
-                              //   child: Divider(
-                              //     color: Colors.grey.shade200,
-                              //     thickness: 1.0,
-                              //   ),
-                              // ),
-                            ],
-                          )
-                        : Container(),
-                  ),
-                ),
-          isTypeLoading
-              ? SliverToBoxAdapter(
-                  child: Container(),
-                )
-              : BuildListviewLandmark(
-                  screenwidth: screenwidth,
-                  listLandmark: landmarktype,
-                  index: index,
-                ),
-          commentBar(context),
-          isLoading
-              ? const SliverToBoxAdapter(
-                  child: CupertinoActivityIndicator(
-                    animating: true,
-                    radius: 15,
-                  ),
-                )
-              : commentModel.userFirstName == null
-                  ? SliverToBoxAdapter(
-                      child: Container(
-                        color: Colors.white,
-                        child: const Center(
-                          widthFactor: 3,
-                          heightFactor: 3,
-                          child: Text(
-                            'ไม่มี Comment',
-                            style: TextStyle(
-                              color: Colors.black54,
-                              fontSize: 18.0,
-                              fontFamily: 'FC-Minimal-Regular',
                             ),
                           ),
                         ),
+                      )
+                    : CommentListview(
+                        commentModels: commentModels,
+                        index: index,
+                        moreComment: moreComment,
+                        commentdate: commentdate,
+                        onLike: (value) {
+                          debugPrint('Value ======= ${value.toString()}');
+                          likeAnddeleteComment(value[0], value[1]);
+                        },
+                        userid: userid!,
                       ),
-                    )
-                  : CommentListview(
-                      commentModels: commentModels,
-                      index: index,
-                      moreComment: moreComment,
-                      commentdate: commentdate,
-                      onLike: (value) {
-                        debugPrint('Value ======= ${value.toString()}');
-                        likeAnddeleteComment(value[0], value[1]);
-                      },
-                      userid: userid!,
-                    ),
-          commentModels.length > 3
-              ? commentMore()
-              : SliverToBoxAdapter(
-                  child: Container(),
-                ),
-          SliverToBoxAdapter(
-            child: Container(
-              margin: EdgeInsets.only(bottom: screenhight * 0.11),
-            ),
-          )
-        ],
+            commentModels.length > 3
+                ? commentMore()
+                : SliverToBoxAdapter(
+                    child: Container(),
+                  ),
+            SliverToBoxAdapter(
+              child: Container(
+                margin: EdgeInsets.only(bottom: screenhight * 0.11),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -1110,8 +1114,18 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
                         ),
                       ),
                       MyStyle().mySizebox(),
-                      Text(
+                      ReadMoreText(
                         '\t\t\t\t${widget.landmarkModel.landmarkDetail!}',
+                        trimLines: 10,
+                        trimMode: TrimMode.Line,
+                        trimCollapsedText: 'อ่านเพิ่มเติม',
+                        trimExpandedText: '  น้อยลง..',
+                        colorClickableText: Colors.red,
+                        moreStyle: TextStyle(
+                          color: Colors.red,
+                          fontSize: 16.0.sp,
+                          // fontFamily: 'FC-Minimal-Regular',
+                        ),
                         style: TextStyle(
                           color: Colors.black54,
                           fontSize: 16.0.sp,
