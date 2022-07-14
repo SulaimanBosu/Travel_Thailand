@@ -303,7 +303,7 @@ class _PopularState extends State<Popular> {
                                 landmarkModel: popularlandmarks,
                                 distances: distances,
                                 times: times,
-                                index: index,
+                                count: landmark.landmarkCount!,
                                 lat1: lat1,
                                 lng1: lng1,
                                 userId: userid!, onLoadmore: () {  },

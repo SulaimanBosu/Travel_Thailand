@@ -13,6 +13,7 @@ class LandmarkModel {
   int? landmarkScore;
   String? type;
   String? regionId;
+  int? landmarkCount;
 
   LandmarkModel(
       {this.landmarkView,
@@ -28,7 +29,8 @@ class LandmarkModel {
       this.imageid,
       this.landmarkScore,
       this.type,
-      this.regionId});
+      this.regionId,
+      this.landmarkCount,});
 
   LandmarkModel.fromJson(Map<String, dynamic> json) {
     landmarkView = json['Landmark_view'];
@@ -45,6 +47,7 @@ class LandmarkModel {
     landmarkScore = json['Landmark_score'];
     type = json['Type'];
     regionId = json['region_id'];
+    landmarkCount = json['Landmark_Count'];
   }
 
   Map<String, dynamic> toJson() {
@@ -63,6 +66,7 @@ class LandmarkModel {
     data['Landmark_score'] = landmarkScore;
     data['Type'] = type;
     data['region_id'] = regionId;
+    data['Landmark_Count'] = landmarkCount;
     return data;
   }
 }

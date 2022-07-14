@@ -3,9 +3,9 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_share/flutter_share.dart';
@@ -26,7 +26,7 @@ class Listview extends StatefulWidget {
   final List<LandmarkModel> landmarkModel;
   final List<String> distances;
   final List<double> times;
-  final int index;
+  final int count;
   final double lat1, lng1;
   final String userId;
   final VoidCallback onLoadmore;
@@ -34,7 +34,7 @@ class Listview extends StatefulWidget {
   const Listview({
     Key? key,
     required this.landmarkModel,
-    required this.index,
+    required this.count,
     required this.distances,
     required this.times,
     required this.lat1,
@@ -50,38 +50,42 @@ class Listview extends StatefulWidget {
 class _ListviewState extends State<Listview> {
   late double screenwidth;
   late double screenhight;
+  int count = 0;
+  
 
   @override
   void initState() {
+    count = widget.count;
+    debugPrint('count ============ ${count.toString()}');
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
     super.initState();
   }
 
-  Future<bool> _loadMore() async {
-    await Future.delayed(const Duration(seconds: 0, milliseconds: 2000));
-
-    setState(() {
-      widget.onLoadmore();
-    });
-    return true;
-  }
+  // Future<bool> _loadMore() async {
+  //   await Future.delayed(const Duration(seconds: 0, milliseconds: 1000));
+  //   setState(() {
+  //     widget.onLoadmore();
+  //   });
+  //   return true;
+  // }
 
   @override
   Widget build(BuildContext context) {
     screenwidth = MediaQuery.of(context).size.width;
     screenhight = MediaQuery.of(context).size.height;
     return Container(
-      child: LoadMore(
-        isFinish: widget.landmarkModel.length >= 30,
-        onLoadMore: _loadMore,
-        whenEmptyLoad: false,
-        delegate: const DefaultLoadMoreDelegate(),
-        textBuilder: DefaultLoadMoreTextBuilder.english,
-        child: SliverList(
+      child: SliverList(
           delegate: SliverChildBuilderDelegate(
+           
             (context, index) {
+              
+              if (index == widget.landmarkModel.length) {
+                return const CupertinoActivityIndicator(
+                  radius: 20,
+                );
+              }
               return Container(
                 child: Slidable(
                   key: Key(widget.landmarkModel[index].landmarkId!),
@@ -443,9 +447,9 @@ class _ListviewState extends State<Listview> {
                 ),
               );
             },
-            childCount: widget.landmarkModel.length,
+            childCount: widget.landmarkModel.length + 1,
           ),
-        ),
+        
       ),
     );
   }

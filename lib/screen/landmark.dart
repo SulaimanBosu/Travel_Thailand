@@ -29,6 +29,7 @@ class Landmark extends StatefulWidget {
 
 class _LandmarkState extends State<Landmark> {
   List<LandmarkModel> landmarks = [];
+  List<LandmarkModel> loadmorelandmarks = [];
   late LandmarkModel landmarkModel;
   List<String> distances = [];
   List<double> times = [];
@@ -52,9 +53,16 @@ class _LandmarkState extends State<Landmark> {
   bool search = false;
   int limit = 10;
   int offset = 0;
+  ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        loadmoreLandmark(limit, offset);
+      }
+    });
     // readlandmark();
     recommentlandmark(limit, offset);
     isLoad();
@@ -98,11 +106,13 @@ class _LandmarkState extends State<Landmark> {
 
   Future<void> recommentlandmark(int limit, int offset) async {
     String url = '${MyConstant().domain}/application/get_landmark.php';
-    Location location = Location();
-    LocationData locationData = await location.getLocation();
+    // Location location = Location();
+    // LocationData locationData = await location.getLocation();
     //location.enableBackgroundMode(enable: true);
-    lat1 = locationData.latitude!;
-    lng1 = locationData.longitude!;
+    // lat1 = locationData.latitude!;
+    // lng1 = locationData.longitude!;
+    lat1 = 13.602098;
+    lng1 = 100.624933;
     debugPrint('latitude ============ ${lat1.toString()}');
     debugPrint('longitude ============ ${lng1.toString()}');
 
@@ -146,6 +156,66 @@ class _LandmarkState extends State<Landmark> {
       debugPrint("ดาวน์โหลดไม่สำเร็จ: $error");
       MyStyle().showdialog(
           context, 'ล้มเหลว', 'ไม่พบการเชื่อมต่อเครือข่ายอินเตอร์เน็ต');
+      isLoading = false;
+      isdata = true;
+    }
+  }
+
+  Future<void> loadmoreLandmark(int limit, int offset) async {
+    String url = '${MyConstant().domain}/application/get_landmark.php';
+    // Location location = Location();
+    // LocationData locationData = await location.getLocation();
+    //location.enableBackgroundMode(enable: true);
+    // lat1 = locationData.latitude!;
+    // lng1 = locationData.longitude!;
+    lat1 = 13.602098;
+    lng1 = 100.624933;
+    debugPrint('latitude ============ ${lat1.toString()}');
+    debugPrint('longitude ============ ${lng1.toString()}');
+
+    FormData formData = FormData.fromMap(
+      {
+        "Limit": limit,
+        "Offset": offset,
+      },
+    );
+
+    try {
+      await Dio().post(url, data: formData).then((value) {
+        var result = json.decode(value.data);
+        //debugPrint('data == $result');
+        for (var map in result) {
+          final landmarkmore = LandmarkModel.fromJson(map);
+          setState(
+            () {
+              loadmorelandmarks.add(landmarkmore);
+
+              // debugPrint('latitude ============ ${lat1.toString()}');
+              // debugPrint('longitude ============ ${lng1.toString()}');
+              lat2 = double.parse(landmarkModel.latitude!);
+              lng2 = double.parse(landmarkModel.longitude!);
+
+              distance = MyApi().calculateDistance(lat1, lng1, lat2, lng2);
+              var myFormat = NumberFormat('#0.00', 'en_US');
+              distanceString = myFormat.format(distance);
+              distances.add(distanceString);
+              time = MyApi().calculateTime(distance);
+              // debugPrint('time min ============ ${time.toString()}');
+              times.add(time);
+              isLoading = false;
+              isdata = true;
+              index++;
+            },
+          );
+        }
+      });
+      landmarks.addAll(loadmorelandmarks);
+      offset = landmarks.length + 10;
+      limit = landmarks.length + 10;
+    } catch (error) {
+      debugPrint("ดาวน์โหลดไม่สำเร็จ: $error");
+      // MyStyle().showdialog(
+      //     context, 'ล้มเหลว', 'ไม่พบการเชื่อมต่อเครือข่ายอินเตอร์เน็ต');
       isLoading = false;
       isdata = true;
     }
@@ -259,6 +329,7 @@ class _LandmarkState extends State<Landmark> {
             thickness: 5,
             radius: const Radius.circular(5),
             child: CustomScrollView(
+              controller: _scrollController,
               shrinkWrap: true,
               primary: false,
               physics: const BouncingScrollPhysics(),
@@ -351,13 +422,17 @@ class _LandmarkState extends State<Landmark> {
                                 landmarkModel: landmarks,
                                 distances: distances,
                                 times: times,
-                                index: index,
+                                count: landmarkModel.landmarkCount!,
                                 lat1: lat1,
                                 lng1: lng1,
                                 userId: userid!,
                                 onLoadmore: () {
-                                  offset = offset + limit;
-                                  recommentlandmark(limit, offset);
+                                  landmarks.addAll(loadmorelandmarks);
+                                  if (limit < landmarkModel.landmarkCount!) {
+                                    offset = landmarks.length + 10;
+                                    limit = landmarks.length + 10;
+                                    loadmoreLandmark(limit, offset);
+                                  }
                                 },
                               ),
               ],
