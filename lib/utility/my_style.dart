@@ -1,9 +1,11 @@
+import 'package:flash/flash.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:progress_indicators/progress_indicators.dart';
 import 'package:project/ProfilePage/profile.dart';
 import 'package:project/widgets/popover.dart';
 import 'package:resize/resize.dart';
+import 'package:toast/toast.dart';
 
 class MyStyle {
   Color darkColor = Colors.blue.shade900;
@@ -31,6 +33,40 @@ class MyStyle {
       //   backgroundColor: Colors.white,
       //   valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
       // ),
+    );
+  }
+
+
+    showBasicsFlash({
+    BuildContext? context,
+    String? text,
+    Duration? duration,
+    flashStyle = FlashBehavior.floating,
+  }) {
+    showFlash(
+      context: context!,
+      duration: duration,
+      builder: (context, controller) {
+        return Flash(
+          controller: controller,
+          behavior: flashStyle,
+          position: FlashPosition.top,
+          boxShadows: kElevationToShadow[4],
+          horizontalDismissDirection: HorizontalDismissDirection.horizontal,
+          child: FlashBar(
+            content: Row(
+              children: [
+                const Icon(
+                  Icons.info_outline,
+                  color: Colors.redAccent,
+                ),
+                MyStyle().mySizebox(),
+                Text(text!),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 

@@ -14,6 +14,7 @@ import 'package:project/screen/landmark.dart';
 import 'package:project/screen/main_page.dart';
 import 'package:project/screen/popular.dart';
 import 'package:project/ProfilePage/profile.dart';
+import 'package:project/screen/test_landmark.dart';
 import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
 import 'package:resize/resize.dart';

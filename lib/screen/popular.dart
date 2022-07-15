@@ -22,7 +22,9 @@ import 'package:resize/resize.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Popular extends StatefulWidget {
-  const Popular({Key? key,}) : super(key: key);
+  const Popular({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<Popular> createState() => _PopularState();
@@ -303,10 +305,10 @@ class _PopularState extends State<Popular> {
                                 landmarkModel: popularlandmarks,
                                 distances: distances,
                                 times: times,
-                                count: landmark.landmarkCount!,
                                 lat1: lat1,
                                 lng1: lng1,
-                                userId: userid!, onLoadmore: () {  },
+                                userId: userid!,
+                                hasmore: false,
                               )
                 // SliverToBoxAdapter(
                 //   child: popularlandmarks.isEmpty

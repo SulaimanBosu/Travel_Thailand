@@ -29,7 +29,7 @@ class Landmark extends StatefulWidget {
 
 class _LandmarkState extends State<Landmark> {
   List<LandmarkModel> landmarks = [];
-  List<LandmarkModel> loadmorelandmarks = [];
+  List<LandmarkModel> loadmorel = [];
   late LandmarkModel landmarkModel;
   List<String> distances = [];
   List<double> times = [];
@@ -54,17 +54,18 @@ class _LandmarkState extends State<Landmark> {
   int limit = 10;
   int offset = 0;
   ScrollController _scrollController = ScrollController();
+  bool hasmore = true;
 
   @override
   void initState() {
+    recommentlandmark();
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
-        loadmoreLandmark(limit, offset);
+        recommentlandmark();
       }
     });
     // readlandmark();
-    recommentlandmark(limit, offset);
     isLoad();
     // getLocation();
     getPreferences();
@@ -104,120 +105,71 @@ class _LandmarkState extends State<Landmark> {
     email = preferences.getString('Email')!;
   }
 
-  Future<void> recommentlandmark(int limit, int offset) async {
-    String url = '${MyConstant().domain}/application/get_landmark.php';
-    // Location location = Location();
-    // LocationData locationData = await location.getLocation();
-    //location.enableBackgroundMode(enable: true);
-    // lat1 = locationData.latitude!;
-    // lng1 = locationData.longitude!;
-    lat1 = 13.602098;
-    lng1 = 100.624933;
-    debugPrint('latitude ============ ${lat1.toString()}');
-    debugPrint('longitude ============ ${lng1.toString()}');
+  Future<void> recommentlandmark() async {
+    if (hasmore != false) {
+      String url = '${MyConstant().domain}/application/get_landmark.php';
+      Location location = Location();
+      LocationData locationData = await location.getLocation();
+      // location.enableBackgroundMode(enable: true);
+      lat1 = locationData.latitude!;
+      lng1 = locationData.longitude!;
+      // lat1 = 13.602098;
+      // lng1 = 100.624933;
+      debugPrint('latitude ============ ${lat1.toString()}');
+      debugPrint('longitude ============ ${lng1.toString()}');
 
-    FormData formData = FormData.fromMap(
-      {
-        "Limit": limit,
-        "Offset": offset,
-      },
-    );
+      FormData formData = FormData.fromMap(
+        {
+          "Limit": 10,
+          "Offset": offset,
+        },
+      );
 
-    try {
-      await Dio().post(url, data: formData).then((value) {
-        var result = json.decode(value.data);
-        //debugPrint('data == $result');
-        for (var map in result) {
-          landmarkModel = LandmarkModel.fromJson(map);
-          setState(
-            () {
-              landmarks.add(landmarkModel);
+      try {
+        await Dio().post(url, data: formData).then((value) {
+          var result = json.decode(value.data);
+          loadmorel.clear();
+          for (var map in result) {
+            landmarkModel = LandmarkModel.fromJson(map);
+            setState(
+              () {
+                loadmorel.add(landmarkModel);
 
-              // debugPrint('latitude ============ ${lat1.toString()}');
-              // debugPrint('longitude ============ ${lng1.toString()}');
-              lat2 = double.parse(landmarkModel.latitude!);
-              lng2 = double.parse(landmarkModel.longitude!);
+                // debugPrint('latitude ============ ${lat1.toString()}');
+                // debugPrint('longitude ============ ${lng1.toString()}');
+                lat2 = double.parse(landmarkModel.latitude!);
+                lng2 = double.parse(landmarkModel.longitude!);
 
-              distance = MyApi().calculateDistance(lat1, lng1, lat2, lng2);
-              var myFormat = NumberFormat('#0.00', 'en_US');
-              distanceString = myFormat.format(distance);
-              distances.add(distanceString);
-              time = MyApi().calculateTime(distance);
-              // debugPrint('time min ============ ${time.toString()}');
-              times.add(time);
-              isLoading = false;
-              isdata = true;
-              index++;
-            },
-          );
-        }
-      });
-    } catch (error) {
-      debugPrint("ดาวน์โหลดไม่สำเร็จ: $error");
-      MyStyle().showdialog(
-          context, 'ล้มเหลว', 'ไม่พบการเชื่อมต่อเครือข่ายอินเตอร์เน็ต');
-      isLoading = false;
-      isdata = true;
-    }
-  }
+                distance = MyApi().calculateDistance(lat1, lng1, lat2, lng2);
+                var myFormat = NumberFormat('#0.00', 'en_US');
+                distanceString = myFormat.format(distance);
+                distances.add(distanceString);
+                time = MyApi().calculateTime(distance);
+                // debugPrint('time min ============ ${time.toString()}');
+                times.add(time);
+                isLoading = false;
+                isdata = true;
+                index++;
+              },
+            );
+          }
+        });
 
-  Future<void> loadmoreLandmark(int limit, int offset) async {
-    String url = '${MyConstant().domain}/application/get_landmark.php';
-    // Location location = Location();
-    // LocationData locationData = await location.getLocation();
-    //location.enableBackgroundMode(enable: true);
-    // lat1 = locationData.latitude!;
-    // lng1 = locationData.longitude!;
-    lat1 = 13.602098;
-    lng1 = 100.624933;
-    debugPrint('latitude ============ ${lat1.toString()}');
-    debugPrint('longitude ============ ${lng1.toString()}');
-
-    FormData formData = FormData.fromMap(
-      {
-        "Limit": limit,
-        "Offset": offset,
-      },
-    );
-
-    try {
-      await Dio().post(url, data: formData).then((value) {
-        var result = json.decode(value.data);
-        //debugPrint('data == $result');
-        for (var map in result) {
-          final landmarkmore = LandmarkModel.fromJson(map);
-          setState(
-            () {
-              loadmorelandmarks.add(landmarkmore);
-
-              // debugPrint('latitude ============ ${lat1.toString()}');
-              // debugPrint('longitude ============ ${lng1.toString()}');
-              lat2 = double.parse(landmarkModel.latitude!);
-              lng2 = double.parse(landmarkModel.longitude!);
-
-              distance = MyApi().calculateDistance(lat1, lng1, lat2, lng2);
-              var myFormat = NumberFormat('#0.00', 'en_US');
-              distanceString = myFormat.format(distance);
-              distances.add(distanceString);
-              time = MyApi().calculateTime(distance);
-              // debugPrint('time min ============ ${time.toString()}');
-              times.add(time);
-              isLoading = false;
-              isdata = true;
-              index++;
-            },
-          );
-        }
-      });
-      landmarks.addAll(loadmorelandmarks);
-      offset = landmarks.length + 10;
-      limit = landmarks.length + 10;
-    } catch (error) {
-      debugPrint("ดาวน์โหลดไม่สำเร็จ: $error");
-      // MyStyle().showdialog(
-      //     context, 'ล้มเหลว', 'ไม่พบการเชื่อมต่อเครือข่ายอินเตอร์เน็ต');
-      isLoading = false;
-      isdata = true;
+        setState(() {
+          if (loadmorel.length < limit) {
+            hasmore = false;
+          }
+          offset += 10;
+          landmarks.addAll(loadmorel);
+          debugPrint('Page ============ ${offset.toString()}');
+        });
+      } catch (error) {
+        debugPrint("ดาวน์โหลดไม่สำเร็จ: $error");
+        MyStyle().showdialog(
+            context, 'ล้มเหลว', 'ไม่พบการเชื่อมต่อเครือข่ายอินเตอร์เน็ต');
+        isLoading = false;
+        isdata = true;
+      }
     }
   }
 
@@ -286,7 +238,7 @@ class _LandmarkState extends State<Landmark> {
       index = 0;
       limit = 10;
       offset = 0;
-      recommentlandmark(limit, offset);
+      recommentlandmark();
       // readlandmark();
     });
   }
@@ -422,18 +374,10 @@ class _LandmarkState extends State<Landmark> {
                                 landmarkModel: landmarks,
                                 distances: distances,
                                 times: times,
-                                count: landmarkModel.landmarkCount!,
                                 lat1: lat1,
                                 lng1: lng1,
                                 userId: userid!,
-                                onLoadmore: () {
-                                  landmarks.addAll(loadmorelandmarks);
-                                  if (limit < landmarkModel.landmarkCount!) {
-                                    offset = landmarks.length + 10;
-                                    limit = landmarks.length + 10;
-                                    loadmoreLandmark(limit, offset);
-                                  }
-                                },
+                                hasmore: hasmore,
                               ),
               ],
             ),

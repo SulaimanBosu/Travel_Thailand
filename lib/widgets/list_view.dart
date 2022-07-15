@@ -5,12 +5,12 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
+import 'package:flash/flash.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:loadmore/loadmore.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:project/model/landmark_model.dart';
 import 'package:project/screen/landmark_detail.dart';
@@ -20,27 +20,26 @@ import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
 import 'package:project/widgets/popover.dart';
 import 'package:resize/resize.dart';
+import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Listview extends StatefulWidget {
   final List<LandmarkModel> landmarkModel;
   final List<String> distances;
   final List<double> times;
-  final int count;
   final double lat1, lng1;
   final String userId;
-  final VoidCallback onLoadmore;
+  final bool hasmore;
 
   const Listview({
     Key? key,
     required this.landmarkModel,
-    required this.count,
     required this.distances,
     required this.times,
     required this.lat1,
     required this.lng1,
     required this.userId,
-    required this.onLoadmore,
+    required this.hasmore,
   }) : super(key: key);
 
   @override
@@ -51,25 +50,32 @@ class _ListviewState extends State<Listview> {
   late double screenwidth;
   late double screenhight;
   int count = 0;
-  
+  bool isSnackBar = false;
 
   @override
   void initState() {
-    count = widget.count;
-    debugPrint('count ============ ${count.toString()}');
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
     super.initState();
   }
 
-  // Future<bool> _loadMore() async {
-  //   await Future.delayed(const Duration(seconds: 0, milliseconds: 1000));
-  //   setState(() {
-  //     widget.onLoadmore();
-  //   });
-  //   return true;
-  // }
+  void delay() {
+    Future.delayed(const Duration(milliseconds: 3000), () {
+      isSnackBar = true;
+    });
+  }
+
+  void _showToast(BuildContext context) {
+    if (isSnackBar = true) {
+      MyStyle().showBasicsFlash(
+        context: context,
+        text: 'เพิ่มขนาดสูงสุดแล้ว',
+        flashStyle: FlashBehavior.fixed,
+        duration: const Duration(seconds: 2),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,15 +83,28 @@ class _ListviewState extends State<Listview> {
     screenhight = MediaQuery.of(context).size.height;
     return Container(
       child: SliverList(
-          delegate: SliverChildBuilderDelegate(
-           
-            (context, index) {
-              
-              if (index == widget.landmarkModel.length) {
-                return const CupertinoActivityIndicator(
-                  radius: 20,
+        delegate: SliverChildBuilderDelegate(
+          (context, index) {
+            if (index == widget.landmarkModel.length) {
+              if (widget.hasmore) {
+                return const Center(
+                  child: CupertinoActivityIndicator(
+                    radius: 20,
+                  ),
                 );
+              } else {
+                delay;
+                return isSnackBar == false
+                    ? const Center(
+                        child: CupertinoActivityIndicator(
+                          radius: 20,
+                        ),
+                      )
+                    : Container(
+                        child: const Text('no data'),
+                      );
               }
+            } else {
               return Container(
                 child: Slidable(
                   key: Key(widget.landmarkModel[index].landmarkId!),
@@ -446,10 +465,10 @@ class _ListviewState extends State<Listview> {
                   ),
                 ),
               );
-            },
-            childCount: widget.landmarkModel.length + 1,
-          ),
-        
+            }
+          },
+          childCount: widget.landmarkModel.length + 1,
+        ),
       ),
     );
   }

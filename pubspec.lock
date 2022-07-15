@@ -155,6 +155,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.6.0"
+  flash:
+    dependency: "direct main"
+    description:
+      name: flash
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.3+2"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -303,13 +310,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.1"
-  loadmore:
-    dependency: "direct main"
-    description:
-      name: loadmore
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.1"
   location:
     dependency: "direct main"
     description:
