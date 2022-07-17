@@ -542,6 +542,7 @@ class _LoginState extends State<Login> {
                       padding: const EdgeInsets.only(top: 10),
                       width: 90.vw,
                       child: TextField(
+                        autofocus: true,
                         obscureText: statusRedEyenewPassword,
                         keyboardType: TextInputType.text,
                         controller: newPassword,
@@ -848,6 +849,7 @@ class _LoginState extends State<Login> {
             child: TextField(
               keyboardType: TextInputType.emailAddress,
               controller: _emailresetPassword,
+              autofocus: true,
               decoration: InputDecoration(
                 prefixIcon: const Icon(
                   Icons.email_outlined,
