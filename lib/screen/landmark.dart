@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'package:blurry_modal_progress_hud/blurry_modal_progress_hud.dart';
 import 'package:dio/dio.dart';
+import 'package:flash/flash.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:intl/intl.dart';
 import 'package:progress_indicators/progress_indicators.dart';
 import 'package:project/model/landmark_model.dart';
-import 'package:project/model/province_model.dart';
 import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_api.dart';
 import 'package:project/utility/my_style.dart';
@@ -53,21 +54,19 @@ class _LandmarkState extends State<Landmark> {
   bool search = false;
   int limit = 10;
   int offset = 0;
-  ScrollController _scrollController = ScrollController();
+  ScrollController scrollController = ScrollController();
   bool hasmore = true;
 
   @override
   void initState() {
-    recommentlandmark();
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) {
-        recommentlandmark();
+    readlandmark();
+    scrollController.addListener(() {
+      if (scrollController.position.pixels ==
+          scrollController.position.maxScrollExtent) {
+        readlandmark();
       }
     });
-    // readlandmark();
     isLoad();
-    // getLocation();
     getPreferences();
     super.initState();
   }
@@ -105,22 +104,22 @@ class _LandmarkState extends State<Landmark> {
     email = preferences.getString('Email')!;
   }
 
-  Future<void> recommentlandmark() async {
+  Future<void> readlandmark() async {
     if (hasmore != false) {
       String url = '${MyConstant().domain}/application/get_landmark.php';
-      Location location = Location();
-      LocationData locationData = await location.getLocation();
+      // Location location = Location();
+      // LocationData locationData = await location.getLocation();
       // location.enableBackgroundMode(enable: true);
-      lat1 = locationData.latitude!;
-      lng1 = locationData.longitude!;
-      // lat1 = 13.602098;
-      // lng1 = 100.624933;
+      // lat1 = locationData.latitude!;
+      // lng1 = locationData.longitude!;
+      lat1 = 13.602098;
+      lng1 = 100.624933;
       debugPrint('latitude ============ ${lat1.toString()}');
       debugPrint('longitude ============ ${lng1.toString()}');
 
       FormData formData = FormData.fromMap(
         {
-          "Limit": 10,
+          "Limit": limit,
           "Offset": offset,
         },
       );
@@ -134,22 +133,18 @@ class _LandmarkState extends State<Landmark> {
             setState(
               () {
                 loadmorel.add(landmarkModel);
-
-                // debugPrint('latitude ============ ${lat1.toString()}');
-                // debugPrint('longitude ============ ${lng1.toString()}');
                 lat2 = double.parse(landmarkModel.latitude!);
                 lng2 = double.parse(landmarkModel.longitude!);
-
                 distance = MyApi().calculateDistance(lat1, lng1, lat2, lng2);
                 var myFormat = NumberFormat('#0.00', 'en_US');
                 distanceString = myFormat.format(distance);
                 distances.add(distanceString);
                 time = MyApi().calculateTime(distance);
-                // debugPrint('time min ============ ${time.toString()}');
                 times.add(time);
                 isLoading = false;
                 isdata = true;
                 index++;
+                offset++;
               },
             );
           }
@@ -159,7 +154,7 @@ class _LandmarkState extends State<Landmark> {
           if (loadmorel.length < limit) {
             hasmore = false;
           }
-          offset += 10;
+          // offset += 10;
           landmarks.addAll(loadmorel);
           debugPrint('Page ============ ${offset.toString()}');
         });
@@ -170,52 +165,79 @@ class _LandmarkState extends State<Landmark> {
         isLoading = false;
         isdata = true;
       }
+    } else {
+      setState(() {
+        MyStyle().showBasicsFlash(
+          context: context,
+          text: 'ไม่พบข้อมูล',
+          duration: const Duration(seconds: 3),
+          flashStyle: FlashBehavior.floating,
+        );
+      });
     }
   }
 
-  Future<void> readlandmark() async {
-    Location location = Location();
-    LocationData locationData = await location.getLocation();
-    //location.enableBackgroundMode(enable: true);
-    lat1 = locationData.latitude!;
-    lng1 = locationData.longitude!;
+  Future<void> readlandmark2() async {
+    if (hasmore != false) {
+      String url = '${MyConstant().domain}/application/get_landmark.php';
+      // Location location = Location();
+      // LocationData locationData = await location.getLocation();
+      // location.enableBackgroundMode(enable: true);
+      // lat1 = locationData.latitude!;
+      // lng1 = locationData.longitude!;
+      lat1 = 13.602098;
+      lng1 = 100.624933;
+      debugPrint('latitude ============ ${lat1.toString()}');
+      debugPrint('longitude ============ ${lng1.toString()}');
 
-    debugPrint('latitude ============ ${lat1.toString()}');
-    debugPrint('longitude ============ ${lng1.toString()}');
-    String url = '${MyConstant().domain}/application/get_landmark.php';
-    try {
-      await Dio().get(url).then((value) {
-        var result = json.decode(value.data);
-        debugPrint('Value == $result');
-        for (var map in result) {
-          landmarkModel = LandmarkModel.fromJson(map);
-          setState(() {
-            landmarks.add(landmarkModel);
+      FormData formData = FormData.fromMap(
+        {
+          "Limit": limit,
+          "Offset": offset,
+        },
+      );
 
-            // debugPrint('latitude ============ ${lat1.toString()}');
-            // debugPrint('longitude ============ ${lng1.toString()}');
-            lat2 = double.parse(landmarkModel.latitude!);
-            lng2 = double.parse(landmarkModel.longitude!);
+      try {
+        await Dio().post(url, data: formData).then((value) {
+          var result = json.decode(value.data);
+          // loadmorel.clear();
+          for (var map in result) {
+            landmarkModel = LandmarkModel.fromJson(map);
+            setState(
+              () {
+                landmarks.add(landmarkModel);
+                lat2 = double.parse(landmarkModel.latitude!);
+                lng2 = double.parse(landmarkModel.longitude!);
+                distance = MyApi().calculateDistance(lat1, lng1, lat2, lng2);
+                var myFormat = NumberFormat('#0.00', 'en_US');
+                distanceString = myFormat.format(distance);
+                distances.add(distanceString);
+                time = MyApi().calculateTime(distance);
+                times.add(time);
+                isLoading = false;
+                isdata = true;
+                index++;
+                offset++;
+              },
+            );
+          }
+        });
 
-            distance = MyApi().calculateDistance(lat1, lng1, lat2, lng2);
-            var myFormat = NumberFormat('#0.00', 'en_US');
-            distanceString = myFormat.format(distance);
-            distances.add(distanceString);
-            time = MyApi().calculateTime(distance);
-            // debugPrint('time min ============ ${time.toString()}');
-            times.add(time);
-            isLoading = false;
-            isdata = true;
-            index++;
-          });
-        }
-      });
-    } catch (error) {
-      debugPrint("ดาวน์โหลดไม่สำเร็จ: $error");
-      MyStyle().showdialog(
-          context, 'ล้มเหลว', 'ไม่พบการเชื่อมต่อเครือข่ายอินเตอร์เน็ต');
-      isLoading = false;
-      isdata = true;
+        setState(() {
+          if (landmarks.length == landmarkModel.landmarkCount) {
+            hasmore = false;
+          }
+          // offset += 10;
+          // landmarks.addAll(loadmorel);
+          //debugPrint('Page ============ ${offset.toString()}');
+        });
+      } catch (error) {
+        debugPrint("ดาวน์โหลดไม่สำเร็จ: $error");
+        MyStyle().showdialog(
+            context, 'ล้มเหลว', 'ไม่พบการเชื่อมต่อเครือข่ายอินเตอร์เน็ต');
+        isLoading = false;
+        isdata = true;
+      }
     }
   }
 
@@ -236,10 +258,9 @@ class _LandmarkState extends State<Landmark> {
       distances.clear();
       times.clear();
       index = 0;
-      limit = 10;
       offset = 0;
-      recommentlandmark();
-      // readlandmark();
+      hasmore = true;
+      readlandmark();
     });
   }
 
@@ -275,13 +296,14 @@ class _LandmarkState extends State<Landmark> {
                   ),
         body: SafeArea(
           child: RawScrollbar(
+            controller: scrollController,
             thumbColor: Colors.grey.shade300,
             isAlwaysShown: false,
             scrollbarOrientation: ScrollbarOrientation.right,
             thickness: 5,
             radius: const Radius.circular(5),
             child: CustomScrollView(
-              controller: _scrollController,
+              controller: scrollController,
               shrinkWrap: true,
               primary: false,
               physics: const BouncingScrollPhysics(),

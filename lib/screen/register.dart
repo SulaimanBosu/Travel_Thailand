@@ -5,15 +5,17 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
-import 'package:blurry_modal_progress_hud/blurry_modal_progress_hud.dart';
 import 'package:dio/dio.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:email_auth/email_auth.dart';
+import 'package:flash/flash.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:path/path.dart';
 import 'package:progress_indicators/progress_indicators.dart';
+import 'package:progress_state_button/iconed_button.dart';
+import 'package:progress_state_button/progress_button.dart';
 import 'package:project/model/user_model.dart';
 import 'package:project/screen/login.dart';
 import 'package:project/utility/myConstant.dart';
@@ -47,14 +49,65 @@ class _RegisterState extends State<Register> {
   final _email = TextEditingController();
   final _password = TextEditingController();
   final _conpassword = TextEditingController();
+  final _otpcontroller = TextEditingController();
   late FocusNode myFocusName;
   late FocusNode myFocusLastname;
   late FocusNode myFocusPhone;
   late FocusNode myFocusEmail;
+  late FocusNode myFocusOTP;
   late FocusNode myFocusPassword;
   late FocusNode myFocusConpassword;
   bool isLoading = false;
   bool isProfile = true;
+  bool isbuttonOTP = true;
+  bool isLoaddingOTP = false;
+  bool isSuccessOTP = false;
+  bool isfailOTP = false;
+  bool isSendOTP = false;
+  bool isSendOTPSuccess = false;
+  EmailAuth emailAuth = EmailAuth(sessionName: 'Travel Thailand OTP');
+
+  void sendOTP(BuildContext context) async {
+    bool res =
+        await emailAuth.sendOtp(recipientMail: _email.text, otpLength: 6);
+    if (res) {
+      debugPrint('ส่ง OTP เรียบร้อย');
+      setState(() {
+        isSendOTPSuccess = true;
+      });
+    } else {
+      setState(() {
+        MyStyle().showBasicsFlash(
+          context: context,
+          text: 'อีเมลล์ไม่ถูกต้อง',
+          duration: const Duration(seconds: 3),
+          flashStyle: FlashBehavior.floating,
+        );
+      });
+      debugPrint('ส่ง OTP ล้มเหลว');
+    }
+  }
+
+  void verifyOTP() async {
+    setState(() {
+      isbuttonOTP = false;
+      isLoaddingOTP = true;
+    });
+    var res = emailAuth.validateOtp(
+        recipientMail: _email.value.text, userOtp: _otpcontroller.text);
+    if (res) {
+      debugPrint('ป้อน OTP ถูกต้อง');
+      setState(() {
+        isLoaddingOTP = false;
+        isSuccessOTP = true;
+      });
+    } else {
+      isSuccessOTP = false;
+      isLoaddingOTP = false;
+      isfailOTP = true;
+      debugPrint('ป้อน OTP ไม่ถูกต้อง');
+    }
+  }
 
   @override
   void initState() {
@@ -63,6 +116,7 @@ class _RegisterState extends State<Register> {
     myFocusLastname = FocusNode();
     myFocusPhone = FocusNode();
     myFocusEmail = FocusNode();
+    myFocusOTP = FocusNode();
     myFocusPassword = FocusNode();
     myFocusConpassword = FocusNode();
   }
@@ -73,6 +127,7 @@ class _RegisterState extends State<Register> {
     myFocusLastname.dispose();
     myFocusPhone.dispose();
     myFocusEmail.dispose();
+    myFocusOTP.dispose();
     myFocusPassword.dispose();
     myFocusConpassword.dispose();
     super.dispose();
@@ -140,7 +195,7 @@ class _RegisterState extends State<Register> {
                         MyStyle().mySizebox(),
                         radio(),
                         MyStyle().mySizebox(),
-                        emailForm(),
+                        emailForm(context),
                         MyStyle().mySizebox(),
                         passwordForm(),
                         MyStyle().mySizebox(),
@@ -681,6 +736,16 @@ class _RegisterState extends State<Register> {
               MyStyle().showdialog(
                   context, 'คำเตือน', 'กรุณากรอกรหัสผ่านให้ตรงกันค่ะ');
               myFocusConpassword.requestFocus();
+            } else if (isSuccessOTP == false) {
+              MyStyle().showdialog(context, 'คำเตือน',
+                  'กรุณายืนยันรหัส OTP ให้เรียบร้อยก่อนค่ะ');
+              if (isSendOTPSuccess == false) {
+                myFocusEmail.requestFocus();
+              } else {
+                Future.delayed(const Duration(milliseconds: 1000), () {
+                  myFocusOTP.requestFocus();
+                });
+              }
             } else {
               createUser(context);
               setState(() {
@@ -910,6 +975,7 @@ class _RegisterState extends State<Register> {
             child: TextField(
               //  onChanged: (value) => phone = value.trim(),
               controller: _phone,
+              keyboardType: TextInputType.phone,
               focusNode: myFocusPhone,
               decoration: InputDecoration(
                 prefixIcon: const Icon(
@@ -1026,37 +1092,188 @@ class _RegisterState extends State<Register> {
         ],
       );
 
-  Widget emailForm() => Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+  Widget emailForm(BuildContext context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            width: screenWidth * 0.85,
-            child: TextField(
-              //  onChanged: (value) => user = value.trim(),
-              controller: _email,
-              focusNode: myFocusEmail,
-              decoration: InputDecoration(
-                prefixIcon: const Icon(
-                  Icons.email_outlined,
-                  color: Colors.black54,
+            color: Colors.white,
+            width: 85.vw,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    // width: screenWidth * 0.85,
+                    child: TextField(
+                      // onChanged: (value) {
+                      //   if (value.isNotEmpty) {
+                      //     setState(() {
+                      //       isSendOTP = true;
+                      //     });
+                      //   } else {
+                      //     setState(() {
+                      //       isSendOTP = false;
+                      //     });
+                      //   }
+                      // },
+                      keyboardType: TextInputType.emailAddress,
+                      controller: _email,
+                      focusNode: myFocusEmail,
+                      decoration: InputDecoration(
+                        suffix: InkWell(
+                          onTap: () => sendOTP(context),
+                          child: Text(
+                            isSendOTPSuccess
+                                ? 'ส่งรหัส OTP อีกครั้ง'
+                                : 'ส่งรหัส OTP',
+                            style: const TextStyle(color: Colors.red),
+                          ),
+                        ),
+
+                        // TextButton(
+                        //         onPressed: () => sendOTP(context),
+                        //         child: isSendOTPSuccess
+                        //             ? const Text(
+                        //                 'ส่งรหัส OTP อีกครั้ง',
+                        //                 style: TextStyle(color: Colors.red),
+                        //               )
+                        //             : const Text(
+                        //                 'ส่งรหัส OTP',
+                        //                 style: TextStyle(color: Colors.red),
+                        //               ),
+                        //       ),
+                        prefixIcon: const Icon(
+                          Icons.email_outlined,
+                          color: Colors.black54,
+                        ),
+                        labelStyle: const TextStyle(
+                          fontSize: 22.0,
+                          // fontWeight: FontWeight.bold,
+                          color: Colors.black54,
+                          // fontStyle: FontStyle.italic,
+                          fontFamily: 'FC-Minimal-Regular',
+                        ),
+                        labelText: 'อีเมลล์ : ',
+                        enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide:
+                                const BorderSide(color: Colors.black54)),
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: const BorderSide(color: Colors.red)),
+                      ),
+                    ),
+                  ),
                 ),
-                labelStyle: const TextStyle(
-                  fontSize: 22.0,
-                  // fontWeight: FontWeight.bold,
-                  color: Colors.black54,
-                  // fontStyle: FontStyle.italic,
-                  fontFamily: 'FC-Minimal-Regular',
-                ),
-                labelText: 'อีเมลล์ : ',
-                enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Colors.black54)),
-                focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Colors.red)),
-              ),
+              ],
             ),
           ),
+          isSendOTPSuccess
+              ? Container(
+                  padding: EdgeInsets.only(
+                    top: 1.5.vh,
+                  ),
+                  color: Colors.white,
+                  width: 85.vw,
+                  child: Expanded(
+                    flex: 1,
+                    child: Container(
+                      child: TextField(
+                        onChanged: (value) {
+                          setState(() {
+                            isbuttonOTP = true;
+                          });
+                        },
+                        keyboardType: TextInputType.number,
+                        controller: _otpcontroller,
+                        focusNode: myFocusOTP,
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(
+                            Icons.email_outlined,
+                            color: Colors.black54,
+                          ),
+                          suffixStyle:TextStyle(),
+                          suffixIcon: ProgressButton.icon(
+                            
+                            textStyle:const TextStyle(color: Colors.black54),
+                              state: isbuttonOTP
+                                  ? ButtonState.idle
+                                  : isLoaddingOTP
+                                      ? ButtonState.loading
+                                      : isSuccessOTP
+                                          ? ButtonState.success
+                                          : ButtonState.fail,
+                              //padding: const EdgeInsets.all(50),
+                              radius: 10.0,
+                              height: 20.0,
+                              maxWidth: 110.0,
+                              minWidth: 30.0,
+                              iconedButtons: {
+                                ButtonState.idle:  IconedButton(
+                                    text: "ยืนยัน OTP",
+                                    icon: const Icon(Icons.send,
+                                        color: Colors.black54),
+                                    color: Colors.grey.shade300),
+                                ButtonState.loading: IconedButton(
+                                    text: "Loading",
+                                    color: Colors.grey.shade500),
+                                ButtonState.fail: IconedButton(
+                                    text: "Failed",
+                                    icon: const Icon(Icons.cancel,
+                                        color: Colors.white),
+                                    color: Colors.red.shade300),
+                                ButtonState.success: IconedButton(
+                                    text: "Success",
+                                    icon: const Icon(
+                                      Icons.check_circle,
+                                      color: Colors.white,
+                                    ),
+                                    color: Colors.green.shade400)
+                              },
+                              onPressed: () {
+                                if (_otpcontroller.text.isEmpty) {
+                                  setState(() {
+                                    MyStyle().showBasicsFlash(
+                                      context: context,
+                                      text: 'กรุณากรอกรหัส OTP',
+                                      duration: const Duration(seconds: 3),
+                                      flashStyle: FlashBehavior.floating,
+                                    );
+                                  });
+                                } else {
+                                  verifyOTP();
+                                }
+                              }),
+
+                          // TextButton(
+                          //   child: const Text(
+                          //     'ยืนยันรหัส OTP',
+                          //     style: TextStyle(color: Colors.red,),
+                          //   ),
+                          //   onPressed: () => verifyOTP(),
+                          // ),
+                          labelStyle: const TextStyle(
+                            fontSize: 22.0,
+                            // fontWeight: FontWeight.bold,
+                            color: Colors.black54,
+                            // fontStyle: FontStyle.italic,
+                            fontFamily: 'FC-Minimal-Regular',
+                          ),
+                          labelText: 'ใส่รหัส OTP ',
+                          enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide:
+                                  const BorderSide(color: Colors.black54)),
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: const BorderSide(color: Colors.red)),
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+              : Container(),
         ],
       );
 

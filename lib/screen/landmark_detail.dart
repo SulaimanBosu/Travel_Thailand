@@ -9,7 +9,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:location/location.dart';
@@ -17,7 +16,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:progress_indicators/progress_indicators.dart';
 import 'package:project/model/comment_model.dart';
 import 'package:project/model/landmark_model.dart';
-import 'package:project/model/province_model.dart';
 import 'package:project/screen/full_image.dart';
 import 'package:project/screen/google_map.dart';
 import 'package:project/screen/home_screen.dart';
@@ -78,6 +76,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
   final textfieldControler = TextEditingController();
   bool isSendicon = false;
   bool isIconFaceColor = false;
+  ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
@@ -466,8 +465,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
       child: Scaffold(
         bottomSheet: buildBottomSheet(),
         backgroundColor: Colors.white,
-        body:
-            bodywidget(context),
+        body: bodywidget(context),
       ),
     );
   }
@@ -647,10 +645,14 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
   }
 
   Widget bodywidget(BuildContext context) {
+    double lat = double.parse(widget.landmarkModel.latitude!);
+    double lng = double.parse(widget.landmarkModel.longitude!);
+
     return Container(
       color: Colors.white,
       child: RawScrollbar(
-        thumbColor:Colors.grey.shade300,
+        controller: scrollController,
+        thumbColor: Colors.grey.shade300,
         isAlwaysShown: false,
         scrollbarOrientation: ScrollbarOrientation.right,
         thickness: 5,
@@ -658,6 +660,7 @@ class _LandmarkDetailState extends State<LandmarkDetail> {
         //mainAxisMargin :25 .vh,
         //crossAxisMargin: 70,
         child: CustomScrollView(
+          controller: scrollController,
           // keyboardDismissBehavior :ScrollViewKeyboardDismissBehavior.onDrag,
           scrollBehavior: const ScrollBehavior(
               androidOverscrollIndicator: AndroidOverscrollIndicator.glow),

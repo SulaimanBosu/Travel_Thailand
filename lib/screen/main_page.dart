@@ -52,6 +52,7 @@ class _MainPageState extends State<MainPage> {
   late double screenhight;
   double lat1 = 0, lng1 = 0;
   bool search = false;
+  ScrollController scrollController = ScrollController();
 
   void doSomething(String i) {
     Navigator.pop(context);
@@ -119,11 +120,11 @@ class _MainPageState extends State<MainPage> {
       });
     } catch (error) {
       debugPrint("ดาวน์โหลดไม่สำเร็จ: $error");
-      MyStyle().showdialog(
-          context, 'ล้มเหลว', 'ไม่พบการเชื่อมต่อเครือข่ายอินเตอร์เน็ต');
-      setState(
-        () {},
-      );
+      // MyStyle().showdialog(
+      //     context, 'ล้มเหลว', 'ไม่พบการเชื่อมต่อเครือข่ายอินเตอร์เน็ต');
+      // setState(
+      //   () {},
+      // );
     }
   }
 
@@ -245,12 +246,14 @@ class _MainPageState extends State<MainPage> {
                   ),
         body: SafeArea(
           child: RawScrollbar(
+            controller: scrollController,
             thumbColor: Colors.grey.shade300,
             isAlwaysShown: false,
             scrollbarOrientation: ScrollbarOrientation.right,
             thickness: 5,
             radius: const Radius.circular(5),
             child: CustomScrollView(
+              controller: scrollController,
               shrinkWrap: true,
               primary: false,
               physics: const BouncingScrollPhysics(),
@@ -320,43 +323,43 @@ class _MainPageState extends State<MainPage> {
                           //   //color: Colors.green,
                           //  // shadowColor: Colors.red,
                           //   elevation: 5,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                // const Divider(
-                                //   color: Colors.black26,
-                                //   thickness: 2,
-                                // ),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    SizedBox(
-                                      width: 1.vw,
-                                    ),
-                                    Image.asset(
-                                      'images/category-icon.png',
-                                      scale: 2.5.vw,
-                                      color: Colors.red,
-                                    ),
-                                    SizedBox(
-                                      width: 1.vw,
-                                    ),
-                                    Text(
-                                      'หมวดหมู่',
-                                      style: TextStyle(
-                                          color: Colors.black54,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 14.sp),
-                                    ),
-                                  ],
-                                ),
-                                const Divider(
-                                  thickness: 2,
-                                  color: Colors.black26,
-                                ),
-                              ],
-                            ),
-                         // ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              // const Divider(
+                              //   color: Colors.black26,
+                              //   thickness: 2,
+                              // ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    width: 1.vw,
+                                  ),
+                                  Image.asset(
+                                    'images/category-icon.png',
+                                    scale: 2.5.vw,
+                                    color: Colors.red,
+                                  ),
+                                  SizedBox(
+                                    width: 1.vw,
+                                  ),
+                                  Text(
+                                    'หมวดหมู่',
+                                    style: TextStyle(
+                                        color: Colors.black54,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14.sp),
+                                  ),
+                                ],
+                              ),
+                              const Divider(
+                                thickness: 2,
+                                color: Colors.black26,
+                              ),
+                            ],
+                          ),
+                          // ),
                         ),
                       )
                     : SliverToBoxAdapter(
@@ -369,83 +372,94 @@ class _MainPageState extends State<MainPage> {
                         child: Container(),
                       ),
 
-                !isLoading && !search
+                landmarktypebeach.isEmpty
                     ? SliverToBoxAdapter(
-                        child: Padding(
-                          padding: EdgeInsets.only(bottom: 0.2.vh, top: 1.vh),
-                          child: Divider(
-                            color: Colors.grey.shade300,
-                            thickness: 10.0,
-                          ),
-                        ),
-                      )
-                    : SliverToBoxAdapter(
                         child: Container(),
-                      ),
-                !isLoading && !search
-                    ? SliverToBoxAdapter(
-                        child: Container(
-                          width: screenwidth,
-                          height: 8.vh,
-                          child: Container(
-                            alignment: Alignment.centerLeft,
-                            margin: EdgeInsets.only(
-                                left: 20.w,
-                                bottom: 1.0.vh,
-                                top: 1.0.vh,
-                                right: 5.w),
-                            width: 100.vw,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  'อยากเที่ยวทะเลต้องที่นี่เลย..',
-                                  style: TextStyle(
-                                      color: Colors.black54,
-                                      fontSize: 13.sp,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    Route route = MaterialPageRoute(
-                                      builder: (context) =>
-                                          const LandmarkSearch(
-                                        search: 'ทะเล',
-                                        type: 'type',
-                                      ),
-                                    );
-                                    Navigator.pushAndRemoveUntil(
-                                        context, route, (route) => true);
-                                  },
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'เพิ่มเติม',
-                                        style: TextStyle(
-                                            // decoration: TextDecoration.underline,
-                                            // decorationColor:Colors.black54,
-                                            fontFamily: 'FC-Minimal-Regular',
-                                            color: Colors.red,
-                                            fontSize: 15.sp,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      const Icon(
-                                        Icons.keyboard_arrow_right,
-                                        color: Colors.red,
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ],
+                      )
+                    : !isLoading && !search
+                        ? SliverToBoxAdapter(
+                            child: Padding(
+                              padding:
+                                  EdgeInsets.only(bottom: 0.2.vh, top: 1.vh),
+                              child: Divider(
+                                color: Colors.grey.shade300,
+                                thickness: 10.0,
+                              ),
                             ),
+                          )
+                        : SliverToBoxAdapter(
+                            child: Container(),
                           ),
-                        ),
-                      )
-                    : SliverToBoxAdapter(
+                landmarktypebeach.isEmpty
+                    ? SliverToBoxAdapter(
                         child: Container(),
-                      ),
+                      )
+                    : !isLoading && !search
+                        ? SliverToBoxAdapter(
+                            child: Container(
+                              width: screenwidth,
+                              height: 8.vh,
+                              child: Container(
+                                alignment: Alignment.centerLeft,
+                                margin: EdgeInsets.only(
+                                    left: 20.w,
+                                    bottom: 1.0.vh,
+                                    top: 1.0.vh,
+                                    right: 5.w),
+                                width: 100.vw,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'อยากเที่ยวทะเลต้องที่นี่เลย..',
+                                      style: TextStyle(
+                                          color: Colors.black54,
+                                          fontSize: 13.sp,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    InkWell(
+                                      onTap: () {
+                                        Route route = MaterialPageRoute(
+                                          builder: (context) =>
+                                              const LandmarkSearch(
+                                            search: 'ทะเล',
+                                            type: 'type',
+                                          ),
+                                        );
+                                        Navigator.pushAndRemoveUntil(
+                                            context, route, (route) => true);
+                                      },
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            'เพิ่มเติม',
+                                            style: TextStyle(
+                                                // decoration: TextDecoration.underline,
+                                                // decorationColor:Colors.black54,
+                                                fontFamily:
+                                                    'FC-Minimal-Regular',
+                                                color: Colors.red,
+                                                fontSize: 15.sp,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          const Icon(
+                                            Icons.keyboard_arrow_right,
+                                            color: Colors.red,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          )
+                        : SliverToBoxAdapter(
+                            child: Container(),
+                          ),
                 landmarktypebeach.isEmpty || search
                     //|| isLoading
                     ? SliverToBoxAdapter(
@@ -457,84 +471,94 @@ class _MainPageState extends State<MainPage> {
                         index: index,
                       ),
                 // !isLoading &&
-                !search
+                landmarktypemountain.isEmpty
                     ? SliverToBoxAdapter(
-                        child: Padding(
-                          padding: EdgeInsets.only(bottom: 2.vh, top: 2.vh),
-                          child: Divider(
-                            color: Colors.grey.shade300,
-                            thickness: 10.0,
-                          ),
-                        ),
-                      )
-                    : SliverToBoxAdapter(
                         child: Container(),
-                      ),
-
-                !search
-                    ? SliverToBoxAdapter(
-                        child: Container(
-                          width: screenwidth,
-                          height: 8.vh,
-                          child: Container(
-                            alignment: Alignment.centerLeft,
-                            margin: EdgeInsets.only(
-                                left: 20.w,
-                                bottom: 0.0.vh,
-                                top: 0.0.vh,
-                                right: 5.w),
-                            width: 100.vw,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  'แต่ถ้าอยากเที่ยวภูเขาต้องที่นี่เลย..',
-                                  style: TextStyle(
-                                      color: Colors.black54,
-                                      fontSize: 13.sp,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    Route route = MaterialPageRoute(
-                                      builder: (context) =>
-                                          const LandmarkSearch(
-                                        search: 'ภูเขา',
-                                        type: 'type',
-                                      ),
-                                    );
-                                    Navigator.pushAndRemoveUntil(
-                                        context, route, (route) => true);
-                                  },
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'เพิ่มเติม',
-                                        style: TextStyle(
-                                            // decoration: TextDecoration.underline,
-                                            // decorationColor:Colors.black54,
-                                            fontFamily: 'FC-Minimal-Regular',
-                                            color: Colors.red,
-                                            fontSize: 15.sp,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      const Icon(
-                                        Icons.keyboard_arrow_right,
-                                        color: Colors.red,
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ],
+                      )
+                    : !search
+                        ? SliverToBoxAdapter(
+                            child: Padding(
+                              padding: EdgeInsets.only(bottom: 2.vh, top: 2.vh),
+                              child: Divider(
+                                color: Colors.grey.shade300,
+                                thickness: 10.0,
+                              ),
                             ),
+                          )
+                        : SliverToBoxAdapter(
+                            child: Container(),
                           ),
-                        ),
-                      )
-                    : SliverToBoxAdapter(
+
+                landmarktypemountain.isEmpty
+                    ? SliverToBoxAdapter(
                         child: Container(),
-                      ),
+                      )
+                    : !search
+                        ? SliverToBoxAdapter(
+                            child: Container(
+                              width: screenwidth,
+                              height: 8.vh,
+                              child: Container(
+                                alignment: Alignment.centerLeft,
+                                margin: EdgeInsets.only(
+                                    left: 20.w,
+                                    bottom: 0.0.vh,
+                                    top: 0.0.vh,
+                                    right: 5.w),
+                                width: 100.vw,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'แต่ถ้าอยากเที่ยวภูเขาต้องที่นี่เลย..',
+                                      style: TextStyle(
+                                          color: Colors.black54,
+                                          fontSize: 13.sp,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    InkWell(
+                                      onTap: () {
+                                        Route route = MaterialPageRoute(
+                                          builder: (context) =>
+                                              const LandmarkSearch(
+                                            search: 'ภูเขา',
+                                            type: 'type',
+                                          ),
+                                        );
+                                        Navigator.pushAndRemoveUntil(
+                                            context, route, (route) => true);
+                                      },
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            'เพิ่มเติม',
+                                            style: TextStyle(
+                                                // decoration: TextDecoration.underline,
+                                                // decorationColor:Colors.black54,
+                                                fontFamily:
+                                                    'FC-Minimal-Regular',
+                                                color: Colors.red,
+                                                fontSize: 15.sp,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          const Icon(
+                                            Icons.keyboard_arrow_right,
+                                            color: Colors.red,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          )
+                        : SliverToBoxAdapter(
+                            child: Container(),
+                          ),
                 landmarktypemountain.isEmpty || search
                     //|| isLoading
                     ? SliverToBoxAdapter(

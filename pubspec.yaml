@@ -65,6 +65,9 @@ dependencies:
   slidable_button: ^2.0.0+1
   readmore: ^2.2.0
   flash: ^2.0.3+2
+  email_auth: ^1.0.0
+  progress_state_button: ^1.0.4
+  http: ^0.13.4
 
 dev_dependencies:
   flutter_test:

@@ -12,6 +12,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:progress_indicators/progress_indicators.dart';
 import 'package:project/model/landmark_model.dart';
 import 'package:project/screen/landmark_detail.dart';
 import 'package:project/screen/login.dart';
@@ -50,7 +51,6 @@ class _ListviewState extends State<Listview> {
   late double screenwidth;
   late double screenhight;
   int count = 0;
-  bool isSnackBar = false;
 
   @override
   void initState() {
@@ -58,23 +58,6 @@ class _ListviewState extends State<Listview> {
       DeviceOrientation.portraitUp,
     ]);
     super.initState();
-  }
-
-  void delay() {
-    Future.delayed(const Duration(milliseconds: 3000), () {
-      isSnackBar = true;
-    });
-  }
-
-  void _showToast(BuildContext context) {
-    if (isSnackBar = true) {
-      MyStyle().showBasicsFlash(
-        context: context,
-        text: 'เพิ่มขนาดสูงสุดแล้ว',
-        flashStyle: FlashBehavior.fixed,
-        duration: const Duration(seconds: 2),
-      );
-    }
   }
 
   @override
@@ -86,23 +69,33 @@ class _ListviewState extends State<Listview> {
         delegate: SliverChildBuilderDelegate(
           (context, index) {
             if (index == widget.landmarkModel.length) {
-              if (widget.hasmore) {
-                return const Center(
-                  child: CupertinoActivityIndicator(
-                    radius: 20,
+              if (widget.hasmore == true) {
+                return Center(
+                  child: Column(
+                    children: [
+                      const CupertinoActivityIndicator(
+                        radius: 8,color: Colors.black,
+                      ),
+                      const SizedBox(height: 10,),
+                      JumpingText('กำลังดาวน์โหลด...',
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontSize: 14.sp,
+                            fontFamily: 'FC-Minimal-Regular',
+                          )),
+                    ],
                   ),
+                  // CupertinoActivityIndicator(
+                  //  radius: 20,
+                  // ),
                 );
               } else {
-                delay;
-                return isSnackBar == false
-                    ? const Center(
-                        child: CupertinoActivityIndicator(
-                          radius: 20,
-                        ),
-                      )
-                    : Container(
-                        child: const Text('no data'),
-                      );
+                return Container(
+                    // child: const Text(
+                    //   'no data',
+                    //   textAlign: TextAlign.center,
+                    // ),
+                    );
               }
             } else {
               return Container(

@@ -377,7 +377,14 @@ class MyDrawer {
                                         ),
                                       ),
                                       onTap: () {
-                                        buildBottomPicker(context);
+                                        if (provinceModel.isEmpty) {
+                                          MyStyle().showdialog(
+                                              context,
+                                              'ล้มเหลว',
+                                              'ไม่พบการเชื่อมต่อเครือข่ายอินเตอร์เน็ต');
+                                        } else {
+                                          buildBottomPicker(context);
+                                        }
                                       },
                                     ),
                                     ListTile(
@@ -825,7 +832,9 @@ class MyDrawer {
     );
   }
 
-  Widget itemListregian(BuildContext context,) {
+  Widget itemListregian(
+    BuildContext context,
+  ) {
     return Card(
       margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
       // shadowColor: Colors.red,

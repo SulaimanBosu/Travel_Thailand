@@ -1,16 +1,21 @@
 // ignore_for_file: unnecessary_string_interpolations
 import 'dart:convert';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'dart:math';
 import 'package:dio/dio.dart';
+import 'package:flash/flash.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:project/model/user_model.dart';
 import 'package:project/screen/home_screen.dart';
 import 'package:project/screen/register.dart';
+import 'package:project/utility/alert_dialog.dart';
 import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
 import 'package:project/widgets/icon_button.dart';
+import 'package:resize/resize.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -22,11 +27,17 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   late String email, password, imageProfile;
   bool statusRedEye = true;
+  bool statusRedEyenewPassword = true;
+  bool statusRedEyeconfirmNewPassword = true;
   late UserModel usermodel;
   final _email = TextEditingController();
   final _password = TextEditingController();
+  final _emailresetPassword = TextEditingController();
+  final newPassword = TextEditingController();
+  final confirmNewPassword = TextEditingController();
   late FocusNode myFocusEmail;
   late FocusNode myFocusPassword;
+  bool isResetPassword = false;
 
   @override
   void initState() {
@@ -42,37 +53,189 @@ class _LoginState extends State<Login> {
     super.dispose();
   }
 
+  Future<void> checkEmailAndUpdatePassword(
+      String id, String _email, String _password) async {
+    String url = '${MyConstant().domain}/application/login_post.php';
+    FormData formData = FormData.fromMap(
+      {
+        "id": id,
+        "Email": _email,
+        id == '2' ? '' : "Password": _password,
+      },
+    );
+    try {
+      await Dio().post(url, data: formData).then((value) async {
+        var result = json.decode(value.data);
+        String success = result['success'];
+        debugPrint('Value == $result');
+        if (success == '1') {
+          Random random = Random();
+          int i = random.nextInt(1000000);
+          String newPassword = '$i';
+          String email = result['Email'];
+          String name = result['User_first_name'];
+          sendAndResetPassword(
+              firstName: name, email: email, message: newPassword);
+        } else if (success == '0') {
+          setState(() {
+            isResetPassword = false;
+          });
+          debugPrint("reset password success");
+          MyAlertDialog().showcupertinoDialog(context, 'รีเซ็ตรหัสผ่านสำเร็จ');
+          _emailresetPassword.clear();
+        } else if (success == '2') {
+          setState(() {
+            isResetPassword = false;
+          });
+          _emailresetPassword.clear();
+          MyAlertDialog().showcupertinoDialog(
+              context, 'อีเมลล์ $_email ยังไม่ได้ลงทะเบียน');
+        } else if (success == '3') {
+          setState(() {
+            isResetPassword = false;
+          });
+          MyAlertDialog().showcupertinoDialog(context, 'รีเซ็ตรหัสผ่านล้มเหลว');
+        } else if (success == '4') {
+          setState(() {
+            isResetPassword = false;
+          });
+          MyStyle().showBasicsFlash(
+            context: context,
+            text: 'เปลี่ยนรหัสผ่านเรียบร้อย',
+            duration: const Duration(seconds: 5),
+            flashStyle: FlashBehavior.floating,
+          );
+          password = newPassword.text;
+          checkUser();
+        } else if (success == '5') {
+          setState(() {
+            isResetPassword = false;
+          });
+          MyAlertDialog()
+              .showcupertinoDialog(context, 'เปลี่ยนรหัสผ่านล้มเหลว');
+        }
+      });
+    } catch (error) {
+      debugPrint("ดาวน์โหลดไม่สำเร็จ: $error");
+      setState(() {
+        isResetPassword = false;
+      });
+      MyStyle().showdialog(
+          context, 'ล้มเหลว', 'ไม่พบการเชื่อมต่อเครือข่ายอินเตอร์เน็ต');
+    }
+  }
+
+  void sendAndResetPassword({
+    required String firstName,
+    required String email,
+    required String message,
+  }) async {
+    String serviceId = 'service_92fghrr';
+    String templateId = 'template_nd04fvr';
+    String userid = 'LrzLoxKR7vqW5NWBU';
+
+    final url = Uri.parse('https://api.emailjs.com/api/v1.0/email/send');
+    final response = await http.post(
+      url,
+      headers: {
+        'origin': 'http://localhost',
+        'Content-Type': 'application/json'
+      },
+      body: jsonEncode({
+        'service_id': serviceId,
+        'template_id': templateId,
+        'user_id': userid,
+        'template_params': {
+          'user_name': firstName,
+          'user_email': email,
+          'user_subject': 'รีเซ็ตรหัสผ่าน',
+          'user_message': 'รหัสผ่านใหม่ของคุณคือ $message',
+        }
+      }),
+    );
+    debugPrint('response ====== ${response.body}');
+
+    if (response.body == 'OK') {
+      checkEmailAndUpdatePassword('3', email, message);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Stack(
-          children: [
-            buildContent(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                    onPressed: () {
-                      MaterialPageRoute route = MaterialPageRoute(
-                        builder: (context) => const HomeScreen(
-                          index: 0,
-                        ),
-                      );
-                      Navigator.pushAndRemoveUntil(
-                          context, route, (route) => true);
-                    },
-                    icon: const Icon(Icons.arrow_back_ios_new_outlined)),
-                CircleButton(
-                  icon: MdiIcons.facebookMessenger,
-                  iconSize: 30,
-                  onPressed: () => debugPrint('facebookMessenger'),
-                  color: Colors.black,
-                ),
-              ],
-            ),
-          ],
-        ),
+        child: isResetPassword
+            ? Stack(
+                children: [
+                  Stack(
+                    children: [
+                      buildContent(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              MaterialPageRoute route = MaterialPageRoute(
+                                builder: (context) => const HomeScreen(
+                                  index: 0,
+                                ),
+                              );
+                              Navigator.pushAndRemoveUntil(
+                                  context, route, (route) => true);
+                            },
+                            icon: const Icon(Icons.arrow_back_ios_new_outlined),
+                          ),
+                          CircleButton(
+                            icon: MdiIcons.facebookMessenger,
+                            iconSize: 30,
+                            onPressed: () => debugPrint('facebookMessenger'),
+                            color: Colors.black,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Center(
+                    child: Container(
+                      width: 100.vw,
+                      height: 100.vh,
+                      color: Colors.transparent,
+                      child: const CupertinoActivityIndicator(
+                        animating: true,
+                        radius: 15,
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            : Stack(
+                children: [
+                  buildContent(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          MaterialPageRoute route = MaterialPageRoute(
+                            builder: (context) => const HomeScreen(
+                              index: 0,
+                            ),
+                          );
+                          Navigator.pushAndRemoveUntil(
+                              context, route, (route) => true);
+                        },
+                        icon: const Icon(Icons.arrow_back_ios_new_outlined),
+                      ),
+                      CircleButton(
+                        icon: MdiIcons.facebookMessenger,
+                        iconSize: 30,
+                        onPressed: () => debugPrint('facebookMessenger'),
+                        color: Colors.black,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
       ),
     );
   }
@@ -291,6 +454,8 @@ class _LoginState extends State<Login> {
           debugPrint('message == $message');
           debugPrint('Image_profile == $imageProfile');
           debugPrint('Image_CoverPage == $imageCoverPage');
+          newPassword.clear();
+          confirmNewPassword.clear();
           Navigator.pop(context);
           routeToHome(usermodel);
           // dialog(context, usermodel);
@@ -298,6 +463,9 @@ class _LoginState extends State<Login> {
           debugPrint('message == $message');
           MyStyle()
               .showdialog(context, 'คำเตือน', 'อีเมลล์หรือรหัสผ่านไม่ถูกต้อง');
+        } else if (success == '0') {
+          editPasswordDialog();
+          // MyStyle().showdialog(context, 'คำเตือน', 'กรุณาเปลี่ยนรหัสผ่านใหม่');
         } else {
           MyStyle()
               .showdialog(context, 'คำเตือน', 'ไม่พบบัญชีผู้ใช้ $email ในระบบ');
@@ -310,80 +478,6 @@ class _LoginState extends State<Login> {
     }
   }
 
-  // Future<void> dialog(BuildContext context, UserModel userModel) async {
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return AlertDialog(
-  //         title: Column(
-  //           children: [
-  //             Row(children: [
-  //               const Icon(
-  //                 Icons.notifications_active,
-  //                 color: Colors.black54,
-  //               ),
-  //               MyStyle().mySizebox(),
-  //               MyStyle().showTitle_2('การแจ้งเตือน'),
-  //             ]),
-  //             const Divider(
-  //               color: Colors.black54,
-  //             ),
-  //             showImage(context),
-  //           ],
-  //         ),
-  //         content: Row(
-  //           mainAxisAlignment: MainAxisAlignment.center,
-  //           children: [
-  //             Text(
-  //               '${userModel.name}\n${userModel.lastname}\n${userModel.phone}\n${userModel.userId}\n',
-  //               overflow: TextOverflow.ellipsis,
-  //               style: MyStyle().text2,
-  //             ),
-  //           ],
-  //         ),
-  //         actions: <Widget>[
-  //           // ignore: deprecated_member_use
-  //           FlatButton(
-  //             child: const Text("ตกลง"),
-  //             onPressed: () {
-  //               Navigator.pop(context);
-  //             },
-  //           ),
-  //           // ignore: deprecated_member_use
-  //         ],
-  //         shape: RoundedRectangleBorder(
-  //           borderRadius: BorderRadius.circular(20.0),
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
-
-  //โชว์ภาพตัวอย่างก่อนเลือกรูปและหลังเลือกรูป
-  Container showImage(context) {
-    return Container(
-      child: CircleAvatar(
-        radius: 90,
-        backgroundColor: Colors.black,
-        child: Padding(
-          padding: const EdgeInsets.all(2), // Border radius
-          child: ClipOval(
-            child: SizedBox.fromSize(
-              size: const Size.fromRadius(88), // Image radius
-              child: CachedNetworkImage(
-                imageUrl: MyConstant().domain + imageProfile,
-                progressIndicatorBuilder: (context, url, downloadProgress) =>
-                    MyStyle().showProgress(),
-                errorWidget: (context, url, error) => const Icon(Icons.error),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   void routeToHome(UserModel userModel) {
     MaterialPageRoute route = MaterialPageRoute(
       builder: (context) => const HomeScreen(
@@ -391,6 +485,247 @@ class _LoginState extends State<Login> {
       ),
     );
     Navigator.pushAndRemoveUntil(context, route, (route) => false);
+  }
+
+  editPasswordDialog() async {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(builder: (context, setState) {
+            return AlertDialog(
+              title: Column(
+                children: [
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.lock_outline,
+                        color: Colors.red,
+                      ),
+                      const SizedBox(
+                        width: 8,
+                      ),
+                      Text(
+                        'เปลี่ยนรหัสผ่าน',
+                        style: TextStyle(
+                          fontSize: 18.0.sp,
+                          //  fontWeight: FontWeight.bold,
+                          color: Colors.red,
+                          // fontStyle: FontStyle.italic,
+                          fontFamily: 'FC-Minimal-Regular',
+                        ),
+                      )
+                    ],
+                  ),
+                  const Divider(color: Colors.black54, thickness: 1),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  Text(
+                    'กรุณาเปลี่ยนรหัสผ่านใหม่',
+                    style: TextStyle(
+                      fontSize: 16.0.sp,
+                      //  fontWeight: FontWeight.bold,
+                      color: Colors.red,
+                      // fontStyle: FontStyle.italic,
+                      fontFamily: 'FC-Minimal-Regular',
+                    ),
+                    overflow: TextOverflow.fade,
+                  )
+                ],
+              ),
+              content: Container(
+                height: 20.vh,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.only(top: 10),
+                      width: 90.vw,
+                      child: TextField(
+                        obscureText: statusRedEyenewPassword,
+                        keyboardType: TextInputType.text,
+                        controller: newPassword,
+                        decoration: InputDecoration(
+                          suffixIcon: IconButton(
+                              icon: statusRedEye
+                                  ? const Icon(
+                                      Icons.remove_red_eye,
+                                      color: Colors.black54,
+                                    )
+                                  : const Icon(
+                                      Icons.remove_red_eye_outlined,
+                                      color: Colors.black54,
+                                    ),
+                              onPressed: () {
+                                setState(() {
+                                  statusRedEyenewPassword =
+                                      !statusRedEyenewPassword;
+                                });
+                              }),
+                          prefixIcon: const Icon(
+                            Icons.lock_open,
+                            color: Colors.black54,
+                          ),
+                          labelStyle: const TextStyle(
+                            fontSize: 22.0,
+                            // fontWeight: FontWeight.bold,
+                            color: Colors.black54,
+                            // fontStyle: FontStyle.italic,
+                            fontFamily: 'FC-Minimal-Regular',
+                          ),
+                          labelText: 'รหัสผ่านใหม่ : ',
+                          enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide:
+                                  const BorderSide(color: Colors.black54)),
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: const BorderSide(color: Colors.red)),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.only(top: 10),
+                      width: 90.vw,
+                      child: TextField(
+                        obscureText: statusRedEyeconfirmNewPassword,
+                        keyboardType: TextInputType.text,
+                        controller: confirmNewPassword,
+                        decoration: InputDecoration(
+                          suffixIcon: IconButton(
+                              icon: statusRedEye
+                                  ? const Icon(
+                                      Icons.remove_red_eye,
+                                      color: Colors.black54,
+                                    )
+                                  : const Icon(
+                                      Icons.remove_red_eye_outlined,
+                                      color: Colors.black54,
+                                    ),
+                              onPressed: () {
+                                setState(() {
+                                  statusRedEyeconfirmNewPassword =
+                                      !statusRedEyeconfirmNewPassword;
+                                });
+                              }),
+                          prefixIcon: const Icon(
+                            Icons.lock_open,
+                            color: Colors.black54,
+                          ),
+                          labelStyle: const TextStyle(
+                            fontSize: 22.0,
+                            // fontWeight: FontWeight.bold,
+                            color: Colors.black54,
+                            // fontStyle: FontStyle.italic,
+                            fontFamily: 'FC-Minimal-Regular',
+                          ),
+                          labelText: 'ยืนยันรหัสผ่านใหม่ : ',
+                          enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide:
+                                  const BorderSide(color: Colors.black54)),
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: const BorderSide(color: Colors.red)),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    InkWell(
+                      borderRadius: BorderRadius.circular(5),
+                      onTap: () {
+                        if (newPassword.text.isNotEmpty &&
+                            confirmNewPassword.text.isNotEmpty) {
+                          if (newPassword.text == confirmNewPassword.text) {
+                            checkEmailAndUpdatePassword(
+                                '4', _email.text, newPassword.text);
+                            setState(() {
+                              isResetPassword = true;
+                            });
+                            Navigator.pop(context);
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'กรุณากรอกรหัสผ่านให้ตรงกันด้วยค่ะ',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(fontSize: 14.sp),
+                                ),
+                              ),
+                            );
+                            Navigator.pop(context);
+                          }
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'กรุณากรอกรหัสผ่านให้ครบถ้วนด้วยค่ะ',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 14.sp),
+                              ),
+                            ),
+                          );
+                          Navigator.pop(context);
+                        }
+                      },
+                      child: Card(
+                        semanticContainer: true,
+                        clipBehavior: Clip.antiAliasWithSaveLayer,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                        ),
+                        elevation: 5,
+                        child: Container(
+                          alignment: Alignment.center,
+                          width: 30.vw,
+                          height: 4.vh,
+                          child: Text(
+                            'เปลี่ยนรหัสผ่าน',
+                            style:
+                                TextStyle(color: Colors.blue, fontSize: 14.sp),
+                          ),
+                        ),
+                      ),
+                    ),
+                    InkWell(
+                      borderRadius: BorderRadius.circular(5),
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: Card(
+                        semanticContainer: true,
+                        clipBehavior: Clip.antiAliasWithSaveLayer,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                        ),
+                        elevation: 5,
+                        child: Container(
+                          alignment: Alignment.center,
+                          width: 30.vw,
+                          height: 4.vh,
+                          child: Text(
+                            'ยกเลิก',
+                            style:
+                                TextStyle(color: Colors.red, fontSize: 14.sp),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+            );
+          });
+        });
   }
 
   Widget forgot() {
@@ -413,12 +748,7 @@ class _LoginState extends State<Login> {
           children: [
             InkWell(
               onTap: () {
-                MaterialPageRoute route = MaterialPageRoute(
-                  builder: (context) => const HomeScreen(
-                    index: 0,
-                  ),
-                );
-                Navigator.pushAndRemoveUntil(context, route, (route) => true);
+                showdialog();
               },
               child: const Text(
                 'ลืมรหัสผ่าน',
@@ -465,6 +795,151 @@ class _LoginState extends State<Login> {
           ],
         ),
       ],
+    );
+  }
+
+  showdialog() async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Column(
+            children: [
+              Row(
+                children: [
+                  const Icon(
+                    Icons.lock_reset_rounded,
+                    color: Colors.red,
+                  ),
+                  const SizedBox(
+                    width: 8,
+                  ),
+                  Text(
+                    'รีเซ็ตรหัสผ่าน',
+                    style: TextStyle(
+                      fontSize: 18.0.sp,
+                      //  fontWeight: FontWeight.bold,
+                      color: Colors.red,
+                      // fontStyle: FontStyle.italic,
+                      fontFamily: 'FC-Minimal-Regular',
+                    ),
+                  )
+                ],
+              ),
+              const Divider(color: Colors.black54, thickness: 1),
+              const SizedBox(
+                height: 16,
+              ),
+              Text(
+                'กรอกอีเมลล์ของท่าน เพื่อรีเซ็ตรหัสผ่าน',
+                style: TextStyle(
+                  fontSize: 16.0.sp,
+                  //  fontWeight: FontWeight.bold,
+                  color: Colors.red,
+                  // fontStyle: FontStyle.italic,
+                  fontFamily: 'FC-Minimal-Regular',
+                ),
+                overflow: TextOverflow.fade,
+              )
+            ],
+          ),
+          content: Container(
+            width: 90.vw,
+            child: TextField(
+              keyboardType: TextInputType.emailAddress,
+              controller: _emailresetPassword,
+              decoration: InputDecoration(
+                prefixIcon: const Icon(
+                  Icons.email_outlined,
+                  color: Colors.black54,
+                ),
+                labelStyle: const TextStyle(
+                  fontSize: 22.0,
+                  // fontWeight: FontWeight.bold,
+                  color: Colors.black54,
+                  // fontStyle: FontStyle.italic,
+                  fontFamily: 'FC-Minimal-Regular',
+                ),
+                labelText: 'อีเมลล์ : ',
+                enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: const BorderSide(color: Colors.black54)),
+                focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: const BorderSide(color: Colors.red)),
+              ),
+            ),
+          ),
+          actions: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                InkWell(
+                  borderRadius: BorderRadius.circular(5),
+                  onTap: () {
+                    if (_emailresetPassword.text.isEmpty ||
+                        _emailresetPassword.text == '') {
+                      MyAlertDialog()
+                          .showtDialog(context, 'กรุณากรอกอีเมลล์ด้วยค่ะ');
+                      Navigator.pop(context);
+                    } else {
+                      checkEmailAndUpdatePassword(
+                          '2', _emailresetPassword.text, '');
+                      setState(() {
+                        isResetPassword = true;
+                      });
+                    }
+                    Navigator.pop(context);
+                  },
+                  child: Card(
+                    semanticContainer: true,
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                    elevation: 5,
+                    child: Container(
+                      alignment: Alignment.center,
+                      width: 30.vw,
+                      height: 4.vh,
+                      child: Text(
+                        'รีเซ็ต',
+                        style: TextStyle(color: Colors.blue, fontSize: 14.sp),
+                      ),
+                    ),
+                  ),
+                ),
+                InkWell(
+                  borderRadius: BorderRadius.circular(5),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Card(
+                    semanticContainer: true,
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                    elevation: 5,
+                    child: Container(
+                      alignment: Alignment.center,
+                      width: 30.vw,
+                      height: 4.vh,
+                      child: Text(
+                        'ยกเลิก',
+                        style: TextStyle(color: Colors.red, fontSize: 14.sp),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+        );
+      },
     );
   }
 }

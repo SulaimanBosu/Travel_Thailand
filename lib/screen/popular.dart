@@ -10,7 +10,6 @@ import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'package:progress_indicators/progress_indicators.dart';
 import 'package:project/model/landmark_model.dart';
-import 'package:project/model/province_model.dart';
 import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_api.dart';
 import 'package:project/utility/my_style.dart';
@@ -53,6 +52,7 @@ class _PopularState extends State<Popular> {
   late double screenhight;
   bool isdata = false;
   bool search = false;
+  ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
@@ -113,13 +113,13 @@ class _PopularState extends State<Popular> {
   // }
 
   Future<void> readlandmark() async {
-    Location location = Location();
-    LocationData locationData = await location.getLocation();
-    location.enableBackgroundMode(enable: true);
-    lat1 = locationData.latitude!;
-    lng1 = locationData.longitude!;
-    // lat1 = 13.602098;
-    // lng1 = 100.624933;
+    // Location location = Location();
+    // LocationData locationData = await location.getLocation();
+    // location.enableBackgroundMode(enable: true);
+    // lat1 = locationData.latitude!;
+    // lng1 = locationData.longitude!;
+    lat1 = 13.602098;
+    lng1 = 100.624933;
 
     debugPrint('latitude ============ ${lat1.toString()}');
     debugPrint('longitude ============ ${lng1.toString()}');
@@ -163,6 +163,7 @@ class _PopularState extends State<Popular> {
       });
     }
   }
+  
 
   Future _refreshData() async {
     setState(() {
@@ -207,12 +208,14 @@ class _PopularState extends State<Popular> {
                   ),
         body: SafeArea(
           child: RawScrollbar(
+            controller: scrollController,
             thumbColor: Colors.grey.shade300,
             isAlwaysShown: false,
             scrollbarOrientation: ScrollbarOrientation.right,
             thickness: 5,
             radius: const Radius.circular(5),
             child: CustomScrollView(
+              controller: scrollController,
               shrinkWrap: true,
               primary: false,
               physics: const BouncingScrollPhysics(),

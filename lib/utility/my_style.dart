@@ -36,8 +36,7 @@ class MyStyle {
     );
   }
 
-
-    showBasicsFlash({
+  showBasicsFlash({
     BuildContext? context,
     String? text,
     Duration? duration,
@@ -48,20 +47,30 @@ class MyStyle {
       duration: duration,
       builder: (context, controller) {
         return Flash(
+          backgroundColor: Colors.white,
           controller: controller,
           behavior: flashStyle,
-          position: FlashPosition.top,
-          boxShadows: kElevationToShadow[4],
+          useSafeArea: false,
+          position: FlashPosition.bottom,
+          boxShadows: kElevationToShadow[20],
           horizontalDismissDirection: HorizontalDismissDirection.horizontal,
           child: FlashBar(
-            content: Row(
+            padding: EdgeInsets.only(bottom: 5.vh, top: 2.vh),
+            content: Column(
               children: [
-                const Icon(
-                  Icons.info_outline,
-                  color: Colors.redAccent,
+                Icon(
+                  Icons.replay,
+                  color: Colors.red,
+                  size: 6.vw,
                 ),
-                MyStyle().mySizebox(),
-                Text(text!),
+                JumpingText(
+                  text!,
+                  style: TextStyle(
+                    color: Colors.black54,
+                    fontSize: 14.sp,
+                    fontFamily: 'FC-Minimal-Regular',
+                  ),
+                ),
               ],
             ),
           ),
