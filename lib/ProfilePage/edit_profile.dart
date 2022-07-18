@@ -1059,6 +1059,7 @@ class _EditProfileState extends State<EditProfile> {
           Container(
             width: screenWidth * 0.85,
             child: TextFormField(
+              readOnly :true,
               initialValue: email,
               onChanged: (value) => email = value.trim(),
               // controller: _email,

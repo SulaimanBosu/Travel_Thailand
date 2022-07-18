@@ -72,6 +72,8 @@ class _RegisterState extends State<Register> {
         await emailAuth.sendOtp(recipientMail: _email.text, otpLength: 6);
     if (res) {
       debugPrint('ส่ง OTP เรียบร้อย');
+      MyStyle().showdialog(context, 'แจ้งเตือน',
+          'ส่งรหัส OTP ไปยังอีเมลล์ของท่านแล้ว\nโปรดตรวจสอบรหัส OTP ในอีเมลล์ขยะหรือในกล่องเข้าของอีเมลล์ของท่าน');
       setState(() {
         isSendOTPSuccess = true;
       });
@@ -432,23 +434,6 @@ class _RegisterState extends State<Register> {
       ],
     );
   }
-
-  // //โชว์ภาพตัวอย่างก่อนเลือกรูปและหลังเลือกรูป
-  // Container showImage(context) {
-  //   return Container(
-  //     padding:
-  //         const EdgeInsetsDirectional.only(start: 10.0, end: 10.0, bottom: 10),
-  //     width: MediaQuery.of(context).size.width * 0.9,
-  //     height: MediaQuery.of(context).size.width * 0.6,
-  //     child: Container(
-  //         child: file == null
-  //             ? const CircleAvatar(
-  //                 radius: 24,
-  //                 backgroundImage: AssetImage('images/addimages1.png'),
-  //               )
-  //             : CircleAvatar(radius: 24, backgroundImage: FileImage(file!))),
-  //   );
-  // }
 
   void _bottomSheet(BuildContext context) {
     showModalBottomSheet<int>(
@@ -1125,24 +1110,11 @@ class _RegisterState extends State<Register> {
                           onTap: () => sendOTP(context),
                           child: Text(
                             isSendOTPSuccess
-                                ? 'ส่งรหัส OTP อีกครั้ง'
+                                ? 'ส่งอีกครั้ง'
                                 : 'ส่งรหัส OTP',
                             style: const TextStyle(color: Colors.red),
                           ),
                         ),
-
-                        // TextButton(
-                        //         onPressed: () => sendOTP(context),
-                        //         child: isSendOTPSuccess
-                        //             ? const Text(
-                        //                 'ส่งรหัส OTP อีกครั้ง',
-                        //                 style: TextStyle(color: Colors.red),
-                        //               )
-                        //             : const Text(
-                        //                 'ส่งรหัส OTP',
-                        //                 style: TextStyle(color: Colors.red),
-                        //               ),
-                        //       ),
                         prefixIcon: const Icon(
                           Icons.email_outlined,
                           color: Colors.black54,
@@ -1193,58 +1165,60 @@ class _RegisterState extends State<Register> {
                             Icons.email_outlined,
                             color: Colors.black54,
                           ),
-                          suffixStyle:TextStyle(),
-                          suffixIcon: ProgressButton.icon(
-                            
-                            textStyle:const TextStyle(color: Colors.black54),
-                              state: isbuttonOTP
-                                  ? ButtonState.idle
-                                  : isLoaddingOTP
-                                      ? ButtonState.loading
-                                      : isSuccessOTP
-                                          ? ButtonState.success
-                                          : ButtonState.fail,
-                              //padding: const EdgeInsets.all(50),
-                              radius: 10.0,
-                              height: 20.0,
-                              maxWidth: 110.0,
-                              minWidth: 30.0,
-                              iconedButtons: {
-                                ButtonState.idle:  IconedButton(
-                                    text: "ยืนยัน OTP",
-                                    icon: const Icon(Icons.send,
-                                        color: Colors.black54),
-                                    color: Colors.grey.shade300),
-                                ButtonState.loading: IconedButton(
-                                    text: "Loading",
-                                    color: Colors.grey.shade500),
-                                ButtonState.fail: IconedButton(
-                                    text: "Failed",
-                                    icon: const Icon(Icons.cancel,
-                                        color: Colors.white),
-                                    color: Colors.red.shade300),
-                                ButtonState.success: IconedButton(
-                                    text: "Success",
-                                    icon: const Icon(
-                                      Icons.check_circle,
-                                      color: Colors.white,
-                                    ),
-                                    color: Colors.green.shade400)
-                              },
-                              onPressed: () {
-                                if (_otpcontroller.text.isEmpty) {
-                                  setState(() {
-                                    MyStyle().showBasicsFlash(
-                                      context: context,
-                                      text: 'กรุณากรอกรหัส OTP',
-                                      duration: const Duration(seconds: 3),
-                                      flashStyle: FlashBehavior.floating,
-                                    );
-                                  });
-                                } else {
-                                  verifyOTP();
-                                }
-                              }),
+                          hintText: 'กรอกรหัส OTP',
+                          suffixIcon: Container(
+                            padding: const EdgeInsets.only(right: 5,bottom: 1),
+                            child: ProgressButton.icon(
+                                textStyle: const TextStyle(color: Colors.black54),
+                                state: isbuttonOTP
+                                    ? ButtonState.idle
+                                    : isLoaddingOTP
+                                        ? ButtonState.loading
+                                        : isSuccessOTP
+                                            ? ButtonState.success
+                                            : ButtonState.fail,
+                                //padding: const EdgeInsets.all(50),
+                                radius: 10.0,
+                                height: 20.0,
+                                maxWidth: 110.0,
+                                minWidth: 30.0,
+                                iconedButtons: {
+                                  ButtonState.idle: IconedButton(
+                                      text: "ยืนยัน OTP",
+                                      icon: const Icon(Icons.send,
+                                          color: Colors.black54),
+                                      color: Colors.grey.shade300),
+                                  ButtonState.loading: IconedButton(
+                                      text: "Loading",
+                                      color: Colors.grey.shade500),
+                                  ButtonState.fail: IconedButton(
+                                      text: "Failed",
+                                      icon: const Icon(Icons.cancel,
+                                          color: Colors.white),
+                                      color: Colors.red.shade300),
+                                  ButtonState.success: IconedButton(
+                                      text: "Success",
+                                      icon: const Icon(
+                                        Icons.check_circle,
+                                        color: Colors.white,
+                                      ),
+                                      color: Colors.green.shade400)
+                                },
+                                onPressed: () {
+                                  if (_otpcontroller.text.isEmpty) {
+                                    setState(() {
+                                      MyStyle().showBasicsFlash(
+                                        context: context,
+                                        text: 'กรุณากรอกรหัส OTP',
+                                        duration: const Duration(seconds: 3),
+                                        flashStyle: FlashBehavior.floating,
+                                      );
+                                    });
+                                  } else {
+                                    verifyOTP();
+                                  }
+                                }),
+                          ),
 
                           // TextButton(
                           //   child: const Text(

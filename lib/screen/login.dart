@@ -81,7 +81,9 @@ class _LoginState extends State<Login> {
             isResetPassword = false;
           });
           debugPrint("reset password success");
-          MyAlertDialog().showcupertinoDialog(context, 'รีเซ็ตรหัสผ่านสำเร็จ');
+          // MyAlertDialog().showcupertinoDialog(context, 'รีเซ็ตรหัสผ่านสำเร็จ');
+          MyStyle().showdialog(context, 'แจ้งเตือน',
+              'รีเซ็ตรหัสผ่านของท่านแล้ว\nโปรดตรวจสอบรหัสผ่านใหม่ในอีเมลล์ของท่าน');
           _emailresetPassword.clear();
         } else if (success == '2') {
           setState(() {
@@ -99,14 +101,16 @@ class _LoginState extends State<Login> {
           setState(() {
             isResetPassword = false;
           });
-          MyStyle().showBasicsFlash(
-            context: context,
-            text: 'เปลี่ยนรหัสผ่านเรียบร้อย',
-            duration: const Duration(seconds: 5),
-            flashStyle: FlashBehavior.floating,
-          );
+          MyStyle()
+              .showdialog(context, 'แจ้งเตือน', 'เปลี่ยนรหัสผ่านเรียบร้อย');
+          // MyStyle().showBasicsFlash(
+          //   context: context,
+          //   text: 'เปลี่ยนรหัสผ่านเรียบร้อย',
+          //   duration: const Duration(seconds: 5),
+          //   flashStyle: FlashBehavior.floating,
+          // );
           password = newPassword.text;
-          checkUser();
+          // checkUser();
         } else if (success == '5') {
           setState(() {
             isResetPassword = false;
@@ -157,6 +161,9 @@ class _LoginState extends State<Login> {
 
     if (response.body == 'OK') {
       checkEmailAndUpdatePassword('3', email, message);
+    } else {
+      MyStyle().showdialog(
+          context, 'ล้มเหลว', 'ไม่พบการเชื่อมต่อเครือข่ายอินเตอร์เน็ต');
     }
   }
 
@@ -294,10 +301,11 @@ class _LoginState extends State<Login> {
           Container(
             width: 300.0,
             child: TextField(
+              keyboardType: TextInputType.emailAddress,
               // onChanged: (value) => user = value.trim(),
               controller: _email,
               focusNode: myFocusEmail,
-              autofocus: true,
+              //  autofocus: true,
               decoration: const InputDecoration(
                 prefixIcon: Icon(
                   Icons.account_box,
@@ -327,11 +335,12 @@ class _LoginState extends State<Login> {
           Container(
             width: 300.0,
             child: TextField(
+              keyboardType: TextInputType.text,
               obscureText: statusRedEye,
               //  onChanged: (value) => password = value.trim(),
               controller: _password,
               focusNode: myFocusPassword,
-              autofocus: true,
+              // autofocus: true,
               decoration: InputDecoration(
                 suffixIcon: IconButton(
                     icon: statusRedEye
