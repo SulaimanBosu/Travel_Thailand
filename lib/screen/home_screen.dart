@@ -90,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> getLocation() async {
     // Location location = Location();
     // LocationData locationData = await location.getLocation();
-    // location.enableBackgroundMode(enable: true);
+   // location.enableBackgroundMode(enable: true);
     setState(() {
       // lat = locationData.latitude!;
       // lng = locationData.longitude!;
@@ -155,7 +155,6 @@ class _HomeScreenState extends State<HomeScreen> {
         Icons.format_list_numbered,
         size: 30,
       ),
-      // ignore: deprecated_member_use
       label: 'ทั้งหมด',
     );
   }
@@ -208,11 +207,7 @@ class _HomeScreenState extends State<HomeScreen> {
             opacity: 0.4,
             color: Colors.black38,
             child: Scaffold(
-              body: Container(
-                  // width: MediaQuery.of(context).size.width,
-                  // height: MediaQuery.of(context).size.height,
-                  // child: MyStyle().progress(context),
-                  ),
+              body: Container(),
             ),
           )
         : Scaffold(

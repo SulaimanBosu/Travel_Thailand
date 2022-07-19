@@ -177,70 +177,6 @@ class _LandmarkState extends State<Landmark> {
     }
   }
 
-  Future<void> readlandmark2() async {
-    if (hasmore != false) {
-      String url = '${MyConstant().domain}/application/get_landmark.php';
-      // Location location = Location();
-      // LocationData locationData = await location.getLocation();
-      // location.enableBackgroundMode(enable: true);
-      // lat1 = locationData.latitude!;
-      // lng1 = locationData.longitude!;
-      lat1 = 13.602098;
-      lng1 = 100.624933;
-      debugPrint('latitude ============ ${lat1.toString()}');
-      debugPrint('longitude ============ ${lng1.toString()}');
-
-      FormData formData = FormData.fromMap(
-        {
-          "Limit": limit,
-          "Offset": offset,
-        },
-      );
-
-      try {
-        await Dio().post(url, data: formData).then((value) {
-          var result = json.decode(value.data);
-          // loadmorel.clear();
-          for (var map in result) {
-            landmarkModel = LandmarkModel.fromJson(map);
-            setState(
-              () {
-                landmarks.add(landmarkModel);
-                lat2 = double.parse(landmarkModel.latitude!);
-                lng2 = double.parse(landmarkModel.longitude!);
-                distance = MyApi().calculateDistance(lat1, lng1, lat2, lng2);
-                var myFormat = NumberFormat('#0.00', 'en_US');
-                distanceString = myFormat.format(distance);
-                distances.add(distanceString);
-                time = MyApi().calculateTime(distance);
-                times.add(time);
-                isLoading = false;
-                isdata = true;
-                index++;
-                offset++;
-              },
-            );
-          }
-        });
-
-        setState(() {
-          if (landmarks.length == landmarkModel.landmarkCount) {
-            hasmore = false;
-          }
-          // offset += 10;
-          // landmarks.addAll(loadmorel);
-          //debugPrint('Page ============ ${offset.toString()}');
-        });
-      } catch (error) {
-        debugPrint("ดาวน์โหลดไม่สำเร็จ: $error");
-        MyStyle().showdialog(
-            context, 'ล้มเหลว', 'ไม่พบการเชื่อมต่อเครือข่ายอินเตอร์เน็ต');
-        isLoading = false;
-        isdata = true;
-      }
-    }
-  }
-
   Future<void> getLocation() async {
     Location location = Location();
     LocationData locationData = await location.getLocation();
@@ -338,11 +274,7 @@ class _LandmarkState extends State<Landmark> {
                 ),
                 isLoading
                     ? SliverToBoxAdapter(
-                        child: Container(
-                            // width: MediaQuery.of(context).size.width,
-                            // height: MediaQuery.of(context).size.height * 0.7,
-                            // child: MyStyle().progress(context),
-                            ),
+                        child: Container(),
                       )
                     : landmarks.isEmpty
                         ? !search

@@ -94,32 +94,14 @@ class _PopularState extends State<Popular> {
     });
   }
 
-  // Future<void> getLocation() async {
-  //   Location location = Location();
-  //   LocationData locationData = await location.getLocation();
-  //   location.enableBackgroundMode(enable: true);
-  //   lat1 = locationData.latitude!;
-  //   lng1 = locationData.longitude!;
-  //   debugPrint('latitude ============ ${lat1.toString()}');
-  //   debugPrint('longitude ============ ${lng1.toString()}');
-  //   distance = MyApi().calculateDistance(lat1, lng1, lat2, lng2);
-  //   var myFormat = NumberFormat('#0.00', 'en_US');
-  //   distanceString = myFormat.format(distance);
-  //   distances.add(distanceString);
-
-  //   time = MyApi().calculateTime(distance);
-  //   // debugPrint('time min ============ ${time.toString()}');
-  //   times.add(time);
-  // }
-
   Future<void> readlandmark() async {
-    // Location location = Location();
-    // LocationData locationData = await location.getLocation();
-    // location.enableBackgroundMode(enable: true);
-    // lat1 = locationData.latitude!;
-    // lng1 = locationData.longitude!;
-    lat1 = 13.602098;
-    lng1 = 100.624933;
+    Location location = Location();
+    LocationData locationData = await location.getLocation();
+    location.enableBackgroundMode(enable: true);
+    lat1 = locationData.latitude!;
+    lng1 = locationData.longitude!;
+    // lat1 = 13.602098;
+    // lng1 = 100.624933;
 
     debugPrint('latitude ============ ${lat1.toString()}');
     debugPrint('longitude ============ ${lng1.toString()}');
@@ -132,12 +114,8 @@ class _PopularState extends State<Popular> {
           landmark = LandmarkModel.fromJson(map);
           setState(() {
             popularlandmarks.add(landmark);
-            // times.add(10);
-            // distances.add('10');
-
             lat2 = double.parse(landmark.latitude!);
             lng2 = double.parse(landmark.longitude!);
-
             distance = MyApi().calculateDistance(lat1, lng1, lat2, lng2);
             var myFormat = NumberFormat('#0.00', 'en_US');
             distanceString = myFormat.format(distance);
@@ -159,11 +137,9 @@ class _PopularState extends State<Popular> {
       setState(() {
         isLoading = false;
         isdata = true;
-        //delaydialog();
       });
     }
   }
-  
 
   Future _refreshData() async {
     setState(() {
@@ -250,11 +226,7 @@ class _PopularState extends State<Popular> {
                 ),
                 isLoading
                     ? SliverToBoxAdapter(
-                        child: Container(
-                            // width: MediaQuery.of(context).size.width,
-                            // height: MediaQuery.of(context).size.height * 0.7,
-                            // child: MyStyle().progress(context),
-                            ),
+                        child: Container(),
                       )
                     : popularlandmarks.isEmpty
                         ? !search
@@ -313,20 +285,6 @@ class _PopularState extends State<Popular> {
                                 userId: userid!,
                                 hasmore: false,
                               )
-                // SliverToBoxAdapter(
-                //   child: popularlandmarks.isEmpty
-                //     ? Container(
-                //         width: MediaQuery.of(context).size.width,
-                //         height: MediaQuery.of(context).size.height * 0.78,
-                //         child: MyStyle().progress(context))
-                //     :
-                //   Container(
-                //     width: MediaQuery.of(context).size.width,
-                //     height: MediaQuery.of(context).size.height * 0.78,
-                //     // color: Colors.grey[400],
-                //     child: showListLandmark(),
-                //   ),
-                // )
               ],
             ),
           ),
@@ -334,179 +292,4 @@ class _PopularState extends State<Popular> {
       ),
     );
   }
-
-  Widget showListLandmark() => ListView.builder(
-        padding: const EdgeInsetsDirectional.only(top: 0.0, bottom: 20.0),
-        itemCount: popularlandmarks.length,
-        itemBuilder: (context, index) => Container(
-          child: Slidable(
-            key: Key(popularlandmarks[index].landmarkId!),
-            startActionPane: ActionPane(
-              motion: const ScrollMotion(),
-              dismissible: DismissiblePane(onDismissed: () {}),
-              children: const [
-                SlidableAction(
-                  onPressed: null,
-                  backgroundColor: Color(0xFFFE4A49),
-                  foregroundColor: Colors.white,
-                  icon: Icons.delete,
-                  label: 'Delete',
-                ),
-                SlidableAction(
-                  onPressed: null,
-                  backgroundColor: Color(0xFF21B7CA),
-                  foregroundColor: Colors.white,
-                  icon: Icons.share,
-                  label: 'Share',
-                ),
-              ],
-            ),
-            endActionPane: const ActionPane(
-              motion: ScrollMotion(),
-              children: [
-                SlidableAction(
-                  flex: 2,
-                  onPressed: null,
-                  backgroundColor: Color(0xFF7BC043),
-                  foregroundColor: Colors.white,
-                  icon: Icons.archive,
-                  label: 'Archive',
-                ),
-                SlidableAction(
-                  onPressed: null,
-                  backgroundColor: Color(0xFF0392CF),
-                  foregroundColor: Colors.white,
-                  icon: Icons.save,
-                  label: 'Save',
-                ),
-              ],
-            ),
-            child: Container(
-              decoration: index % 2 == 0
-                  ? const BoxDecoration(color: Colors.white60)
-                  : BoxDecoration(color: Colors.grey[200]),
-              child: Container(
-                padding:
-                    const EdgeInsetsDirectional.only(top: 0.0, bottom: 0.0),
-                child: GestureDetector(
-                  onTap: () {
-                    print('คุณคลิก index = $index');
-                  },
-                  child: Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsetsDirectional.only(
-                            start: 0.0, end: 0.0),
-                        width: MediaQuery.of(context).size.width * 0.4,
-                        height: MediaQuery.of(context).size.width * 0.3,
-                        child: Container(
-                          child: Card(
-                            semanticContainer: true,
-                            clipBehavior: Clip.antiAliasWithSaveLayer,
-                            child: CachedNetworkImage(
-                              imageUrl: '${popularlandmarks[index].imagePath}',
-                              progressIndicatorBuilder:
-                                  (context, url, downloadProgress) =>
-                                      MyStyle().showProgress(),
-                              // CircularProgressIndicator(
-                              //     ),
-                              errorWidget: (context, url, error) =>
-                                  const Icon(Icons.error),
-                              fit: BoxFit.cover,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5.0),
-                            ),
-                            elevation: 5,
-                            margin: const EdgeInsets.all(10),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        //  padding: EdgeInsetsDirectional.only(start: 5.0, end: 5.0),
-                        //   padding: EdgeInsets.all(5.0),
-                        width: MediaQuery.of(context).size.width * 0.488,
-                        height: MediaQuery.of(context).size.width * 0.25,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    popularlandmarks[index].landmarkName!,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: MyStyle().mainTitle,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    'จังหวัด ${popularlandmarks[index].provinceName}',
-                                    overflow: TextOverflow.ellipsis,
-                                    style: MyStyle().mainH2Title,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    'คะแนน ${popularlandmarks[index].landmarkScore.toString()}/5',
-                                    //overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      color: Colors.red,
-                                      fontSize: 14.0,
-                                      fontFamily: 'FC-Minimal-Regular',
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              // ignore: prefer_const_literals_to_create_immutables
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    '102 Km. | (50min) ${popularlandmarks[index].latitude}',
-                                    //overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      color: Colors.red,
-                                      fontSize: 12.0,
-                                      fontFamily: 'FC-Minimal-Regular',
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: IconButton(
-                          icon: const Icon(
-                            Icons.favorite_border_rounded,
-                            color: Colors.black45,
-                            size: 30,
-                          ),
-                          // ignore: unnecessary_statements
-                          onPressed: () {},
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      );
 }

@@ -533,9 +533,8 @@ class _LandmarkNearState extends State<LandmarkNear> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.max,
-                      // ignore: prefer_const_literals_to_create_immutables
-                      children: [
-                        const Padding(
+                      children: const [
+                        Padding(
                           padding: EdgeInsets.symmetric(
                             horizontal: 16.0,
                           ),
@@ -554,7 +553,7 @@ class _LandmarkNearState extends State<LandmarkNear> {
                   ),
                   InkWell(
                     onTap: () async {
-                       Navigator.pop(context);
+                      Navigator.pop(context);
                       var zoom = await _controller.getZoomLevel();
                       zoom = zoom + 0.5;
                       LatLng latLng = LatLng(widget.lat, widget.lng);
@@ -577,9 +576,8 @@ class _LandmarkNearState extends State<LandmarkNear> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         mainAxisSize: MainAxisSize.max,
-                        // ignore: prefer_const_literals_to_create_immutables
-                        children: [
-                          const Padding(
+                        children: const [
+                          Padding(
                             padding: EdgeInsets.symmetric(
                               horizontal: 16.0,
                             ),
@@ -621,9 +619,8 @@ class _LandmarkNearState extends State<LandmarkNear> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         mainAxisSize: MainAxisSize.max,
-                        // ignore: prefer_const_literals_to_create_immutables
-                        children: [
-                          const Padding(
+                        children: const [
+                          Padding(
                             padding: EdgeInsets.symmetric(
                               horizontal: 16.0,
                             ),
@@ -671,9 +668,8 @@ class _LandmarkNearState extends State<LandmarkNear> {
                       child: Row(
                         mainAxisSize: MainAxisSize.max,
                         mainAxisAlignment: MainAxisAlignment.center,
-                        // ignore: prefer_const_literals_to_create_immutables
-                        children: [
-                          const Padding(
+                        children: const [
+                          Padding(
                             padding: EdgeInsets.symmetric(
                               horizontal: 16.0,
                             ),
