@@ -46,6 +46,12 @@ class _LandmarkNearState extends State<LandmarkNear> {
     });
   }
 
+  @override
+  void dispose() {
+    textControllor.dispose();
+    super.dispose();
+  }
+
   Future<void> readlandmark() async {
     _markers.clear();
     String url = '${MyConstant().domain}/application/getAll_landmark.php';
