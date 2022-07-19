@@ -993,7 +993,7 @@ class _MainPageState extends State<MainPage> {
       child: Container(
         //color: Colors.white,
         width: screenwidth,
-        height: 63.vw,
+        height: 30.vh,
         child: ListView.builder(
           itemCount: 5,
           scrollDirection: Axis.horizontal,

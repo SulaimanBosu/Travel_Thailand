@@ -67,13 +67,15 @@ class _CardViewState extends State<CardView> {
         },
         // ignore: avoid_unnecessary_containers
         child: Card(
+           margin: const EdgeInsets.only(bottom: 5.0),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0),
+            
           ),
           //  elevation: 5,
           //  color: Colors.grey[300],
           child: Column(
-            // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               showImage(context, imageURL),
               Padding(
@@ -82,7 +84,7 @@ class _CardViewState extends State<CardView> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 2.5 .vh,),
+                    //SizedBox(height: 2.5 .vh,),
                     Text(
                       widget.landmarkModel.landmarkName!,
                       style:  TextStyle(
@@ -169,8 +171,8 @@ class _CardViewState extends State<CardView> {
       semanticContainer: true,
       clipBehavior: Clip.antiAliasWithSaveLayer,
       child: CachedNetworkImage(
-        width: screenwidth,
-        height: 29.vw,
+        width: 100 .vw,
+        height: 15.vh,
         // height: Platform.isIOS ? screenhight * 0.14 : screenhight * 0.14,
         imageUrl: imageURL,
         progressIndicatorBuilder: (context, url, downloadProgress) =>

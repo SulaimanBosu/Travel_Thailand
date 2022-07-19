@@ -74,9 +74,12 @@ class _ListviewState extends State<Listview> {
                   child: Column(
                     children: [
                       const CupertinoActivityIndicator(
-                        radius: 8,color: Colors.black,
+                        radius: 8,
+                        color: Colors.black,
                       ),
-                      const SizedBox(height: 10,),
+                      const SizedBox(
+                        height: 10,
+                      ),
                       JumpingText('กำลังดาวน์โหลด...',
                           style: TextStyle(
                             color: Colors.red,
@@ -185,32 +188,26 @@ class _ListviewState extends State<Listview> {
                         },
                         child: Row(
                           children: [
-                            Container(
-                              padding: const EdgeInsetsDirectional.only(
-                                  start: 0.0, end: 0.0),
-                              width: MediaQuery.of(context).size.width * 0.4,
-                              height: 14.vh,
-                              child: Container(
-                                child: Card(
-                                  semanticContainer: true,
-                                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                                  child: CachedNetworkImage(
-                                    imageUrl:
-                                        '${widget.landmarkModel[index].imagePath}',
-                                    progressIndicatorBuilder:
-                                        (context, url, downloadProgress) =>
-                                            MyStyle().showProgress(),
-                                    errorWidget: (context, url, error) =>
-                                        const Icon(Icons.error),
-                                    fit: BoxFit.cover,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5.0),
-                                  ),
-                                  elevation: 5,
-                                  margin: const EdgeInsets.all(10),
-                                ),
+                            Card(
+                              semanticContainer: true,
+                              clipBehavior: Clip.antiAliasWithSaveLayer,
+                              child: CachedNetworkImage(
+                                width: 40.vw,
+                                height: 14.vh,
+                                imageUrl:
+                                    '${widget.landmarkModel[index].imagePath}',
+                                progressIndicatorBuilder:
+                                    (context, url, downloadProgress) =>
+                                        MyStyle().showProgress(),
+                                errorWidget: (context, url, error) =>
+                                    const Icon(Icons.error),
+                                fit: BoxFit.cover,
                               ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5.0),
+                              ),
+                              elevation: 5,
+                              margin: const EdgeInsets.all(5),
                             ),
                             Container(
                               //  padding: EdgeInsetsDirectional.only(start: 5.0, end: 5.0),

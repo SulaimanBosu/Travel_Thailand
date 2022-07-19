@@ -58,12 +58,12 @@ class BuildListviewLandmark extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                       side: BorderSide.none),
-                  // margin: const EdgeInsets.only(bottom: 5.0),
+                   margin: const EdgeInsets.only(bottom: 5.0),
 
                   //  elevation: 5,
                   //  color: Colors.grey[300],
                   child: Column(
-                    // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Card(
                         semanticContainer: true,
