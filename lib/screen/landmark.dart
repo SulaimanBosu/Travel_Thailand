@@ -112,8 +112,8 @@ class _LandmarkState extends State<Landmark> {
       // location.enableBackgroundMode(enable: true);
       // lat1 = locationData.latitude!;
       // lng1 = locationData.longitude!;
-      lat1 = 13.602098;
-      lng1 = 100.624933;
+      lat1 = 13.602307598833875;
+      lng1 = 100.626533;
       debugPrint('latitude ============ ${lat1.toString()}');
       debugPrint('longitude ============ ${lng1.toString()}');
 

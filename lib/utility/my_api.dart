@@ -21,8 +21,43 @@ class MyApi {
         c((lat2 - lat1) * p) / 2 +
         c(lat1 * p) * c(lat2 * p) * (1 - c((lng2 - lng1) * p)) / 2;
     distance = 12742 * asin(sqrt(a));
+    if (distance >= 600) {
+      distance = distance + 100;
+      return distance;
+    } else if (distance >= 300) {
+      distance = distance + 50;
+      return distance;
+    } else {
+      return distance;
+    }
 
-    return distance;
+   // return distance;
+  }
+  // external double cos(num radians);
+  // external double sin(num radians);
+
+  double calculateDistance2(
+    double lat1,
+    double lon1,
+    double lat2,
+    double lon2,
+  ) {
+    double theta = lon1 - lon2;
+    double dist = sin(deg2rad(lat1)) * sin(deg2rad(lat2)) +
+        cos(deg2rad(lat1)) * cos(deg2rad(lat2)) * cos(deg2rad(theta));
+    dist = acos(dist);
+    dist = rad2deg(dist);
+    dist = dist * 60 * 1.1515;
+    dist = dist * 1.609344;
+    return (dist);
+  }
+
+  double deg2rad(double deg) {
+    return (deg * pi / 180.0);
+  }
+
+  double rad2deg(double rad) {
+    return (rad * 180 / pi);
   }
 
   // ignore: missing_return

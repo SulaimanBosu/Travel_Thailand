@@ -64,7 +64,7 @@ class _SearchState extends State<Search> {
   }
 
   Future<void> readlandmark() async {
-    String url = '${MyConstant().domain}/application/get_landmark.php';
+    String url = '${MyConstant().domain}/application/getAll_landmark.php';
     try {
       await Dio().get(url).then((value) {
         var result = json.decode(value.data);

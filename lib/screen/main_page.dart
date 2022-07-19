@@ -11,6 +11,7 @@ import 'package:progress_indicators/progress_indicators.dart';
 import 'package:project/model/landmark_model.dart';
 import 'package:project/screen/landmark_search.dart';
 import 'package:project/utility/myConstant.dart';
+import 'package:project/utility/my_api.dart';
 import 'package:project/utility/my_style.dart';
 import 'package:project/widgets/buildListview_landmark.dart';
 import 'package:project/widgets/card_view.dart';
@@ -420,6 +421,21 @@ class _MainPageState extends State<MainPage> {
                                     ),
                                     InkWell(
                                       onTap: () {
+                                        // double lat1 = 19.824610;
+                                        // double lon1 = 99.887974;
+
+                                        // double lat2 = 13.601687087660729;
+                                        // double lon2 = 100.62653171880586;
+                                        // var dis = MyApi().calculateDistance2(
+                                        //     lat1, lon1, lat2, lon2);
+                                        // var dis2 = MyApi().calculateDistance(
+                                        //     lat1, lon1, lat2, lon2);
+
+                                        // debugPrint(
+                                        //     'ระยะทางที่1  ====== ${dis.toString()}');
+                                        // debugPrint(
+                                        //     'ระยะทางที่2  ====== ${dis2.toString()}');
+
                                         Route route = MaterialPageRoute(
                                           builder: (context) =>
                                               const LandmarkSearch(

@@ -99,3 +99,5 @@ List<String> imageList2 = [
   'images/masjid-icon.png',
   'images/history-icon.png',
 ];
+
+List<LandmarkModel> readallLandmark = [];

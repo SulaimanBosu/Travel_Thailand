@@ -68,6 +68,7 @@ dependencies:
   email_auth: ^1.0.0
   progress_state_button: ^1.0.4
   http: ^0.13.4
+  custom_marker: ^1.0.0
 
 dev_dependencies:
   flutter_test:

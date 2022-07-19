@@ -5,12 +5,15 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:location/location.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:progress_indicators/progress_indicators.dart';
+import 'package:project/model/landmark_model.dart';
 import 'package:project/model/province_model.dart';
 import 'package:project/model/user_model.dart';
 import 'package:project/screen/favorites.dart';
 import 'package:project/screen/landmark.dart';
+import 'package:project/screen/landmark_near.dart';
 import 'package:project/screen/main_page.dart';
 import 'package:project/screen/popular.dart';
 import 'package:project/ProfilePage/profile.dart';
@@ -38,6 +41,8 @@ class _HomeScreenState extends State<HomeScreen> {
   late int indexPage;
   bool isDelay = false;
   late ProvinceModel model;
+  late LandmarkModel landmarkModel;
+  late double lat, lng;
 
   @override
   void initState() {
@@ -45,10 +50,14 @@ class _HomeScreenState extends State<HomeScreen> {
       DeviceOrientation.portraitUp,
     ]);
     indexPage = widget.index;
+    getLocation();
     delaydialog();
     province();
     listwidgets.add(const MainPage());
-    listwidgets.add(const Popular());
+    listwidgets.add(LandmarkNear(
+      lat: lat,
+      lng: lng,
+    ));
     listwidgets.add(const Favorites());
     listwidgets.add(const Landmark());
     listwidgets.add(const Profile());
@@ -78,6 +87,20 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  Future<void> getLocation() async {
+    // Location location = Location();
+    // LocationData locationData = await location.getLocation();
+    // location.enableBackgroundMode(enable: true);
+    setState(() {
+      // lat = locationData.latitude!;
+      // lng = locationData.longitude!;
+      lat = 13.602307598833875;
+      lng = 100.626533;
+    });
+    debugPrint('latitude ============ ${lat.toString()}');
+    debugPrint('longitude ============ ${lng.toString()}');
+  }
+
   void delaydialog() {
     Future.delayed(const Duration(milliseconds: 1000), () {
       setState(() {
@@ -104,14 +127,14 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  BottomNavigationBarItem popular() {
+  BottomNavigationBarItem near() {
     return const BottomNavigationBarItem(
       icon: Icon(
-        Icons.star_outline_outlined,
+        Icons.add_location_alt_outlined,
         size: 30,
       ),
       // ignore: deprecated_member_use
-      label: 'ยอดฮิต',
+      label: 'ใกล้ฉัน',
     );
   }
 
@@ -129,7 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
   BottomNavigationBarItem allLandmark() {
     return const BottomNavigationBarItem(
       icon: Icon(
-        Icons.add_location_alt_outlined,
+        Icons.format_list_numbered,
         size: 30,
       ),
       // ignore: deprecated_member_use
@@ -215,7 +238,7 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         items: <BottomNavigationBarItem>[
           homePage(),
-          popular(),
+          near(),
           favorites(),
           allLandmark(),
           showprofile(),
