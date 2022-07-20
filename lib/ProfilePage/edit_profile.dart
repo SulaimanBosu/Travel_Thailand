@@ -327,6 +327,7 @@ class _EditProfileState extends State<EditProfile> {
               child: CircleAvatar(
                 radius: 93,
                 backgroundColor: Colors.white,
+                foregroundColor: Colors.white,
                 child: Padding(
                   padding: const EdgeInsets.all(2), // Border radius
                   child: ClipOval(
@@ -334,8 +335,12 @@ class _EditProfileState extends State<EditProfile> {
                       size: const Size.fromRadius(88), // Image radius
                       child: imageProfile != null
                           ? CircleAvatar(
+                              backgroundColor: Colors.white,
+                              foregroundColor: Colors.white,
                               radius: 88,
-                              backgroundImage: FileImage(imageProfile!))
+                              backgroundImage:
+                                  const AssetImage('images/iconprofile.png'),
+                              foregroundImage: FileImage(imageProfile!))
                           : profile == ''
                               ? Image.asset('images/iconprofile.png')
                               : CachedNetworkImage(
@@ -1059,7 +1064,7 @@ class _EditProfileState extends State<EditProfile> {
           Container(
             width: screenWidth * 0.85,
             child: TextFormField(
-              readOnly :true,
+              readOnly: true,
               initialValue: email,
               onChanged: (value) => email = value.trim(),
               // controller: _email,

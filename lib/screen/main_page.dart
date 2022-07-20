@@ -694,7 +694,7 @@ class _MainPageState extends State<MainPage> {
                           )
                         : SliverGrid.extent(
                             maxCrossAxisExtent: 265,
-                            mainAxisSpacing: 20,
+                            mainAxisSpacing: 10,
                             crossAxisSpacing: 10,
                             childAspectRatio: 1,
                             children: landmarkCards,

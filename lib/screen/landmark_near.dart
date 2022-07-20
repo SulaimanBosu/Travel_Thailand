@@ -8,6 +8,7 @@ import 'package:flash/flash.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 import 'package:progress_indicators/progress_indicators.dart';
 import 'package:project/model/landmark_model.dart';
 import 'package:project/screen/landmark_detail.dart';
@@ -36,9 +37,11 @@ class _LandmarkNearState extends State<LandmarkNear> {
   bool isLoading = true;
   double radius = 50;
   final textControllor = TextEditingController();
-
+  double lat = 0, lng = 0;
   @override
   initState() {
+    lat = widget.lat;
+    lng = widget.lng;
     readlandmark();
     super.initState();
     setState(() {
@@ -52,6 +55,23 @@ class _LandmarkNearState extends State<LandmarkNear> {
     super.dispose();
   }
 
+  Future<void> getLocation() async {
+    Location location = Location();
+    LocationData locationData = await location.getLocation();
+    location.enableBackgroundMode(enable: true);
+    setState(() {
+      lat = locationData.latitude!;
+      lng = locationData.longitude!;
+      // lat = 13.602307598833875;
+      // lng = 100.626533;
+      if (lat != 0 && lng != 0) {
+        isLoading = false;
+      }
+    });
+    debugPrint('latitude ============ ${lat.toString()}');
+    debugPrint('longitude ============ ${lng.toString()}');
+  }
+
   Future<void> readlandmark() async {
     _markers.clear();
     String url = '${MyConstant().domain}/application/getAll_landmark.php';
@@ -63,8 +83,8 @@ class _LandmarkNearState extends State<LandmarkNear> {
           landmarkModel = LandmarkModel.fromJson(map);
           double latitude = double.parse(landmarkModel.latitude!);
           double longitude = double.parse(landmarkModel.longitude!);
-          double distance = MyApi()
-              .calculateDistance(widget.lat, widget.lng, latitude, longitude);
+          double distance =
+              MyApi().calculateDistance(lat, lng, latitude, longitude);
 
           if (distance <= radius) {
             addMarker(landmarkModel);
@@ -260,7 +280,7 @@ class _LandmarkNearState extends State<LandmarkNear> {
                               textControllor.text = radius.toStringAsFixed(0);
                               var zoom = await _controller.getZoomLevel();
                               zoom = zoom + 0.5;
-                              LatLng latLng = LatLng(widget.lat, widget.lng);
+                              LatLng latLng = LatLng(lat, lng);
                               _controller.animateCamera(
                                   CameraUpdate.newLatLngZoom(latLng, zoom));
                               readlandmark();
@@ -300,7 +320,7 @@ class _LandmarkNearState extends State<LandmarkNear> {
                           textControllor.text = radius.toStringAsFixed(0);
                           var zoom = await _controller.getZoomLevel();
                           zoom = zoom - 0.5;
-                          LatLng latLng = LatLng(widget.lat, widget.lng);
+                          LatLng latLng = LatLng(lat, lng);
                           _controller.animateCamera(
                               CameraUpdate.newLatLngZoom(latLng, zoom));
                           readlandmark();
@@ -374,7 +394,7 @@ class _LandmarkNearState extends State<LandmarkNear> {
                         color: Colors.red,
                         onPressed: () async {
                           // var zoom = await _controller.getZoomLevel();
-                          LatLng latLng = LatLng(widget.lat, widget.lng);
+                          LatLng latLng = LatLng(lat, lng);
                           _controller.animateCamera(
                               CameraUpdate.newLatLngZoom(latLng, 14));
                         },
@@ -459,8 +479,8 @@ class _LandmarkNearState extends State<LandmarkNear> {
   }
 
   Widget showMap() {
-    if (widget.lat.isFinite) {
-      LatLng latLng = LatLng(widget.lat, widget.lng);
+    if (lat.isFinite) {
+      LatLng latLng = LatLng(lat, lng);
       position = CameraPosition(
         target: latLng,
         zoom: zoom,
@@ -469,7 +489,7 @@ class _LandmarkNearState extends State<LandmarkNear> {
     return Container(
       width: 100.vw,
       height: 100.vh,
-      child: widget.lat.isInfinite
+      child: lat.isInfinite
           ? MyStyle().showProgress()
           : Card(
               semanticContainer: true,
@@ -562,7 +582,7 @@ class _LandmarkNearState extends State<LandmarkNear> {
                       Navigator.pop(context);
                       var zoom = await _controller.getZoomLevel();
                       zoom = zoom + 0.5;
-                      LatLng latLng = LatLng(widget.lat, widget.lng);
+                      LatLng latLng = LatLng(lat, lng);
                       _controller.animateCamera(
                           CameraUpdate.newLatLngZoom(latLng, zoom));
                     },
@@ -605,7 +625,7 @@ class _LandmarkNearState extends State<LandmarkNear> {
                       Navigator.pop(context);
                       var zoom = await _controller.getZoomLevel();
                       zoom = zoom - 0.5;
-                      LatLng latLng = LatLng(widget.lat, widget.lng);
+                      LatLng latLng = LatLng(lat, lng);
                       _controller.animateCamera(
                           CameraUpdate.newLatLngZoom(latLng, zoom));
                     },

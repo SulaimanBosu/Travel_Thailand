@@ -15,7 +15,6 @@ import 'package:project/screen/favorites.dart';
 import 'package:project/screen/landmark.dart';
 import 'package:project/screen/landmark_near.dart';
 import 'package:project/screen/main_page.dart';
-import 'package:project/screen/popular.dart';
 import 'package:project/ProfilePage/profile.dart';
 import 'package:project/utility/myConstant.dart';
 import 'package:project/utility/my_style.dart';
@@ -42,7 +41,8 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isDelay = false;
   late ProvinceModel model;
   late LandmarkModel landmarkModel;
-  late double lat, lng;
+  double lat = 0, lng = 0;
+  bool isDelayProgress = true;
 
   @override
   void initState() {
@@ -53,14 +53,6 @@ class _HomeScreenState extends State<HomeScreen> {
     getLocation();
     delaydialog();
     province();
-    listwidgets.add(const MainPage());
-    listwidgets.add(LandmarkNear(
-      lat: lat,
-      lng: lng,
-    ));
-    listwidgets.add(const Favorites());
-    listwidgets.add(const Landmark());
-    listwidgets.add(const Profile());
     checkUser();
     super.initState();
   }
@@ -88,23 +80,36 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> getLocation() async {
-    // Location location = Location();
-    // LocationData locationData = await location.getLocation();
-   // location.enableBackgroundMode(enable: true);
+    Location location = Location();
+    LocationData locationData = await location.getLocation();
+    location.enableBackgroundMode(enable: true);
     setState(() {
-      // lat = locationData.latitude!;
-      // lng = locationData.longitude!;
-      lat = 13.602307598833875;
-      lng = 100.626533;
+      lat = locationData.latitude!;
+      lng = locationData.longitude!;
+      // lat = 13.602307598833875;
+      // lng = 100.626533;
+      Future.delayed(const Duration(milliseconds: 3000), () {
+        setState(() {
+          listwidgets.add(const MainPage());
+          listwidgets.add(LandmarkNear(
+            lat: lat,
+            lng: lng,
+          ));
+          listwidgets.add(const Favorites());
+          listwidgets.add(const Landmark());
+          listwidgets.add(const Profile());
+        });
+      });
     });
     debugPrint('latitude ============ ${lat.toString()}');
     debugPrint('longitude ============ ${lng.toString()}');
   }
 
   void delaydialog() {
-    Future.delayed(const Duration(milliseconds: 1000), () {
+    Future.delayed(const Duration(milliseconds: 5000), () {
       setState(() {
         isDelay = true;
+        isDelayProgress = false;
       });
     });
   }
@@ -194,7 +199,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return !isDelay
         ? BlurryModalProgressHUD(
-            inAsyncCall: !isDelay,
+            inAsyncCall: false,
             blurEffectIntensity: 4,
             progressIndicator: Material(
               type: MaterialType.transparency,
@@ -211,8 +216,54 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           )
         : Scaffold(
-            body: listwidgets[indexPage],
-            bottomNavigationBar: showBottomNavigationBar(),
+            backgroundColor: Colors.white,
+            body: listwidgets.isEmpty
+                ? Container(
+                    width: 100.vw,
+                    height: 100.vh,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Container(
+                              // width: 80.vw,
+                              // height: 20.vh,
+                              //color: Colors.white,
+                              child: Image.asset(
+                                'images/logo.png',
+                                fit: BoxFit.cover,
+                                // scale: 50,
+                                // width: 50.vw,
+                                // height: 20.vh,
+                              ),
+                            ),
+                          ],
+                        ),
+                        !isDelayProgress
+                            ? Positioned(
+                                bottom: 5.vh,
+
+                                // left: 50.vw,
+                                child: Container(
+                                  transformAlignment: Alignment.bottomCenter,
+                                  child: MyStyle().showProgress(),
+                                ),
+                              )
+                            : Container()
+                      ],
+                    ),
+                  )
+
+                // JumpingDotsProgressIndicator(
+                //   color: Colors.red,
+                //   fontSize: 50.0.sp,
+                // ),
+
+                : listwidgets[indexPage],
+            bottomNavigationBar:
+                listwidgets.isEmpty ? null : showBottomNavigationBar(),
           );
   }
 

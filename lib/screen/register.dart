@@ -320,6 +320,7 @@ class _RegisterState extends State<Register> {
               child: CircleAvatar(
                 radius: 93,
                 backgroundColor: Colors.white,
+                foregroundColor: Colors.white,
                 child: Padding(
                   padding: const EdgeInsets.all(2), // Border radius
                   child: ClipOval(
@@ -330,9 +331,15 @@ class _RegisterState extends State<Register> {
                               radius: 24,
                               backgroundImage:
                                   AssetImage('images/addimages1.png'),
+                              foregroundImage:
+                                  AssetImage('images/addimages1.png'),
                             )
                           : CircleAvatar(
-                              radius: 24, backgroundImage: FileImage(file!)),
+                              radius: 24,
+                              backgroundImage:
+                                  const AssetImage('images/addimages1.png'),
+                              foregroundImage: FileImage(file!),
+                            ),
                     ),
                   ),
                 ),
@@ -1109,9 +1116,7 @@ class _RegisterState extends State<Register> {
                         suffix: InkWell(
                           onTap: () => sendOTP(context),
                           child: Text(
-                            isSendOTPSuccess
-                                ? 'ส่งอีกครั้ง'
-                                : 'ส่งรหัส OTP',
+                            isSendOTPSuccess ? 'ส่งอีกครั้ง' : 'ส่งรหัส OTP',
                             style: const TextStyle(color: Colors.red),
                           ),
                         ),
@@ -1167,9 +1172,10 @@ class _RegisterState extends State<Register> {
                           ),
                           hintText: 'กรอกรหัส OTP',
                           suffixIcon: Container(
-                            padding: const EdgeInsets.only(right: 5,bottom: 1),
+                            padding: const EdgeInsets.only(right: 5, bottom: 1),
                             child: ProgressButton.icon(
-                                textStyle: const TextStyle(color: Colors.black54),
+                                textStyle:
+                                    const TextStyle(color: Colors.black54),
                                 state: isbuttonOTP
                                     ? ButtonState.idle
                                     : isLoaddingOTP
