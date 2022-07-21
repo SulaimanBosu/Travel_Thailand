@@ -106,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void delaydialog() {
-    Future.delayed(const Duration(milliseconds: 5000), () {
+    Future.delayed(const Duration(milliseconds: 3000), () {
       setState(() {
         isDelay = true;
         isDelayProgress = false;
