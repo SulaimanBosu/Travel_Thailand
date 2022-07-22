@@ -69,6 +69,13 @@ dependencies:
   progress_state_button: ^1.0.4
   http: ^0.13.4
   custom_marker: ^1.0.0
+  flutter_launcher_icons: ^0.9.3
+  rename: ^2.0.1
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/app_logo.png"
 
 dev_dependencies:
   flutter_test:
